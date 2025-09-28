@@ -39,18 +39,20 @@ const Index = () => {
 
           {/* Contact Button */}
           <div className="mt-6">
-            <a 
-              href="mailto:myliberalpony@gmail.com" 
-              className="inline-block font-body text-lg md:text-xl lg:text-2xl uppercase border border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-all duration-300"
+            <button 
+              onClick={() => document.getElementById('contact-section')?.scrollIntoView({ behavior: 'smooth' })}
+              className="inline-block font-body text-lg md:text-xl lg:text-2xl uppercase border border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-all duration-300 group"
             >
+              <span className="inline-block animate-pulse group-hover:animate-bounce mr-3">↓</span>
               CONTACT FOR BOOKINGS
-            </a>
+              <span className="inline-block animate-pulse group-hover:animate-bounce ml-3">↓</span>
+            </button>
           </div>
         </div>
       </section>
 
       {/* Second Section - Content */}
-      <section className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 md:p-8 pb-20">
+      <section className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 md:p-8">
         <div className="w-full max-w-5xl mx-auto text-center space-y-8 md:space-y-12">
           {/* Main Content */}
           <div className="space-y-6 md:space-y-8 w-full px-4 md:px-8">
@@ -101,29 +103,28 @@ const Index = () => {
 
 
             {/* Contact Information */}
-            <div className="mt-16 pt-8 border-t border-foreground">
-              <p className="font-body text-sm md:text-base lg:text-lg leading-relaxed uppercase">
-                ( FOR BOOKINGS & ENQUIRIES, PLEASE CONTACT MYLIBERALPONY@GMAIL.COM )
-              </p>
+            <div id="contact-section" className="mt-24 pt-16 border-t-4 border-foreground bg-foreground/5 -mx-4 md:-mx-8 px-4 md:px-8 py-16 mb-16">
+              <div className="text-center space-y-8">
+                <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
+                  BOOKINGS & ENQUIRIES
+                </h2>
+                <div className="space-y-4">
+                  <p className="font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl leading-relaxed uppercase">
+                    FOR ALL BOOKING REQUESTS AND ENQUIRIES
+                  </p>
+                  <a 
+                    href="mailto:myliberalpony@gmail.com"
+                    className="inline-block font-body text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold uppercase border-2 border-foreground px-8 py-6 hover:bg-foreground hover:text-background transition-all duration-300 tracking-wider"
+                  >
+                    MYLIBERALPONY@GMAIL.COM
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Fixed Footer Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-foreground text-background py-3 px-4 z-50">
-        <div className="text-center">
-          <span className="font-body text-sm md:text-base uppercase">
-            BOOKINGS: 
-            <a 
-              href="mailto:myliberalpony@gmail.com" 
-              className="ml-2 hover:underline transition-all duration-300"
-            >
-              myliberalpony@gmail.com
-            </a>
-          </span>
-        </div>
-      </div>
     </>
   );
 };
