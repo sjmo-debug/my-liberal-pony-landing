@@ -36,11 +36,21 @@ const Index = () => {
               FOLLOW ON INSTAGRAM
             </a>
           </div>
+
+          {/* Contact Button */}
+          <div className="mt-6">
+            <a 
+              href="mailto:myliberalpony@gmail.com" 
+              className="inline-block font-body text-lg md:text-xl lg:text-2xl uppercase border border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-all duration-300"
+            >
+              CONTACT FOR BOOKINGS
+            </a>
+          </div>
         </div>
       </section>
 
       {/* Second Section - Content */}
-      <section className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 md:p-8">
+      <section className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 md:p-8 pb-20">
         <div className="w-full max-w-5xl mx-auto text-center space-y-8 md:space-y-12">
           {/* Main Content */}
           <div className="space-y-6 md:space-y-8 w-full px-4 md:px-8">
@@ -99,6 +109,21 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Fixed Footer Bar */}
+      <div className="fixed bottom-0 left-0 right-0 bg-foreground text-background py-3 px-4 z-50">
+        <div className="text-center">
+          <span className="font-body text-sm md:text-base uppercase">
+            BOOKINGS: 
+            <a 
+              href="mailto:myliberalpony@gmail.com" 
+              className="ml-2 hover:underline transition-all duration-300"
+            >
+              myliberalpony@gmail.com
+            </a>
+          </span>
+        </div>
+      </div>
     </>
   );
 };
