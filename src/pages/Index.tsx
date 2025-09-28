@@ -25,13 +25,6 @@ const Index = () => {
             MY LIBERAL PONY
           </h1>
         </div>
-        
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-foreground rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-foreground rounded-full mt-2 animate-pulse"></div>
-          </div>
-        </div>
       </section>
 
       {/* Second Section - Content */}
@@ -78,6 +71,29 @@ const Index = () => {
                 title="SoundCloud player"
                 className="border border-foreground"
               />
+            </div>
+
+            {/* Bandcamp Embed */}
+            <div className="w-full max-w-3xl mx-auto mt-8">
+              <iframe 
+                style={{border: 0, width: '100%', height: '120px'}} 
+                src="https://bandcamp.com/EmbeddedPlayer/album=YOUR_ALBUM_ID/size=large/bgcol=000000/linkcol=ffffff/tracklist=false/artwork=small/transparent=true/" 
+                seamless
+                title="Bandcamp player"
+                className="border border-foreground"
+              />
+            </div>
+
+            {/* Instagram Link */}
+            <div className="w-full max-w-3xl mx-auto mt-8">
+              <a 
+                href="https://instagram.com/myliberalpony" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-block font-body text-lg md:text-xl lg:text-2xl uppercase border border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-all duration-300"
+              >
+                FOLLOW ON INSTAGRAM
+              </a>
             </div>
 
             {/* Contact Information */}
