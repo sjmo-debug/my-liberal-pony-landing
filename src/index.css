@@ -6,6 +6,15 @@
 All colors MUST be HSL.
 */
 
+/* Custom font face */
+@font-face {
+  font-family: 'Ithaca';
+  src: url('/fonts/Ithaca.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     /* MY LIBERAL PONY - Stark Black & White Design System */
@@ -40,8 +49,8 @@ All colors MUST be HSL.
     --radius: 0rem;
 
     /* Custom tokens for artistic typography */
-    --heading-font: 'Courier New', monospace;
-    --body-font: 'Arial', sans-serif;
+    --heading-font: 'Ithaca', 'Courier New', monospace;
+    --body-font: 'Ithaca', 'Arial', sans-serif;
     
     /* Subtle animation tokens */
     --fade-in: opacity 1s ease-in-out;

@@ -49,8 +49,8 @@ export default {
         },
       },
       fontFamily: {
-        'heading': ['Courier New', 'monospace'],
-        'body': ['Arial', 'sans-serif'],
+        'heading': ['Ithaca', 'Courier New', 'monospace'],
+        'body': ['Ithaca', 'Arial', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",
