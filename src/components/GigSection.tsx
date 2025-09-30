@@ -63,9 +63,11 @@ const GigSection = () => {
           complete: (results) => {
             const parsedGigs = results.data
               .map((row: any) => {
-                const dateStr = row.Date || row.date || '';
-                const venue = row.Venue || row.venue || '';
-                const location = row.Location || row.location || '';
+                // Get values, trying header names first, then column indexes as fallback
+                const rowArray = Object.values(row);
+                const dateStr = row.Date || row.date || rowArray[0] || '';
+                const venue = row.Venue || row.venue || rowArray[1] || '';
+                const location = row.Location || row.location || rowArray[2] || '';
                 
                 // Try multiple possible column names for ticket info
                 const ticketInfo = row['Free/Hyperlink to "TICKETS"'] 
@@ -74,7 +76,7 @@ const GigSection = () => {
                   || row.Free 
                   || row.Tickets 
                   || row['Free/Tickets']
-                  || Object.values(row)[3] // 4th column as fallback
+                  || rowArray[3] // 4th column as fallback
                   || '';
                 
                 if (!dateStr || !venue) return null;
