@@ -22,14 +22,14 @@ const Index = () => {
         backgroundAttachment: 'fixed'
       } : {}}
     >
-      {/* First Section - Logo Only */}
+      {/* Hero Section - Main Landing */}
       <section className={`min-h-screen flex flex-col items-center justify-center relative transition-colors duration-500 ${isButtonHovered ? '' : 'bg-background'}`}>
-        <div className={`transition-all duration-1000 ${
+        <header className={`transition-all duration-1000 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         } text-center ${isButtonHovered ? 'text-black' : 'text-foreground'}`}>
           <img 
             src={mlpLogo} 
-            alt="MY LIBERAL PONY logo" 
+            alt="MY LIBERAL PONY - Experimental multimedia artist and live music performer logo featuring bold artistic design" 
             className={`w-80 h-80 md:w-96 md:h-96 lg:w-[32rem] lg:h-[32rem] xl:w-[40rem] xl:h-[40rem] object-contain mx-auto mb-8 transition-all duration-500 relative z-10 ${isButtonHovered ? '' : 'filter invert'}`}
           />
           <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-wider uppercase">
@@ -37,18 +37,19 @@ const Index = () => {
           </h1>
           
           {/* Instagram Link */}
-          <div className="mt-12">
+          <nav className="mt-12">
             <a 
               href="https://instagram.com/myliberalpony" 
               target="_blank" 
               rel="noopener noreferrer"
+              aria-label="Follow MY LIBERAL PONY on Instagram"
               onMouseEnter={() => setIsButtonHovered(true)}
               onMouseLeave={() => setIsButtonHovered(false)}
               className={`inline-block font-body text-lg md:text-xl lg:text-2xl uppercase px-6 py-3 transition-all duration-300 ${isButtonHovered ? 'border-2 border-black' : 'border border-foreground'}`}
             >
               FOLLOW ON INSTAGRAM
             </a>
-          </div>
+          </nav>
 
           {/* Contact Button */}
           <div className="mt-6">
@@ -56,6 +57,7 @@ const Index = () => {
               onClick={() => document.getElementById('contact-section')?.scrollIntoView({ behavior: 'smooth' })}
               onMouseEnter={() => setIsButtonHovered(true)}
               onMouseLeave={() => setIsButtonHovered(false)}
+              aria-label="Scroll to contact section for bookings"
               className={`inline-block font-body text-lg md:text-xl lg:text-2xl uppercase px-6 py-3 transition-all duration-300 group ${isButtonHovered ? 'border-2 border-black' : 'border border-foreground'}`}
             >
               <span className="inline-block animate-pulse group-hover:animate-bounce mr-3">↓</span>
@@ -63,14 +65,17 @@ const Index = () => {
               <span className="inline-block animate-pulse group-hover:animate-bounce ml-3">↓</span>
             </button>
           </div>
-        </div>
+        </header>
       </section>
 
-      {/* Second Section - Content */}
-      <section className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-500 ${isButtonHovered ? 'text-black' : 'bg-background text-foreground'}`}>
+      {/* Main Content Section */}
+      <main className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-500 ${isButtonHovered ? 'text-black' : 'bg-background text-foreground'}`}>
         <div className="w-full max-w-5xl mx-auto text-center space-y-8 md:space-y-12">
-          {/* Main Content */}
-          <div className="space-y-6 md:space-y-8 w-full px-4 md:px-8">
+          {/* About Section */}
+          <article className="space-y-6 md:space-y-8 w-full px-4 md:px-8">
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-wider">
+              About the Artist
+            </h2>
             <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
               MY LIBERAL PONY IS A MULTIMEDIA, GENRE-BENDING, PERMANENT WORK IN PROGRESS, 
               NOW AVAILABLE TO REQUEST AT YOUR NEAREST LIVE MUSIC VENUE.
@@ -91,36 +96,81 @@ const Index = () => {
               THE HASBRO CORPORATION HOWEVER IT WOULD ALSO BE QUITE FUNNY IF IT DID.
             </p>
 
-            {/* SoundCloud Embed */}
-            <div className="w-full max-w-3xl mx-auto mt-12">
-              <iframe 
-                width="100%" 
-                height="166" 
-                scrolling="no" 
-                frameBorder="no" 
-                allow="autoplay"
-                src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/chameleonpresents&color=%23ffffff&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"
-                title="SoundCloud player"
-                className="border border-foreground"
-              />
-            </div>
+            {/* Music Section */}
+            <section className="w-full max-w-3xl mx-auto mt-12 space-y-8">
+              <h3 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-wider">
+                Listen to the Music
+              </h3>
+              
+              {/* SoundCloud Embed */}
+              <div>
+                <iframe 
+                  width="100%" 
+                  height="166" 
+                  scrolling="no" 
+                  frameBorder="no" 
+                  allow="autoplay"
+                  src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/chameleonpresents&color=%23ffffff&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"
+                  title="MY LIBERAL PONY on SoundCloud - Listen to experimental music tracks"
+                  className="border border-foreground"
+                />
+              </div>
 
-            {/* Bandcamp Embed */}
-            <div className="w-full max-w-3xl mx-auto mt-8">
-              <iframe 
-                style={{border: 0, width: '100%', height: '120px'}} 
-                src="https://bandcamp.com/EmbeddedPlayer/album=YOUR_ALBUM_ID/size=large/bgcol=000000/linkcol=ffffff/tracklist=false/artwork=small/transparent=true/" 
-                seamless
-                title="Bandcamp player"
-                className="border border-foreground"
-              />
-            </div>
+              {/* Bandcamp Embed */}
+              <div>
+                <iframe 
+                  style={{border: 0, width: '100%', height: '120px'}} 
+                  src="https://bandcamp.com/EmbeddedPlayer/album=YOUR_ALBUM_ID/size=large/bgcol=000000/linkcol=ffffff/tracklist=false/artwork=small/transparent=true/" 
+                  seamless
+                  title="MY LIBERAL PONY on Bandcamp - Stream and purchase music"
+                  className="border border-foreground"
+                />
+              </div>
+            </section>
 
-            {/* Gigs Section */}
-            <GigSection onButtonHover={setIsButtonHovered} isButtonHovered={isButtonHovered} />
+            {/* Live Shows Section */}
+            <section className="w-full">
+              <h3 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-wider mb-8">
+                Upcoming Live Shows
+              </h3>
+              <GigSection onButtonHover={setIsButtonHovered} isButtonHovered={isButtonHovered} />
+            </section>
+            
+            {/* FAQ Section */}
+            <section className="w-full mt-16 space-y-6">
+              <h3 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-wider">
+                Frequently Asked Questions
+              </h3>
+              <div className="text-left max-w-3xl mx-auto space-y-6">
+                <div>
+                  <h4 className="font-body text-lg md:text-xl font-bold uppercase mb-2">
+                    What type of music is MY LIBERAL PONY?
+                  </h4>
+                  <p className="font-body text-base md:text-lg uppercase">
+                    Genre-bending experimental music combining multimedia elements with social commentary and live performance art.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-body text-lg md:text-xl font-bold uppercase mb-2">
+                    How can I book MY LIBERAL PONY for a live show?
+                  </h4>
+                  <p className="font-body text-base md:text-lg uppercase">
+                    Email myliberalpony@gmail.com with your venue details, preferred dates, and event information for booking enquiries.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-body text-lg md:text-xl font-bold uppercase mb-2">
+                    Where does MY LIBERAL PONY perform?
+                  </h4>
+                  <p className="font-body text-base md:text-lg uppercase">
+                    Available for live music venues, festivals, and events across the UK and England.
+                  </p>
+                </div>
+              </div>
+            </section>
 
-            {/* Contact Information */}
-            <div id="contact-section" className={`mt-24 pt-16 border-t-4 -mx-4 md:-mx-8 px-4 md:px-8 py-16 mb-16 transition-colors duration-500 ${isButtonHovered ? 'border-black bg-black/5' : 'border-foreground bg-foreground/5'}`}>
+            {/* Contact Section */}
+            <section id="contact-section" className={`mt-24 pt-16 border-t-4 -mx-4 md:-mx-8 px-4 md:px-8 py-16 mb-16 transition-colors duration-500 ${isButtonHovered ? 'border-black bg-black/5' : 'border-foreground bg-foreground/5'}`}>
               <div className="text-center space-y-8">
                 <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
                   BOOKINGS & ENQUIRIES
@@ -133,16 +183,17 @@ const Index = () => {
                     href="mailto:myliberalpony@gmail.com"
                     onMouseEnter={() => setIsButtonHovered(true)}
                     onMouseLeave={() => setIsButtonHovered(false)}
+                    aria-label="Email MY LIBERAL PONY for bookings and enquiries"
                     className={`inline-block font-body text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold uppercase px-8 py-6 transition-all duration-300 tracking-wider ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`}
                   >
                     MYLIBERALPONY@GMAIL.COM
                   </a>
                 </div>
               </div>
-            </div>
-          </div>
+            </section>
+          </article>
         </div>
-      </section>
+      </main>
     </div>
   );
 };
