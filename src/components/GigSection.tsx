@@ -14,6 +14,7 @@ interface Gig {
 interface GigSectionProps {
   onButtonHover: (isHovered: boolean) => void;
   isButtonHovered: boolean;
+  showTitle?: boolean;
 }
 
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1zcS_vYBVjS2BYinxHFwEiygsGe5krgnRlC8z-2o8lLc/export?format=csv&gid=0';
@@ -53,7 +54,7 @@ const formatDate = (date: Date): string => {
   return `${dayName}, ${day}${suffix} ${month} ${year}`;
 };
 
-const GigSection = ({ onButtonHover, isButtonHovered }: GigSectionProps) => {
+const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true }: GigSectionProps) => {
   const { data: gigs, isLoading, error } = useQuery({
     queryKey: ['gigs'],
     queryFn: async () => {
@@ -109,7 +110,7 @@ const GigSection = ({ onButtonHover, isButtonHovered }: GigSectionProps) => {
 
   if (error) {
     return (
-      <div className="w-full max-w-3xl mx-auto mt-24 pt-16 border-t-4 border-foreground">
+      <div className="w-full max-w-3xl mx-auto">
         <p className="font-body text-base md:text-lg uppercase text-center">
           Unable to load gigs. Please try again later.
         </p>
@@ -122,10 +123,12 @@ const GigSection = ({ onButtonHover, isButtonHovered }: GigSectionProps) => {
 
   if (isLoading) {
     return (
-      <div className="w-full max-w-3xl mx-auto mt-24 pt-16 border-t-4 border-foreground">
-        <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider text-center mb-12">
-          UPCOMING GIGS
-        </h2>
+      <div className="w-full max-w-3xl mx-auto">
+        {showTitle && (
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider text-center mb-12">
+            UPCOMING GIGS
+          </h2>
+        )}
         <div className="flex justify-center">
           <div className="animate-pulse font-body text-lg uppercase">Loading gigs...</div>
         </div>
@@ -135,10 +138,12 @@ const GigSection = ({ onButtonHover, isButtonHovered }: GigSectionProps) => {
 
   if (!upcomingGigs || upcomingGigs.length === 0) {
     return (
-      <div className="w-full max-w-3xl mx-auto mt-24 pt-16 border-t-4 border-foreground">
-        <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider text-center mb-12">
-          UPCOMING GIGS
-        </h2>
+      <div className="w-full max-w-3xl mx-auto">
+        {showTitle && (
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider text-center mb-12">
+            UPCOMING GIGS
+          </h2>
+        )}
         <p className="font-body text-base md:text-lg uppercase text-center">
           No upcoming gigs scheduled. Check back soon!
         </p>
@@ -147,10 +152,12 @@ const GigSection = ({ onButtonHover, isButtonHovered }: GigSectionProps) => {
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto mt-24 pt-16 border-t-4 border-foreground">
-      <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider text-center mb-12">
-        UPCOMING GIGS
-      </h2>
+    <div className="w-full max-w-3xl mx-auto">
+      {showTitle && (
+        <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider text-center mb-12">
+          UPCOMING GIGS
+        </h2>
+      )}
       <div className="grid grid-cols-1 gap-6">
         {upcomingGigs.map((gig, index) => (
           <GigCard

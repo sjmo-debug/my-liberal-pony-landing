@@ -93,6 +93,14 @@ const Index = () => {
               READ MORE
             </Link>
 
+            {/* Live Shows Section */}
+            <section className="w-full mt-16">
+              <h3 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider mb-8">
+                Upcoming Live Shows
+              </h3>
+              <GigSection onButtonHover={setIsButtonHovered} isButtonHovered={isButtonHovered} showTitle={false} />
+            </section>
+
             {/* Music Section */}
             <section className="w-full max-w-3xl mx-auto mt-12 space-y-8">
               <h3 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
@@ -125,30 +133,6 @@ const Index = () => {
               </div>
             </section>
 
-            {/* Live Shows Section */}
-            <section className="w-full">
-              <h3 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider mb-8">
-                Upcoming Live Shows
-              </h3>
-              <GigSection onButtonHover={setIsButtonHovered} isButtonHovered={isButtonHovered} />
-            </section>
-            
-            {/* FAQ Section - Button to dedicated page */}
-            <section className="w-full mt-16 space-y-6">
-              <h3 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
-                Frequently Asked Questions
-              </h3>
-              
-              <Link 
-                to="/faq"
-                onMouseEnter={() => setIsButtonHovered(true)}
-                onMouseLeave={() => setIsButtonHovered(false)}
-                className={`inline-block font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl uppercase px-6 py-4 md:px-8 md:py-5 lg:px-10 lg:py-6 xl:px-12 xl:py-7 min-h-[44px] transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}
-                aria-label="View frequently asked questions"
-              >
-                VIEW FAQ
-              </Link>
-            </section>
 
             {/* Contact Section */}
             <section id="contact-section" className={`mt-24 pt-16 border-t-4 -mx-4 md:-mx-8 px-4 md:px-8 py-16 mb-16 transition-colors duration-500 ${showRainbow ? 'border-black bg-black/5' : 'border-foreground bg-foreground/5'}`}>
@@ -171,6 +155,23 @@ const Index = () => {
                   </a>
                 </div>
               </div>
+            </section>
+
+            {/* FAQ Section - Button to dedicated page */}
+            <section className="w-full mt-16 space-y-6">
+              <h3 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
+                Frequently Asked Questions
+              </h3>
+              
+              <Link 
+                to="/faq"
+                onMouseEnter={() => setIsButtonHovered(true)}
+                onMouseLeave={() => setIsButtonHovered(false)}
+                className={`inline-block font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl uppercase px-6 py-4 md:px-8 md:py-5 lg:px-10 lg:py-6 xl:px-12 xl:py-7 min-h-[44px] transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}
+                aria-label="View frequently asked questions"
+              >
+                VIEW FAQ
+              </Link>
             </section>
           </article>
         </div>
