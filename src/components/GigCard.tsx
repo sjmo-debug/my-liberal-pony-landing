@@ -24,7 +24,7 @@ const GigCard = ({ date, venue, location, ticketInfo, buttonText, onButtonHover,
         
         {isFree ? (
           <div 
-            className={`inline-block font-body text-sm md:text-base uppercase px-4 py-2 ${isButtonHovered ? 'border border-black bg-black/10' : 'border border-foreground bg-foreground/10'}`}
+            className={`inline-block font-body text-base md:text-lg lg:text-xl xl:text-2xl uppercase px-6 py-4 md:px-8 md:py-5 min-h-[44px] ${isButtonHovered ? 'border-2 border-black bg-black/10' : 'border-2 border-foreground bg-foreground/10'}`}
           >
             {buttonText || 'FREE ENTRY'}
           </div>
@@ -35,12 +35,12 @@ const GigCard = ({ date, venue, location, ticketInfo, buttonText, onButtonHover,
             rel="noopener noreferrer"
             onMouseEnter={() => onButtonHover(true)}
             onMouseLeave={() => onButtonHover(false)}
-            className={`inline-block font-body text-sm md:text-base uppercase px-4 py-2 transition-all duration-300 ${isButtonHovered ? 'border border-black' : 'border border-foreground'}`}
+            className={`inline-block font-body text-base md:text-lg lg:text-xl xl:text-2xl uppercase px-6 py-4 md:px-8 md:py-5 min-h-[44px] transition-all duration-300 ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`}
           >
             {buttonText || 'GET TICKETS'} →
           </a>
         ) : (
-          <div className={`inline-block font-body text-sm md:text-base uppercase px-4 py-2 ${isButtonHovered ? 'border border-black' : 'border border-foreground'}`}>
+          <div className={`inline-block font-body text-base md:text-lg lg:text-xl xl:text-2xl uppercase px-6 py-4 md:px-8 md:py-5 min-h-[44px] ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
             {buttonText}
           </div>
         )}
