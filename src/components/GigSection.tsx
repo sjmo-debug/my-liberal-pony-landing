@@ -11,6 +11,11 @@ interface Gig {
   parsedDate: Date;
 }
 
+interface GigSectionProps {
+  onButtonHover: (isHovered: boolean) => void;
+  isButtonHovered: boolean;
+}
+
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1zcS_vYBVjS2BYinxHFwEiygsGe5krgnRlC8z-2o8lLc/export?format=csv&gid=0';
 
 const parseDate = (dateStr: string): Date => {
@@ -48,7 +53,7 @@ const formatDate = (date: Date): string => {
   return `${dayName}, ${day}${suffix} ${month} ${year}`;
 };
 
-const GigSection = () => {
+const GigSection = ({ onButtonHover, isButtonHovered }: GigSectionProps) => {
   const { data: gigs, isLoading, error } = useQuery({
     queryKey: ['gigs'],
     queryFn: async () => {
@@ -155,6 +160,8 @@ const GigSection = () => {
             location={gig.location}
             ticketInfo={gig.ticketInfo}
             buttonText={gig.buttonText}
+            onButtonHover={onButtonHover}
+            isButtonHovered={isButtonHovered}
           />
         ))}
       </div>

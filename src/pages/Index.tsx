@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import mlpLogo from '@/assets/mlp-logo.jpg';
+import rainbowGradient from '@/assets/rainbow-gradient.jpg';
 import GigSection from '@/components/GigSection';
 
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isButtonHovered, setIsButtonHovered] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 300);
@@ -11,16 +13,24 @@ const Index = () => {
   }, []);
 
   return (
-    <>
+    <div 
+      className="transition-all duration-500"
+      style={isButtonHovered ? {
+        backgroundImage: `url(${rainbowGradient})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      } : {}}
+    >
       {/* First Section - Logo Only */}
-      <section className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center relative">
+      <section className={`min-h-screen flex flex-col items-center justify-center relative transition-colors duration-500 ${isButtonHovered ? '' : 'bg-background'}`}>
         <div className={`transition-all duration-1000 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        } text-center`}>
+        } text-center ${isButtonHovered ? 'text-black' : 'text-foreground'}`}>
           <img 
             src={mlpLogo} 
             alt="MY LIBERAL PONY logo" 
-            className="w-80 h-80 md:w-96 md:h-96 lg:w-[32rem] lg:h-[32rem] xl:w-[40rem] xl:h-[40rem] object-contain filter invert mx-auto mb-8"
+            className={`w-80 h-80 md:w-96 md:h-96 lg:w-[32rem] lg:h-[32rem] xl:w-[40rem] xl:h-[40rem] object-contain mx-auto mb-8 transition-all duration-500 ${isButtonHovered ? '' : 'filter invert'}`}
           />
           <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-wider uppercase">
             MY LIBERAL PONY
@@ -32,7 +42,9 @@ const Index = () => {
               href="https://instagram.com/myliberalpony" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-block font-body text-lg md:text-xl lg:text-2xl uppercase border border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-all duration-300"
+              onMouseEnter={() => setIsButtonHovered(true)}
+              onMouseLeave={() => setIsButtonHovered(false)}
+              className={`inline-block font-body text-lg md:text-xl lg:text-2xl uppercase px-6 py-3 transition-all duration-300 ${isButtonHovered ? 'border-2 border-black' : 'border border-foreground'}`}
             >
               FOLLOW ON INSTAGRAM
             </a>
@@ -42,7 +54,9 @@ const Index = () => {
           <div className="mt-6">
             <button 
               onClick={() => document.getElementById('contact-section')?.scrollIntoView({ behavior: 'smooth' })}
-              className="inline-block font-body text-lg md:text-xl lg:text-2xl uppercase border border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-all duration-300 group"
+              onMouseEnter={() => setIsButtonHovered(true)}
+              onMouseLeave={() => setIsButtonHovered(false)}
+              className={`inline-block font-body text-lg md:text-xl lg:text-2xl uppercase px-6 py-3 transition-all duration-300 group ${isButtonHovered ? 'border-2 border-black' : 'border border-foreground'}`}
             >
               <span className="inline-block animate-pulse group-hover:animate-bounce mr-3">↓</span>
               CONTACT FOR BOOKINGS
@@ -53,7 +67,7 @@ const Index = () => {
       </section>
 
       {/* Second Section - Content */}
-      <section className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 md:p-8">
+      <section className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-500 ${isButtonHovered ? 'text-black' : 'bg-background text-foreground'}`}>
         <div className="w-full max-w-5xl mx-auto text-center space-y-8 md:space-y-12">
           {/* Main Content */}
           <div className="space-y-6 md:space-y-8 w-full px-4 md:px-8">
@@ -103,10 +117,10 @@ const Index = () => {
             </div>
 
             {/* Gigs Section */}
-            <GigSection />
+            <GigSection onButtonHover={setIsButtonHovered} isButtonHovered={isButtonHovered} />
 
             {/* Contact Information */}
-            <div id="contact-section" className="mt-24 pt-16 border-t-4 border-foreground bg-foreground/5 -mx-4 md:-mx-8 px-4 md:px-8 py-16 mb-16">
+            <div id="contact-section" className={`mt-24 pt-16 border-t-4 -mx-4 md:-mx-8 px-4 md:px-8 py-16 mb-16 transition-colors duration-500 ${isButtonHovered ? 'border-black bg-black/5' : 'border-foreground bg-foreground/5'}`}>
               <div className="text-center space-y-8">
                 <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
                   BOOKINGS & ENQUIRIES
@@ -117,7 +131,9 @@ const Index = () => {
                   </p>
                   <a 
                     href="mailto:myliberalpony@gmail.com"
-                    className="inline-block font-body text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold uppercase border-2 border-foreground px-8 py-6 hover:bg-foreground hover:text-background transition-all duration-300 tracking-wider"
+                    onMouseEnter={() => setIsButtonHovered(true)}
+                    onMouseLeave={() => setIsButtonHovered(false)}
+                    className={`inline-block font-body text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold uppercase px-8 py-6 transition-all duration-300 tracking-wider ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`}
                   >
                     MYLIBERALPONY@GMAIL.COM
                   </a>
@@ -127,8 +143,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-    </>
+    </div>
   );
 };
 
