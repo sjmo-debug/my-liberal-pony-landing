@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import Papa from 'papaparse';
 
-const BACKGROUND_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1zcS_vYBVjS2BYinxHFwEiygsGe5krgnRlC8z-2o8lLc/export?format=csv&gid=1';
+const BACKGROUND_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1zcS_vYBVjS2BYinxHFwEiygsGe5krgnRlC8z-2o8lLc/export?format=csv&gid=1394626976';
 
 export const useBackgroundText = () => {
   return useQuery({
