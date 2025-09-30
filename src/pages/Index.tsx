@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import mlpLogo from '@/assets/mlp-logo.jpg';
+import mlpLogo from '@/assets/mlp-logo-transparent.png';
 import rainbowGradient from '@/assets/rainbow-gradient.jpg';
 import GigSection from '@/components/GigSection';
 
