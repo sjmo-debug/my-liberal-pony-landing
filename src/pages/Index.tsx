@@ -30,7 +30,7 @@ const Index = () => {
           <img 
             src={mlpLogo} 
             alt="MY LIBERAL PONY logo" 
-            className={`w-80 h-80 md:w-96 md:h-96 lg:w-[32rem] lg:h-[32rem] xl:w-[40rem] xl:h-[40rem] object-contain mx-auto mb-8 transition-all duration-500 ${isButtonHovered ? '' : 'filter invert'}`}
+            className={`w-80 h-80 md:w-96 md:h-96 lg:w-[32rem] lg:h-[32rem] xl:w-[40rem] xl:h-[40rem] object-contain mx-auto mb-8 transition-all duration-500 relative z-10 ${isButtonHovered ? '' : 'filter invert'}`}
           />
           <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-wider uppercase">
             MY LIBERAL PONY
