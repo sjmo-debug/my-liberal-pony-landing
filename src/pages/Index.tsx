@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import mlpLogo from '@/assets/mlp-logo.png';
 import rainbowGradient from '@/assets/rainbow-gradient.jpg';
 import GigSection from '@/components/GigSection';
@@ -6,29 +7,13 @@ import GigSection from '@/components/GigSection';
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
-  const [isScrollActive, setIsScrollActive] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 300);
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    let scrollTimeout: NodeJS.Timeout;
-    const handleScroll = () => {
-      setIsScrollActive(true);
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => setIsScrollActive(false), 800);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      clearTimeout(scrollTimeout);
-    };
-  }, []);
-
-  const showRainbow = isButtonHovered || isScrollActive;
+  const showRainbow = isButtonHovered;
 
   return (
     <div 
@@ -88,7 +73,7 @@ const Index = () => {
       {/* Main Content Section */}
       <main className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-500 ${showRainbow ? 'text-black' : 'bg-background text-foreground'}`}>
         <div className="w-full max-w-5xl mx-auto text-center space-y-8 md:space-y-12">
-          {/* About Section */}
+          {/* About Section - Button to dedicated page */}
           <article className="space-y-6 md:space-y-8 w-full px-4 md:px-8">
             <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold uppercase tracking-wider">
               About the Artist
@@ -98,20 +83,15 @@ const Index = () => {
               NOW AVAILABLE TO REQUEST AT YOUR NEAREST LIVE MUSIC VENUE.
             </p>
             
-            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
-              MY LIBERAL PONY IS THE INVITATION INTO AN MRI SCANNER THAT YOU DIDN'T KNOW YOU NEEDED.
-            </p>
-            
-            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
-              MY LIBERAL PONY IS A COMMENTARY OF THE FALL OF DEMOCRATIC AND LIBERAL VALUES 
-              IN LATE STAGE CAPITALISM FROM THE PERSPECTIVE OF A DISABLED MEMBER OF THE LGBT 
-              COMMUNITY LIVING IN ENGLAND.
-            </p>
-            
-            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed italic uppercase">
-              MY LIBERAL PONY IS NOT INTENDED TO INFRINGE ON ANY COPYRIGHTS AS OUTLINED BY 
-              THE HASBRO CORPORATION HOWEVER IT WOULD ALSO BE QUITE FUNNY IF IT DID.
-            </p>
+            <Link 
+              to="/about"
+              onMouseEnter={() => setIsButtonHovered(true)}
+              onMouseLeave={() => setIsButtonHovered(false)}
+              className={`inline-block font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl uppercase px-6 py-4 md:px-8 md:py-5 lg:px-10 lg:py-6 xl:px-12 xl:py-7 min-h-[44px] transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}
+              aria-label="Learn more about the artist"
+            >
+              READ MORE
+            </Link>
 
             {/* Music Section */}
             <section className="w-full max-w-3xl mx-auto mt-12 space-y-8">
@@ -153,37 +133,21 @@ const Index = () => {
               <GigSection onButtonHover={setIsButtonHovered} isButtonHovered={isButtonHovered} />
             </section>
             
-            {/* FAQ Section */}
+            {/* FAQ Section - Button to dedicated page */}
             <section className="w-full mt-16 space-y-6">
               <h3 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
                 Frequently Asked Questions
               </h3>
-              <div className="text-left max-w-3xl mx-auto space-y-6">
-                <div>
-                  <h4 className="font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold uppercase mb-2">
-                    What type of music is MY LIBERAL PONY?
-                  </h4>
-                  <p className="font-body text-base md:text-lg uppercase">
-                    Genre-bending experimental music combining multimedia elements with social commentary and live performance art.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold uppercase mb-2">
-                    How can I book MY LIBERAL PONY for a live show?
-                  </h4>
-                  <p className="font-body text-base md:text-lg uppercase">
-                    Email myliberalpony@gmail.com with your venue details, preferred dates, and event information for booking enquiries.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold uppercase mb-2">
-                    Where does MY LIBERAL PONY perform?
-                  </h4>
-                  <p className="font-body text-base md:text-lg uppercase">
-                    Available for live music venues, festivals, and events across the UK and England.
-                  </p>
-                </div>
-              </div>
+              
+              <Link 
+                to="/faq"
+                onMouseEnter={() => setIsButtonHovered(true)}
+                onMouseLeave={() => setIsButtonHovered(false)}
+                className={`inline-block font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl uppercase px-6 py-4 md:px-8 md:py-5 lg:px-10 lg:py-6 xl:px-12 xl:py-7 min-h-[44px] transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}
+                aria-label="View frequently asked questions"
+              >
+                VIEW FAQ
+              </Link>
             </section>
 
             {/* Contact Section */}
