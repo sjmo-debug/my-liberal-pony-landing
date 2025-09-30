@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import mlpLogo from '@/assets/mlp-logo.png';
 import rainbowGradient from '@/assets/rainbow-gradient.jpg';
 import GigSection from '@/components/GigSection';
+import BackgroundText from '@/components/BackgroundText';
 
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,15 +18,17 @@ const Index = () => {
 
   return (
     <div 
-      className="transition-all duration-500"
+      className="transition-all duration-500 relative"
       style={showRainbow ? {
         backgroundImage: `url(${rainbowGradient})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       } : {}}
     >
+      <BackgroundText isVisible={showRainbow} />
+      
       {/* Hero Section - Main Landing */}
-      <section className={`min-h-screen flex flex-col items-center justify-center relative transition-colors duration-500 ${showRainbow ? '' : 'bg-background'}`}>
+      <section className={`min-h-screen flex flex-col items-center justify-center relative transition-colors duration-500 z-10 ${showRainbow ? '' : 'bg-background'}`}>
         <header className={`transition-all duration-1000 ${
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         } text-center ${showRainbow ? 'text-black' : 'text-foreground'}`}>
@@ -71,7 +74,7 @@ const Index = () => {
       </section>
 
       {/* Main Content Section */}
-      <main className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-500 ${showRainbow ? 'text-black' : 'bg-background text-foreground'}`}>
+      <main className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-500 relative z-10 ${showRainbow ? 'text-black' : 'bg-background text-foreground'}`}>
         <div className="w-full max-w-5xl mx-auto text-center space-y-8 md:space-y-12">
           {/* About Section - Button to dedicated page */}
           <article className="space-y-6 md:space-y-8 w-full px-4 md:px-8">
