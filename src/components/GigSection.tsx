@@ -7,6 +7,7 @@ interface Gig {
   venue: string;
   location: string;
   ticketInfo: string;
+  buttonText: string;
   parsedDate: Date;
 }
 
@@ -69,15 +70,12 @@ const GigSection = () => {
                 const venue = row.Venue || row.venue || rowArray[1] || '';
                 const location = row.Location || row.location || rowArray[2] || '';
                 
-                // Try multiple possible column names for ticket info - now checking column E (index 4)
-                const ticketInfo = row['Free/Hyperlink to "TICKETS"'] 
-                  || row['Free/Hyperlink to TICKETS']
-                  || row['Free/Hyperlink to \"TICKETS\"']
-                  || row.Free 
-                  || row.Tickets 
-                  || row['Free/Tickets']
-                  || rowArray[4] // 5th column (E) as fallback
-                  || '';
+                // Column D (index 3) for button text, Column E (index 4) for hyperlink
+                const buttonText = rowArray[3] || '';
+                const hyperlink = rowArray[4] || '';
+                
+                // Combine them: if there's a hyperlink, pass it; otherwise just the text
+                const ticketInfo = hyperlink || buttonText;
                 
                 if (!dateStr || !venue) return null;
                 
@@ -88,6 +86,7 @@ const GigSection = () => {
                   venue,
                   location,
                   ticketInfo,
+                  buttonText,
                   parsedDate,
                 };
               })
@@ -155,6 +154,7 @@ const GigSection = () => {
             venue={gig.venue}
             location={gig.location}
             ticketInfo={gig.ticketInfo}
+            buttonText={gig.buttonText}
           />
         ))}
       </div>

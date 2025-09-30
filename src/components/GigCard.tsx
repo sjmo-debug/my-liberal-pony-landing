@@ -3,9 +3,10 @@ interface GigCardProps {
   venue: string;
   location: string;
   ticketInfo: string;
+  buttonText: string;
 }
 
-const GigCard = ({ date, venue, location, ticketInfo }: GigCardProps) => {
+const GigCard = ({ date, venue, location, ticketInfo, buttonText }: GigCardProps) => {
   const isUrl = ticketInfo.startsWith('http');
   const isFree = ticketInfo.toLowerCase() === 'free' || ticketInfo === '';
 
@@ -21,7 +22,7 @@ const GigCard = ({ date, venue, location, ticketInfo }: GigCardProps) => {
         
         {isFree ? (
           <div className="inline-block font-body text-sm md:text-base uppercase border border-foreground px-4 py-2 bg-foreground/10">
-            FREE ENTRY
+            {buttonText || 'FREE ENTRY'}
           </div>
         ) : isUrl ? (
           <a
@@ -30,11 +31,11 @@ const GigCard = ({ date, venue, location, ticketInfo }: GigCardProps) => {
             rel="noopener noreferrer"
             className="inline-block font-body text-sm md:text-base uppercase border border-foreground px-4 py-2 hover:bg-foreground hover:text-background transition-all duration-300"
           >
-            GET TICKETS →
+            {buttonText || 'GET TICKETS'} →
           </a>
         ) : (
           <div className="inline-block font-body text-sm md:text-base uppercase border border-foreground px-4 py-2">
-            {ticketInfo}
+            {buttonText}
           </div>
         )}
       </div>
