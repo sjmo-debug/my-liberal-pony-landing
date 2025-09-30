@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import mlpLogo from '@/assets/mlp-logo.jpg';
+import GigSection from '@/components/GigSection';
 
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -101,6 +102,8 @@ const Index = () => {
               />
             </div>
 
+            {/* Gigs Section */}
+            <GigSection />
 
             {/* Contact Information */}
             <div id="contact-section" className="mt-24 pt-16 border-t-4 border-foreground bg-foreground/5 -mx-4 md:-mx-8 px-4 md:px-8 py-16 mb-16">
