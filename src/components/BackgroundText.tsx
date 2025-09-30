@@ -1,16 +1,26 @@
 import { useBackgroundText } from '@/hooks/useBackgroundText';
+import { useState, useEffect } from 'react';
 
 interface BackgroundTextProps {
   isVisible: boolean;
 }
 
 const BackgroundText = ({ isVisible }: BackgroundTextProps) => {
-  const { data: text = 'ERROR' } = useBackgroundText();
+  const { data: textList = ['ERROR'] } = useBackgroundText();
+  const [currentText, setCurrentText] = useState('ERROR');
+
+  // Pick a new random text each time isVisible becomes true
+  useEffect(() => {
+    if (isVisible && textList.length > 0) {
+      const randomIndex = Math.floor(Math.random() * textList.length);
+      setCurrentText(textList[randomIndex]);
+    }
+  }, [isVisible, textList]);
   
   if (!isVisible) return null;
 
   // Create seamless text without spaces
-  const seamlessText = text.repeat(100);
+  const seamlessText = currentText.repeat(100);
   
   // Calculate number of rows needed to cover viewport + scroll area
   const rows = Array.from({ length: 100 }, (_, i) => i);

@@ -5,14 +5,14 @@ const BACKGROUND_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1zcS_vYBVjS
 
 export const useBackgroundText = () => {
   return useQuery({
-    queryKey: ['backgroundText'],
+    queryKey: ['backgroundTextList'],
     queryFn: async () => {
       try {
         const timestamp = new Date().getTime();
         const response = await fetch(`${BACKGROUND_SHEET_URL}&timestamp=${timestamp}`);
         const csvText = await response.text();
         
-        return new Promise<string>((resolve) => {
+        return new Promise<string[]>((resolve) => {
           Papa.parse(csvText, {
             header: true,
             skipEmptyLines: true,
@@ -25,17 +25,16 @@ export const useBackgroundText = () => {
                 .filter((text: string) => text && text.trim() !== '');
               
               if (entries.length === 0) {
-                resolve('ERROR');
+                resolve(['ERROR']);
               } else {
-                const randomIndex = Math.floor(Math.random() * entries.length);
-                resolve(entries[randomIndex]);
+                resolve(entries);
               }
             },
-            error: () => resolve('ERROR'),
+            error: () => resolve(['ERROR']),
           });
         });
       } catch {
-        return 'ERROR';
+        return ['ERROR'];
       }
     },
     refetchInterval: 300000, // Refetch every 5 minutes
