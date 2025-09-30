@@ -69,14 +69,14 @@ const GigSection = () => {
                 const venue = row.Venue || row.venue || rowArray[1] || '';
                 const location = row.Location || row.location || rowArray[2] || '';
                 
-                // Try multiple possible column names for ticket info
+                // Try multiple possible column names for ticket info - now checking column E (index 4)
                 const ticketInfo = row['Free/Hyperlink to "TICKETS"'] 
                   || row['Free/Hyperlink to TICKETS']
                   || row['Free/Hyperlink to \"TICKETS\"']
                   || row.Free 
                   || row.Tickets 
                   || row['Free/Tickets']
-                  || rowArray[3] // 4th column as fallback
+                  || rowArray[4] // 5th column (E) as fallback
                   || '';
                 
                 if (!dateStr || !venue) return null;
