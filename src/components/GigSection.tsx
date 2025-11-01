@@ -119,7 +119,9 @@ const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true }: GigSec
   }
 
   const now = new Date();
-  const upcomingGigs = gigs?.filter(gig => gig.parsedDate >= now) || [];
+  // Create "yesterday" by subtracting one day from today at midnight
+  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+  const upcomingGigs = gigs?.filter(gig => gig.parsedDate > yesterday) || [];
 
   if (isLoading) {
     return (
