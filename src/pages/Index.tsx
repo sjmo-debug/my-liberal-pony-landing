@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import mlpLogo from '@/assets/mlp-logo.png';
-import rainbowGradient from '@/assets/rainbow-gradient.jpg';
 import GigSection from '@/components/GigSection';
-import BackgroundText from '@/components/BackgroundText';
+import BackgroundManager from '@/components/BackgroundManager';
 
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,15 +16,8 @@ const Index = () => {
   const showRainbow = isButtonHovered;
 
   return (
-    <div 
-      className="transition-all duration-500 relative"
-      style={showRainbow ? {
-        backgroundImage: `url(${rainbowGradient})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      } : {}}
-    >
-      <BackgroundText isVisible={showRainbow} />
+    <div className="transition-all duration-500 relative">
+      <BackgroundManager isVisible={showRainbow} />
       
       {/* Hero Section - Main Landing */}
       <section className={`min-h-screen flex flex-col items-center justify-center relative transition-colors duration-500 z-10 ${showRainbow ? '' : 'bg-background'}`}>
