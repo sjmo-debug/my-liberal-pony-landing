@@ -144,22 +144,6 @@ const Index = () => {
               </div>
             </section>
 
-            {/* FAQ Section - Button to dedicated page */}
-            <section className="w-full mt-16 space-y-6">
-              <h3 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
-                Frequently Asked Questions
-              </h3>
-              
-              <Link 
-                to="/faq"
-                onMouseEnter={() => setIsButtonHovered(true)}
-                onMouseLeave={() => setIsButtonHovered(false)}
-                className={`inline-block font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl uppercase px-6 py-4 md:px-8 md:py-5 lg:px-10 lg:py-6 xl:px-12 xl:py-7 min-h-[44px] transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}
-                aria-label="View frequently asked questions"
-              >
-                VIEW FAQ
-              </Link>
-            </section>
           </article>
         </div>
       </main>
