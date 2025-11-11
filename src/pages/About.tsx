@@ -31,18 +31,24 @@ const About = () => {
           
           <div className="space-y-6 md:space-y-8">
             <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
-              MY LIBERAL PONY IS A MULTIMEDIA, GENRE-BENDING, PERMANENT WORK IN PROGRESS, 
-              NOW AVAILABLE TO REQUEST AT YOUR NEAREST LIVE MUSIC VENUE.
+              MY LIBERAL PONY is a step away from the genre that this pony is used to. 
+              MY LIBERAL PONY is at times serious, at times funny.
             </p>
             
             <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
-              MY LIBERAL PONY IS THE INVITATION INTO AN MRI SCANNER THAT YOU DIDN'T KNOW YOU NEEDED.
+              MY LIBERAL PONY is not intended to be restricted to a specific genre.
             </p>
             
             <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
-              MY LIBERAL PONY IS A COMMENTARY OF THE FALL OF DEMOCRATIC AND LIBERAL VALUES 
-              IN LATE STAGE CAPITALISM FROM THE PERSPECTIVE OF A DISABLED MEMBER OF THE LGBT 
-              COMMUNITY LIVING IN ENGLAND.
+              MY LIBERAL PONY is intended to be a collection of thoughts, feelings and observations from a disabled queer introvert living in the UK.
+            </p>
+            
+            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
+              MY LIBERAL PONY shows are a safe space.
+            </p>
+            
+            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
+              MY LIBERAL PONY is the invitation into an MRI scanner that you didn't know you needed.
             </p>
             
             <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed italic uppercase">
