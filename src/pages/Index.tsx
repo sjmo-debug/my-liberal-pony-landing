@@ -70,14 +70,6 @@ const Index = () => {
         <div className="w-full max-w-5xl mx-auto text-center space-y-8 md:space-y-12">
           {/* About Section - Button to dedicated page */}
           <article className="space-y-6 md:space-y-8 w-full px-4 md:px-8">
-            <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold uppercase tracking-wider">
-              About the Artist
-            </h2>
-            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
-              MY LIBERAL PONY IS A MULTIMEDIA, GENRE-BENDING, PERMANENT WORK IN PROGRESS, 
-              NOW AVAILABLE TO REQUEST AT YOUR NEAREST LIVE MUSIC VENUE.
-            </p>
-            
             <Link 
               to="/about"
               onMouseEnter={() => setIsButtonHovered(true)}
@@ -85,7 +77,7 @@ const Index = () => {
               className={`inline-block font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl uppercase px-6 py-4 md:px-8 md:py-5 lg:px-10 lg:py-6 xl:px-12 xl:py-7 min-h-[44px] transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}
               aria-label="Learn more about the artist"
             >
-              READ MORE
+              ABOUT PAGE
             </Link>
 
             {/* Live Shows Section */}
