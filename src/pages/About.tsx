@@ -32,15 +32,15 @@ const About = () => {
           <div className="space-y-6 md:space-y-8">
             <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
               MY LIBERAL PONY is a step away from the genre that this pony is used to. 
+              MY LIBERAL PONY is intended to be a collection of thoughts, feelings and observations from a disabled queer introvert living in the UK.
+            </p>
+            
+            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
               MY LIBERAL PONY is at times serious, at times funny.
             </p>
             
             <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
               MY LIBERAL PONY is not intended to be restricted to a specific genre.
-            </p>
-            
-            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
-              MY LIBERAL PONY is intended to be a collection of thoughts, feelings and observations from a disabled queer introvert living in the UK.
             </p>
             
             <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
@@ -52,8 +52,8 @@ const About = () => {
             </p>
             
             <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed italic uppercase">
-              MY LIBERAL PONY IS NOT INTENDED TO INFRINGE ON ANY COPYRIGHTS AS OUTLINED BY 
-              THE HASBRO CORPORATION HOWEVER IT WOULD ALSO BE QUITE FUNNY IF IT DID.
+              MY LIBERAL PONY is not intended to infringe on any copyrights as outlined by 
+              the Hasbro corporation however it would also be quite funny if it did.
             </p>
           </div>
         </article>
