@@ -1,21 +1,15 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import rainbowGradient from '@/assets/rainbow-gradient.jpg';
+import BackgroundManager from '@/components/BackgroundManager';
 
 const FAQ = () => {
   const [isButtonHovered, setIsButtonHovered] = useState(false);
 
   return (
-    <div 
-      className="min-h-screen transition-all duration-500"
-      style={isButtonHovered ? {
-        backgroundImage: `url(${rainbowGradient})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      } : {}}
-    >
-      <div className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-500 ${isButtonHovered ? 'text-black' : 'bg-background text-foreground'}`}>
+    <div className="min-h-screen transition-all duration-500">
+      <BackgroundManager isVisible={isButtonHovered} />
+      <div className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-500 relative z-10 ${isButtonHovered ? 'text-black' : 'bg-background text-foreground'}`}>
         <div className="w-full max-w-5xl mx-auto text-center space-y-8 md:space-y-12 px-4 md:px-8">
           {/* Back Button */}
           <nav className="flex justify-start mb-8">
