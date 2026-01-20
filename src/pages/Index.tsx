@@ -89,34 +89,42 @@ const Index = () => {
             </section>
 
             {/* Music Section */}
-            <section className="w-full max-w-3xl mx-auto mt-12 space-y-8">
+            <section className="w-full max-w-4xl mx-auto mt-12 space-y-8">
               <h3 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
-                Listen to the Music
+                Watch & Listen
               </h3>
               
-              {/* SoundCloud Embed */}
-              <div>
-                <iframe 
-                  width="100%" 
-                  height="166" 
-                  scrolling="no" 
-                  frameBorder="no" 
-                  allow="autoplay"
-                  src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/chameleonpresents&color=%23ffffff&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"
-                  title="MY LIBERAL PONY on SoundCloud - Listen to experimental music tracks"
-                  className="border border-foreground"
-                />
-              </div>
-
-              {/* Bandcamp Embed */}
-              <div>
-                <iframe 
-                  style={{border: 0, width: '100%', height: '120px'}} 
-                  src="https://bandcamp.com/EmbeddedPlayer/album=YOUR_ALBUM_ID/size=large/bgcol=000000/linkcol=ffffff/tracklist=false/artwork=small/transparent=true/" 
-                  seamless
-                  title="MY LIBERAL PONY on Bandcamp - Stream and purchase music"
-                  className="border border-foreground"
-                />
+              {/* YouTube Video Embeds */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="group relative overflow-hidden border-2 border-foreground transition-all duration-300 hover:scale-[1.02] hover:shadow-xl">
+                  <div className="aspect-video">
+                    <iframe 
+                      width="100%" 
+                      height="100%" 
+                      src="https://www.youtube.com/embed/HCvd32FZibw"
+                      title="MY LIBERAL PONY - Video 1"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      className="absolute inset-0 w-full h-full"
+                    />
+                  </div>
+                </div>
+                
+                <div className="group relative overflow-hidden border-2 border-foreground transition-all duration-300 hover:scale-[1.02] hover:shadow-xl">
+                  <div className="aspect-video">
+                    <iframe 
+                      width="100%" 
+                      height="100%" 
+                      src="https://www.youtube.com/embed/jTpvijP76g8"
+                      title="MY LIBERAL PONY - Video 2"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      className="absolute inset-0 w-full h-full"
+                    />
+                  </div>
+                </div>
               </div>
             </section>
 
