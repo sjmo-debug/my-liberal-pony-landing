@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Papa from 'papaparse';
 import GigCard from './GigCard';
@@ -15,6 +16,7 @@ interface GigSectionProps {
   onButtonHover: (isHovered: boolean) => void;
   isButtonHovered: boolean;
   showTitle?: boolean;
+  onGigsLoaded?: (hasGigs: boolean) => void;
 }
 
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1zcS_vYBVjS2BYinxHFwEiygsGe5krgnRlC8z-2o8lLc/export?format=csv&gid=0';
@@ -54,7 +56,7 @@ const formatDate = (date: Date): string => {
   return `${dayName}, ${day}${suffix} ${month} ${year}`;
 };
 
-const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true }: GigSectionProps) => {
+const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true, onGigsLoaded }: GigSectionProps) => {
   const { data: gigs, isLoading, error } = useQuery({
     queryKey: ['gigs'],
     queryFn: async () => {
@@ -108,29 +110,23 @@ const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true }: GigSec
     refetchInterval: 60000, // Refetch every minute
   });
 
-  if (error) {
-    return (
-      <div className="w-full max-w-3xl mx-auto">
-        <p className="font-body text-base md:text-lg uppercase text-center">
-          Unable to load gigs. Please try again later.
-        </p>
-      </div>
-    );
-  }
-
   const now = new Date();
   // Create "yesterday" by subtracting one day from today at midnight
   const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
   const upcomingGigs = gigs?.filter(gig => gig.parsedDate > yesterday) || [];
+  const hasUpcomingGigs = upcomingGigs.length > 0;
 
+  // Notify parent about gigs status
+  useEffect(() => {
+    if (!isLoading && onGigsLoaded) {
+      onGigsLoaded(hasUpcomingGigs);
+    }
+  }, [hasUpcomingGigs, isLoading, onGigsLoaded]);
+
+  // Don't render anything if loading or no gigs
   if (isLoading) {
     return (
       <div className="w-full max-w-3xl mx-auto">
-        {showTitle && (
-          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider text-center mb-12">
-            UPCOMING GIGS
-          </h2>
-        )}
         <div className="flex justify-center">
           <div className="animate-pulse font-body text-lg uppercase">Loading gigs...</div>
         </div>
@@ -138,23 +134,12 @@ const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true }: GigSec
     );
   }
 
-  if (!upcomingGigs || upcomingGigs.length === 0) {
-    return (
-      <div className="w-full max-w-3xl mx-auto">
-        {showTitle && (
-          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider text-center mb-12">
-            UPCOMING GIGS
-          </h2>
-        )}
-        <p className="font-body text-base md:text-lg uppercase text-center">
-          No upcoming gigs scheduled. Check back soon!
-        </p>
-      </div>
-    );
+  if (error || !hasUpcomingGigs) {
+    return null; // Hide section entirely when no gigs
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
+    <section className="w-full max-w-3xl mx-auto">
       {showTitle && (
         <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider text-center mb-12">
           UPCOMING GIGS
@@ -174,7 +159,7 @@ const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true }: GigSec
           />
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 
