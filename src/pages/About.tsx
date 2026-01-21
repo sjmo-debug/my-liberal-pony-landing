@@ -2,24 +2,15 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import BackgroundManager from '@/components/BackgroundManager';
-
 const About = () => {
   const [isButtonHovered, setIsButtonHovered] = useState(false);
-
-  return (
-    <div className="min-h-screen transition-all duration-500">
+  return <div className="min-h-screen transition-all duration-500">
       <BackgroundManager isVisible={isButtonHovered} />
       <div className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-500 relative z-10 ${isButtonHovered ? 'text-black' : 'bg-background text-foreground'}`}>
         <article className="w-full max-w-5xl mx-auto text-center space-y-8 md:space-y-12 px-4 md:px-8">
           {/* Back Button */}
           <nav className="flex justify-start mb-8">
-            <Link 
-              to="/"
-              onMouseEnter={() => setIsButtonHovered(true)}
-              onMouseLeave={() => setIsButtonHovered(false)}
-              className={`inline-flex items-center gap-2 font-body text-lg md:text-xl lg:text-2xl uppercase px-6 py-3 md:px-8 md:py-4 min-h-[44px] transition-all duration-300 ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`}
-              aria-label="Return to home page"
-            >
+            <Link to="/" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className={`inline-flex items-center gap-2 font-body text-lg md:text-xl lg:text-2xl uppercase px-6 py-3 md:px-8 md:py-4 min-h-[44px] transition-all duration-300 ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`} aria-label="Return to home page">
               <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
               BACK TO HOME
             </Link>
@@ -30,14 +21,9 @@ const About = () => {
           </h1>
           
           <div className="space-y-6 md:space-y-8">
-            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
-              MY LIBERAL PONY is a step away from the genre that this pony is used to. 
-              MY LIBERAL PONY is intended to be a collection of thoughts, feelings and observations from a disabled queer introvert living in the UK.
-            </p>
+            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">MY LIBERAL PONY IS A COLLECTION OF THOUGHTS, FEELINGS AND OBSERVATIONS FROM A DISABLED QUEER INTROVERT LIVING IN THE UK.</p>
             
-            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
-              MY LIBERAL PONY is at times serious, at times funny.
-            </p>
+            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">MY LIBERAL PONY IS AT TIMES SERIOUS, AT TIMES FUNNY,  BUT ALWAYS THE INVITATION INTO AN MRI SCANNER THAT YOU DIDN'T KNOW YOU NEEDED.</p>
             
             <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
               MY LIBERAL PONY is not intended to be restricted to a specific genre.
@@ -47,9 +33,7 @@ const About = () => {
               MY LIBERAL PONY shows are a safe space.
             </p>
             
-            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
-              MY LIBERAL PONY is the invitation into an MRI scanner that you didn't know you needed.
-            </p>
+            
             
             <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed italic uppercase">
               MY LIBERAL PONY is not intended to infringe on any copyrights as outlined by 
@@ -58,8 +42,6 @@ const About = () => {
           </div>
         </article>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default About;
