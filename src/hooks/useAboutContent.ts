@@ -16,13 +16,27 @@ const FALLBACK: AboutEntry[] = [
   { text: 'MY LIBERAL PONY is not intended to infringe on any copyrights as outlined by the Hasbro corporation however it would also be quite funny if it did.', italic: true },
 ];
 
+const CACHE_KEY = 'about_page_data';
+const CACHE_DURATION = 3600000; // 1 hour
+
 export const useAboutContent = () => {
   return useQuery({
     queryKey: ['aboutContent'],
     queryFn: async () => {
+      const now = Date.now();
+      const cachedItem = localStorage.getItem(CACHE_KEY);
+
+      if (cachedItem) {
+        try {
+          const { data, timestamp } = JSON.parse(cachedItem);
+          if (now - timestamp < CACHE_DURATION && Array.isArray(data) && data.length > 0) {
+            return data as AboutEntry[];
+          }
+        } catch {}
+      }
+
       try {
-        const timestamp = new Date().getTime();
-        const response = await fetch(`${ABOUT_SHEET_URL}&timestamp=${timestamp}`);
+        const response = await fetch(`${ABOUT_SHEET_URL}&timestamp=${now}`);
         const csvText = await response.text();
 
         return new Promise<AboutEntry[]>((resolve) => {
@@ -39,16 +53,23 @@ export const useAboutContent = () => {
                 })
                 .filter((e: AboutEntry) => e.text !== '');
 
-              resolve(entries.length > 0 ? entries : FALLBACK);
+              const result = entries.length > 0 ? entries : FALLBACK;
+              try {
+                localStorage.setItem(CACHE_KEY, JSON.stringify({ data: result, timestamp: Date.now() }));
+              } catch {}
+              resolve(result);
             },
-            error: () => resolve(FALLBACK),
+            error: () => resolve(cachedItem ? JSON.parse(cachedItem).data : FALLBACK),
           });
         });
       } catch {
+        if (cachedItem) {
+          try { return JSON.parse(cachedItem).data as AboutEntry[]; } catch {}
+        }
         return FALLBACK;
       }
     },
-    refetchInterval: 300000,
-    staleTime: 300000,
+    refetchInterval: CACHE_DURATION,
+    staleTime: CACHE_DURATION,
   });
 };
