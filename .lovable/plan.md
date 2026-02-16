@@ -1,44 +1,35 @@
 
 
-## Mirror About Page Content from Google Sheet (ABOUT tab)
+## Add localStorage Caching to About Content Hook
 
 ### What This Does
-Instead of the About page text being hardcoded, it will be pulled dynamically from the **ABOUT** tab (gid=846546977) in your Google Sheet. This means you can update the About page content by editing the spreadsheet -- no code changes needed.
+Adds a localStorage caching layer to the About page data fetching. Instead of hitting Google Sheets on every page load, the app will:
+1. Serve instantly from cache if it's less than 1 hour old
+2. Fetch fresh data only when cache expires (or doesn't exist)
+3. Fall back to stale cache if the fetch fails (so the page never goes blank)
 
-### How It Works
+This means faster page loads and resilience against network issues.
 
-**1. Create a new hook: `src/hooks/useAboutContent.ts`**
-- Follows the exact same pattern as the existing `useBackgroundText.ts` hook
-- Fetches CSV from: `https://docs.google.com/spreadsheets/d/1zcS_vYBVjS2BYinxHFwEiygsGe5krgnRlC8z-2o8lLc/export?format=csv&gid=846546977`
-- Parses each row as a paragraph of text
-- Checks for an "italic" or "style" column to preserve the italic styling on the copyright disclaimer
-- Returns an array of `{ text: string, italic: boolean }` entries
-- Refetches every 5 minutes (same as background text)
+### Changes
 
-**2. Update `src/pages/About.tsx`**
-- Import and use the new `useAboutContent` hook
-- Replace the hardcoded paragraphs with a dynamic loop over the fetched entries
-- Show a loading state while fetching
-- Fall back to the current hardcoded text if the fetch fails (so the page never appears blank)
-- Each paragraph keeps the same styling: `font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase`
-- Paragraphs marked as italic get the additional `italic` class
+**File: `src/hooks/useAboutContent.ts`**
 
-### Expected Sheet Structure
-The ABOUT tab should have rows where each row is one paragraph. For example:
+Update the `queryFn` to wrap the existing fetch logic with localStorage caching:
 
-| Text | Italic |
-|------|--------|
-| MY LIBERAL PONY IS A COLLECTION OF... | |
-| MY LIBERAL PONY IS AT TIMES SERIOUS... | |
-| MY LIBERAL PONY is not intended to be restricted... | |
-| MY LIBERAL PONY shows are a safe space. | |
-| MY LIBERAL PONY is not intended to infringe... | yes |
+- Before fetching, check `localStorage` for a cached item under key `about_page_data`
+- If cache exists and is less than 1 hour old, return the cached data immediately
+- If cache is missing or stale, fetch from Google Sheets as before
+- On successful fetch, save the parsed result + timestamp to localStorage
+- If fetch fails and stale cache exists, return the stale cache as a fallback
+- If fetch fails and no cache exists, return the existing hardcoded `FALLBACK` array
 
-If there's no "Italic" column, all paragraphs render in normal weight. The column names are flexible -- the hook will try common variations.
+The `refetchInterval` and `staleTime` on the React Query config will be increased to 1 hour (3600000ms) to match the localStorage cache duration, so React Query doesn't bypass the cache with its own refetch cycle.
 
 ### Technical Details
-- No new dependencies needed (uses existing `@tanstack/react-query` and `papaparse`)
-- Error handling mirrors the existing background text pattern
-- Cache-busting timestamp parameter prevents stale data
-- The title "About the Artist" and the back button remain hardcoded in the page (not from the sheet)
+- Cache key: `about_page_data`
+- Cache duration: 1 hour (3600000ms)
+- Storage format: `{ data: AboutEntry[], timestamp: number }`
+- No new dependencies needed -- uses built-in `localStorage`
+- The existing `FALLBACK` array remains as the last-resort safety net
+- React Query's in-memory cache still works on top of this for instant re-renders within the same session
 
