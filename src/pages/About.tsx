@@ -2,8 +2,12 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import BackgroundManager from '@/components/BackgroundManager';
+import { useAboutContent } from '@/hooks/useAboutContent';
+
 const About = () => {
   const [isButtonHovered, setIsButtonHovered] = useState(false);
+  const { data: entries, isLoading } = useAboutContent();
+
   return <div className="min-h-screen transition-all duration-500">
       <BackgroundManager isVisible={isButtonHovered} />
       <div className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-500 relative z-10 ${isButtonHovered ? 'text-black' : 'bg-background text-foreground'}`}>
@@ -21,24 +25,19 @@ const About = () => {
           </h1>
           
           <div className="space-y-6 md:space-y-8">
-            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">MY LIBERAL PONY IS A COLLECTION OF THOUGHTS, FEELINGS AND OBSERVATIONS FROM A DISABLED QUEER INTROVERT LIVING IN THE UK.</p>
-            
-            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">MY LIBERAL PONY IS AT TIMES SERIOUS, AT TIMES FUNNY,  BUT ALWAYS THE INVITATION INTO AN MRI SCANNER THAT YOU DIDN'T KNOW YOU NEEDED.</p>
-            
-            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
-              MY LIBERAL PONY is not intended to be restricted to a specific genre.
-            </p>
-            
-            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase">
-              MY LIBERAL PONY shows are a safe space.
-            </p>
-            
-            
-            
-            <p className="font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed italic uppercase">
-              MY LIBERAL PONY is not intended to infringe on any copyrights as outlined by 
-              the Hasbro corporation however it would also be quite funny if it did.
-            </p>
+            {isLoading ? (
+              <div className="space-y-6 md:space-y-8 animate-pulse">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="h-6 bg-muted rounded w-full" />
+                ))}
+              </div>
+            ) : (
+              entries?.map((entry, i) => (
+                <p key={i} className={`font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase ${entry.italic ? 'italic' : ''}`}>
+                  {entry.text}
+                </p>
+              ))
+            )}
           </div>
         </article>
       </div>
