@@ -63,7 +63,7 @@ const Index = () => {
       <HeroVideo />
 
       {/* Main Content Section */}
-      <main className={`flex flex-col items-center p-4 md:p-8 transition-colors duration-500 relative z-10 ${showRainbow ? 'text-black' : 'bg-background text-foreground'}`}>
+      <main className={`flex flex-col items-center p-4 md:p-8 transition-colors duration-500 relative z-10 -mt-16 md:-mt-24 ${showRainbow ? 'text-black' : 'bg-background text-foreground'}`}>
         <div className="w-full max-w-6xl mx-auto text-center space-y-16 md:space-y-24">
           
           {/* Videos Section - Moved up for immediate engagement */}
