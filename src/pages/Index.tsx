@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import mlpLogo from '@/assets/mlp-logo.png';
 import GigSection from '@/components/GigSection';
 import BackgroundManager from '@/components/BackgroundManager';
-import HeroVideo from '@/components/HeroVideo';
 
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -59,15 +58,12 @@ const Index = () => {
         </header>
       </section>
 
-      {/* Cinematic Video Section */}
-      <HeroVideo />
-
       {/* Main Content Section */}
-      <main className={`flex flex-col items-center p-4 md:p-8 transition-colors duration-500 relative z-10 -mt-16 md:-mt-24 ${showRainbow ? 'text-black' : 'bg-background text-foreground'}`}>
+      <main className={`flex flex-col items-center p-4 md:p-8 transition-colors duration-500 relative z-10 ${showRainbow ? 'text-black' : 'bg-background text-foreground'}`}>
         <div className="w-full max-w-6xl mx-auto text-center space-y-16 md:space-y-24">
           
           {/* Videos Section - Moved up for immediate engagement */}
-          <section id="watch-listen" className="w-full space-y-8">
+          <section className="w-full space-y-8">
             <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
               Watch & Listen
             </h2>
