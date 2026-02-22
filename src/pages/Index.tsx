@@ -102,6 +102,24 @@ const Index = () => {
             </div>
           </section>
 
+          {/* SoundCloud Section */}
+          <section className="w-full space-y-8">
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
+              Listen
+            </h2>
+            <div className={`overflow-hidden transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
+              <iframe
+                width="100%"
+                height="166"
+                scrolling="no"
+                frameBorder="no"
+                allow="autoplay"
+                src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/myliberalpony&color=%23000000&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"
+                title="MY LIBERAL PONY on SoundCloud"
+              />
+            </div>
+          </section>
+
           {/* Live Shows Section - Only shown if gigs exist */}
           <GigSection
             onButtonHover={setIsButtonHovered}
