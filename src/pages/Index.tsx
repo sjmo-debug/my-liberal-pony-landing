@@ -134,13 +134,12 @@ const Index = () => {
           </section>
 
           {/* Footer Navigation */}
-          <footer className={`py-8 flex justify-center gap-8 md:gap-16 transition-colors duration-500 ${showRainbow ? 'text-black' : 'text-foreground'}`}>
+          <footer className={`py-8 flex flex-wrap justify-center gap-6 md:gap-12 transition-colors duration-500 ${showRainbow ? 'text-black' : 'text-foreground'}`}>
             <Link
               to="/about"
               onMouseEnter={() => setIsButtonHovered(true)}
               onMouseLeave={() => setIsButtonHovered(false)}
               className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">
-
               About
             </Link>
             <a
@@ -150,8 +149,34 @@ const Index = () => {
               onMouseEnter={() => setIsButtonHovered(true)}
               onMouseLeave={() => setIsButtonHovered(false)}
               className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">
-
               Instagram
+            </a>
+            <a
+              href="https://soundcloud.com/myliberalpony"
+              target="_blank"
+              rel="noopener noreferrer"
+              onMouseEnter={() => setIsButtonHovered(true)}
+              onMouseLeave={() => setIsButtonHovered(false)}
+              className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">
+              Soundcloud
+            </a>
+            <a
+              href="https://myliberalpony.bandcamp.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              onMouseEnter={() => setIsButtonHovered(true)}
+              onMouseLeave={() => setIsButtonHovered(false)}
+              className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">
+              Bandcamp
+            </a>
+            <a
+              href="https://www.youtube.com/@MYLIBERALPONY"
+              target="_blank"
+              rel="noopener noreferrer"
+              onMouseEnter={() => setIsButtonHovered(true)}
+              onMouseLeave={() => setIsButtonHovered(false)}
+              className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">
+              Youtube
             </a>
           </footer>
 
