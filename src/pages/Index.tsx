@@ -24,35 +24,35 @@ const Index = () => {
       <section className={`min-h-[60vh] flex flex-col items-center justify-center relative transition-colors duration-500 z-10 ${showRainbow ? '' : 'bg-background'}`}>
         {/* Subtle Navigation */}
         <nav className={`absolute top-6 left-0 right-0 flex justify-between items-center px-6 md:px-12 transition-colors duration-500 ${showRainbow ? 'text-black' : 'text-foreground'}`}>
-          <Link 
+          <Link
             to="/about"
             onMouseEnter={() => setIsButtonHovered(true)}
             onMouseLeave={() => setIsButtonHovered(false)}
-            className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity"
-          >
+            className="font-body text-sm uppercase tracking-widest hover:opacity-70 transition-opacity md:text-3xl">
+
             About
           </Link>
-          <a 
-            href="https://instagram.com/myliberalpony" 
-            target="_blank" 
+          <a
+            href="https://instagram.com/myliberalpony"
+            target="_blank"
             rel="noopener noreferrer"
             onMouseEnter={() => setIsButtonHovered(true)}
             onMouseLeave={() => setIsButtonHovered(false)}
-            className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity"
-          >
+            className="font-body text-sm uppercase tracking-widest hover:opacity-70 transition-opacity md:text-3xl">
+
             Instagram
           </a>
         </nav>
 
         <header className={`transition-all duration-1000 ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        } text-center ${showRainbow ? 'text-black' : 'text-foreground'}`}>
-          <img 
-            src={mlpLogo} 
-            alt="MY LIBERAL PONY - Experimental multimedia artist and live music performer logo featuring bold artistic design" 
-            className={`w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 xl:w-[28rem] xl:h-[28rem] object-contain mx-auto mb-6 transition-all duration-500 relative z-10 ${showRainbow ? '' : 'filter invert'}`}
-          />
-          <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-wider uppercase">
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} text-center ${
+        showRainbow ? 'text-black' : 'text-foreground'}`}>
+          <img
+            src={mlpLogo}
+            alt="MY LIBERAL PONY - Experimental multimedia artist and live music performer logo featuring bold artistic design"
+            className={`w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 xl:w-[28rem] xl:h-[28rem] object-contain mx-auto mb-6 transition-all duration-500 relative z-10 ${showRainbow ? '' : 'filter invert'}`} />
+
+          <h1 className="font-heading text-4xl lg:text-7xl xl:text-8xl font-bold tracking-wider uppercase md:text-7xl">
             MY LIBERAL PONY
           </h1>
         </header>
@@ -72,43 +72,43 @@ const Index = () => {
             <div className="space-y-8">
               <div className={`group relative overflow-hidden transition-all duration-300 hover:scale-[1.01] ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
                 <div className="aspect-video">
-                  <iframe 
-                    width="100%" 
-                    height="100%" 
+                  <iframe
+                    width="100%"
+                    height="100%"
                     src="https://www.youtube.com/embed/HCvd32FZibw"
                     title="MY LIBERAL PONY - Video 1"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
-                    className="absolute inset-0 w-full h-full"
-                  />
+                    className="absolute inset-0 w-full h-full" />
+
                 </div>
               </div>
               
               <div className={`group relative overflow-hidden transition-all duration-300 hover:scale-[1.01] ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
                 <div className="aspect-video">
-                  <iframe 
-                    width="100%" 
-                    height="100%" 
+                  <iframe
+                    width="100%"
+                    height="100%"
                     src="https://www.youtube.com/embed/jTpvijP76g8"
                     title="MY LIBERAL PONY - Video 2"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
-                    className="absolute inset-0 w-full h-full"
-                  />
+                    className="absolute inset-0 w-full h-full" />
+
                 </div>
               </div>
             </div>
           </section>
 
           {/* Live Shows Section - Only shown if gigs exist */}
-          <GigSection 
-            onButtonHover={setIsButtonHovered} 
-            isButtonHovered={isButtonHovered} 
+          <GigSection
+            onButtonHover={setIsButtonHovered}
+            isButtonHovered={isButtonHovered}
             showTitle={true}
-            onGigsLoaded={setHasGigs}
-          />
+            onGigsLoaded={setHasGigs} />
+
 
           {/* Contact Section */}
           <section id="contact-section" className={`pt-16 border-t-4 py-16 transition-colors duration-500 ${showRainbow ? 'border-black bg-black/5' : 'border-foreground bg-foreground/5'}`}>
@@ -120,13 +120,13 @@ const Index = () => {
                 <p className="font-body text-lg md:text-xl lg:text-2xl xl:text-3xl leading-relaxed uppercase">
                   FOR ALL BOOKING REQUESTS AND ENQUIRIES
                 </p>
-                <a 
+                <a
                   href="mailto:myliberalpony@gmail.com"
                   onMouseEnter={() => setIsButtonHovered(true)}
                   onMouseLeave={() => setIsButtonHovered(false)}
                   aria-label="Email MY LIBERAL PONY for bookings and enquiries"
-                  className={`inline-block font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold uppercase px-6 py-4 md:px-8 md:py-5 lg:px-10 lg:py-6 min-h-[44px] transition-all duration-300 tracking-wider ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}
-                >
+                  className={`inline-block font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold uppercase px-6 py-4 md:px-8 md:py-5 lg:px-10 lg:py-6 min-h-[44px] transition-all duration-300 tracking-wider ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
+
                   MYLIBERALPONY@GMAIL.COM
                 </a>
               </div>
@@ -135,30 +135,30 @@ const Index = () => {
 
           {/* Footer Navigation */}
           <footer className={`py-8 flex justify-center gap-8 md:gap-16 transition-colors duration-500 ${showRainbow ? 'text-black' : 'text-foreground'}`}>
-            <Link 
+            <Link
               to="/about"
               onMouseEnter={() => setIsButtonHovered(true)}
               onMouseLeave={() => setIsButtonHovered(false)}
-              className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity"
-            >
+              className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">
+
               About
             </Link>
-            <a 
-              href="https://instagram.com/myliberalpony" 
-              target="_blank" 
+            <a
+              href="https://instagram.com/myliberalpony"
+              target="_blank"
               rel="noopener noreferrer"
               onMouseEnter={() => setIsButtonHovered(true)}
               onMouseLeave={() => setIsButtonHovered(false)}
-              className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity"
-            >
+              className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">
+
               Instagram
             </a>
           </footer>
 
         </div>
       </main>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Index;
