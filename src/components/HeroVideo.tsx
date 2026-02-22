@@ -19,8 +19,8 @@ const HeroVideo = ({ videoSrc = '/videos/video1.mp4' }: HeroVideoProps) => {
         <source src={videoSrc} type="video/mp4" />
       </video>
 
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/40" style={{ zIndex: 0 }} />
+      {/* Subtle dark overlay */}
+      <div className="absolute inset-0 bg-black/20" style={{ zIndex: 0 }} />
 
       {/* Layer 1: Canvas particles */}
       <CanvasParticles />
