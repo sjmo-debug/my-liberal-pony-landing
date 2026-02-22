@@ -1,5 +1,4 @@
 import CanvasParticles from './CanvasParticles';
-import ScrollingTextReveal from './ScrollingTextReveal';
 
 interface HeroVideoProps {
   videoSrc?: string;
@@ -30,8 +29,7 @@ const HeroVideo = ({ videoSrc = '/videos/video1.mp4' }: HeroVideoProps) => {
       {/* Layer 1: Canvas particles */}
       <CanvasParticles />
 
-      {/* Layer 2: Text + CTA */}
-      <ScrollingTextReveal />
+      {/* Layer 2: CTA */}
 
       <div className="absolute bottom-16 left-0 right-0 flex justify-center" style={{ zIndex: 2 }}>
         <button
