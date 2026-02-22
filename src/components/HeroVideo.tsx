@@ -5,10 +5,6 @@ interface HeroVideoProps {
 }
 
 const HeroVideo = ({ videoSrc = '/videos/video1.mp4' }: HeroVideoProps) => {
-  const handleWatchNow = () => {
-    document.getElementById('watch-listen')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section className="relative h-screen w-full overflow-hidden bg-black">
       {/* Layer 0: Video */}
@@ -28,17 +24,6 @@ const HeroVideo = ({ videoSrc = '/videos/video1.mp4' }: HeroVideoProps) => {
 
       {/* Layer 1: Canvas particles */}
       <CanvasParticles />
-
-      {/* Layer 2: CTA */}
-
-      <div className="absolute bottom-16 left-0 right-0 flex justify-center" style={{ zIndex: 2 }}>
-        <button
-          onClick={handleWatchNow}
-          className="font-body text-lg md:text-xl lg:text-2xl uppercase tracking-widest text-white border-2 border-white px-8 py-4 md:px-10 md:py-5 min-h-[44px] transition-all duration-300 hover:bg-white hover:text-black hover:scale-105"
-        >
-          Watch Now
-        </button>
-      </div>
     </section>
   );
 };
