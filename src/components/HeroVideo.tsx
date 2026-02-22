@@ -5,7 +5,7 @@ interface HeroVideoProps {
   videoSrc?: string;
 }
 
-const HeroVideo = ({ videoSrc = '/videos/hero-video.mp4' }: HeroVideoProps) => {
+const HeroVideo = ({ videoSrc = '/videos/video1.mp4' }: HeroVideoProps) => {
   const handleWatchNow = () => {
     document.getElementById('watch-listen')?.scrollIntoView({ behavior: 'smooth' });
   };
