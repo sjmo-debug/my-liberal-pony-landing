@@ -1,35 +1,56 @@
 
-
-## Add localStorage Caching to About Content Hook
+## Add Full-Screen Video Section Below Hero
 
 ### What This Does
-Adds a localStorage caching layer to the About page data fetching. Instead of hitting Google Sheets on every page load, the app will:
-1. Serve instantly from cache if it's less than 1 hour old
-2. Fetch fresh data only when cache expires (or doesn't exist)
-3. Fall back to stale cache if the fetch fails (so the page never goes blank)
+Adds a new full-viewport, autoplaying, looping, muted video section between the existing logo/hero and the "Watch & Listen" YouTube embeds. It includes a "WATCH NOW" CTA button that smoothly scrolls down to the Watch & Listen section. The existing hover-triggered background videos remain untouched.
 
-This means faster page loads and resilience against network issues.
+### Layout After Change
+
+```text
++---------------------------+
+|  Nav (About / Instagram)  |
+|                           |
+|        [MLP Logo]         |
+|     MY LIBERAL PONY       |  <-- existing hero (60vh)
+|                           |
++---------------------------+
+|                           |
+|   [Full-screen video]     |
+|                           |  <-- NEW section (100vh)
+|      [ WATCH NOW ]        |
+|                           |
++---------------------------+
+|    Watch & Listen          |
+|    [YouTube embed 1]      |  <-- existing content
+|    [YouTube embed 2]      |
++---------------------------+
+|    Gigs / Contact / etc   |
++---------------------------+
+```
 
 ### Changes
 
-**File: `src/hooks/useAboutContent.ts`**
+**1. New component: `src/components/HeroVideo.tsx`**
+- Full-viewport section (`h-screen w-full`) with a `<video>` element covering the background
+- Video autoplays, loops, is muted, and uses `playsInline` for mobile compatibility
+- Semi-transparent dark overlay for text contrast
+- Centered "WATCH NOW" CTA button styled to match the site's black-and-white design system (uppercase, tracked, bordered -- consistent with the email CTA)
+- CTA uses `scrollIntoView({ behavior: 'smooth' })` to scroll to the Watch & Listen section
+- Accepts a `videoSrc` prop so you can swap the video file easily
+- Initially uses a placeholder path (`/videos/hero-video.mp4`) -- you'll drop your new video file into `public/videos/` with that name
 
-Update the `queryFn` to wrap the existing fetch logic with localStorage caching:
+**2. Update: `src/pages/Index.tsx`**
+- Import `HeroVideo` component
+- Add an `id="watch-listen"` to the existing Watch & Listen `<section>` so the CTA can scroll to it
+- Place `<HeroVideo />` between the hero `<section>` and the `<main>` content block
+- No changes to the existing hover background system or any other sections
 
-- Before fetching, check `localStorage` for a cached item under key `about_page_data`
-- If cache exists and is less than 1 hour old, return the cached data immediately
-- If cache is missing or stale, fetch from Google Sheets as before
-- On successful fetch, save the parsed result + timestamp to localStorage
-- If fetch fails and stale cache exists, return the stale cache as a fallback
-- If fetch fails and no cache exists, return the existing hardcoded `FALLBACK` array
+### Styling Details
+- Video covers the full viewport with `object-cover` (crops to fill, no letterboxing)
+- A dark overlay (`bg-black/40`) sits between the video and the CTA for readability
+- The CTA button uses `font-body`, uppercase, wide tracking, and a white border on black -- matching the site's existing link/button aesthetic
+- The section adapts to the `showRainbow` hover state for color consistency (white text/border normally, black when rainbow is active)
 
-The `refetchInterval` and `staleTime` on the React Query config will be increased to 1 hour (3600000ms) to match the localStorage cache duration, so React Query doesn't bypass the cache with its own refetch cycle.
-
-### Technical Details
-- Cache key: `about_page_data`
-- Cache duration: 1 hour (3600000ms)
-- Storage format: `{ data: AboutEntry[], timestamp: number }`
-- No new dependencies needed -- uses built-in `localStorage`
-- The existing `FALLBACK` array remains as the last-resort safety net
-- React Query's in-memory cache still works on top of this for instant re-renders within the same session
-
+### What You'll Need to Do
+- Upload your chosen video file to `public/videos/hero-video.mp4` (or let me know the filename and I'll update the path)
+- Keep the file size reasonable (under 20MB ideally) for fast page loads
