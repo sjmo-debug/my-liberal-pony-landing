@@ -1,42 +1,44 @@
 
 
-## Set Up Cloudinary Integration
+## Fix Background Video Playback
 
-### Overview
-Integrate Cloudinary (cloud name: `dpy87lbpt`) across the project as a centralized media management solution. Since the cloud name is a public identifier, it's safe to store directly in code.
+### Problem Summary
+Background videos from Cloudinary aren't playing due to three compounding issues: unsupported `.mov` format, video element being destroyed/recreated on every hover, and lack of preloading.
 
-### What Gets Created
+### Changes
 
-**1. `src/lib/cloudinary.ts` -- Cloudinary utility module**
-- Export the cloud name constant and helper functions for building Cloudinary URLs
-- `cloudinaryUrl(publicId, options?)` -- generates optimized delivery URLs with automatic format/quality
-- `cloudinaryImage(publicId, width?, height?)` -- shorthand for image URLs with responsive sizing
-- `cloudinaryVideo(publicId)` -- shorthand for video URLs
-- This centralizes all Cloudinary URL logic so any component can import and use it
+**1. Update `src/components/VideoBackground.tsx` -- Keep video mounted, fix format handling**
+- Instead of returning `null` when not visible, keep the video element in the DOM but toggle its opacity/visibility. This allows the video to buffer and be ready instantly on hover.
+- Remove the hardcoded `type="video/mp4"` from the `<source>` tag so the browser can auto-detect the format.
+- Add `preload="auto"` to start buffering immediately.
+- Use a `key` prop on the video tied to `videoUrl` so it properly swaps when a new video is selected.
 
-**2. `src/pages/Gallery.tsx` -- Upgrade from placeholder to Cloudinary-powered gallery**
-- Replace "Coming Soon" with a grid layout ready to display Cloudinary-hosted images/videos
-- Use a configurable array of Cloudinary public IDs (easy to update later)
-- Start with a placeholder message ("Add images to your Cloudinary account to see them here") until content is uploaded
-- Include responsive image loading with Cloudinary transformations (auto format, auto quality, responsive widths)
+**2. Update `src/components/BackgroundManager.tsx` -- Always render, toggle visibility via props**
+- Pass the video URL even when not visible, so the video can preload in the background.
+- Keep the existing random-selection logic unchanged.
 
-### What Gets Updated
-
-**3. `src/pages/Index.tsx` -- Serve logo from Cloudinary**
-- Replace the local import `@/assets/mlp-logo.png` with a Cloudinary URL
-- Uses `cloudinaryImage()` helper for optimized delivery
-- Note: You'll need to upload the logo to your Cloudinary account and provide the public ID. For now, the code will fall back to the local asset if a Cloudinary public ID isn't configured
-
-### How It Works
-- Cloudinary URLs follow the pattern: `https://res.cloudinary.com/dpy87lbpt/image/upload/f_auto,q_auto/v1/{public_id}`
-- `f_auto` delivers the best format for each browser (WebP, AVIF, etc.)
-- `q_auto` optimizes quality automatically
-- Width/height transforms enable responsive images without serving oversized files
-- No API key needed for delivery -- the cloud name is all that's required for public assets
+**3. (Recommended) Convert `.mov` files to `.mp4` in Cloudinary**
+- Cloudinary can transcode videos on the fly. We can append a format transformation to convert `.mov` URLs to `.mp4` automatically by modifying the URL.
+- In the `VideoBackground` component or the hook, transform any URL ending in `.mov` to use Cloudinary's `f_mp4` transformation, ensuring cross-browser compatibility without needing to re-upload anything.
 
 ### Technical Details
-- The cloud name `dpy87lbpt` is a public identifier (appears in all asset URLs), safe to store in code
-- No backend/edge function needed -- Cloudinary delivery URLs work directly from the browser
-- Upload management can be done through the Cloudinary dashboard at cloudinary.com
-- Future enhancement: could add an upload widget or admin page for direct uploads from the site
 
+For the `.mov` to `.mp4` conversion, Cloudinary supports on-the-fly transcoding. A URL like:
+```text
+https://res.cloudinary.com/dpy87lbpt/video/upload/v1772472846/file.mov
+```
+becomes:
+```text
+https://res.cloudinary.com/dpy87lbpt/video/upload/f_mp4,q_auto/v1772472846/file.mov
+```
+This tells Cloudinary to deliver it as MP4 format with automatic quality -- works in all browsers, no re-upload needed.
+
+The `VideoBackground` component will be refactored to:
+- Always render the container `div` (with `opacity-0`/`opacity-100` toggle instead of conditional render)
+- Add `preload="auto"` for buffering
+- Apply the Cloudinary `f_mp4,q_auto` transform to video URLs automatically
+- Use a transition for smooth fade-in/out of the video
+
+### Files Modified
+- `src/components/VideoBackground.tsx` -- visibility toggle, format fix, preloading
+- `src/components/BackgroundManager.tsx` -- always render video component
