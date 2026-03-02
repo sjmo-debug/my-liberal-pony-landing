@@ -4,6 +4,7 @@ import mlpLogoLocal from '@/assets/mlp-logo.png';
 import { cloudinaryImage } from '@/lib/cloudinary';
 import GigSection from '@/components/GigSection';
 import BackgroundManager from '@/components/BackgroundManager';
+import NewsletterSignup from '@/components/NewsletterSignup';
 
 // Replace with your Cloudinary public ID once uploaded, or leave empty to use local asset
 const LOGO_CLOUDINARY_ID = '';
@@ -157,18 +158,7 @@ const Index = () => {
           </section>
 
           {/* Newsletter Section */}
-          <section className="w-full space-y-8">
-            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
-              Subscribe to the Newsletter
-            </h2>
-            <div className={`overflow-hidden transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
-              <iframe
-                src="https://emt-dptiwtc9n.topmailer.net/hp/FdFKfo2-TjyTTQVZy11B6A/signup"
-                title="Subscribe to MY LIBERAL PONY newsletter"
-                style={{ width: '100%', height: '150px', border: 0, backgroundColor: 'transparent' }}
-              />
-            </div>
-          </section>
+          <NewsletterSignup showRainbow={showRainbow} onHover={setIsButtonHovered} />
 
           {/* Footer Navigation */}
           <footer className={`py-8 flex flex-wrap justify-center gap-6 md:gap-12 transition-colors duration-500 ${showRainbow ? 'text-black' : 'text-foreground'}`}>
