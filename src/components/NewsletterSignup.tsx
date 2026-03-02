@@ -2,7 +2,7 @@ import { useState, FormEvent } from 'react';
 
 // TODO: Replace with your Mailchimp form action URL
 // Go to Mailchimp > Audience > Signup forms > Embedded forms > copy the form action URL
-const MAILCHIMP_ACTION_URL = 'https://XXXXX.us21.list-manage.com/subscribe/post?u=XXXXXXX&id=XXXXXXX';
+const MAILCHIMP_ACTION_URL = 'https://myliberalpony.us15.list-manage.com/subscribe/post?u=74a9841949eb03e56b1133ee2&id=0eec7ce89e&f_id=001f9ce1f0';
 
 interface NewsletterSignupProps {
   showRainbow: boolean;
@@ -60,6 +60,10 @@ const NewsletterSignup = ({ showRainbow, onHover }: NewsletterSignupProps) => {
               required
               className={`flex-1 bg-transparent border-2 ${borderColor} ${textColor} ${placeholderColor} font-body text-base md:text-lg uppercase tracking-wider px-6 py-4 outline-none focus:opacity-80 transition-opacity`}
             />
+            {/* Mailchimp bot signup prevention */}
+            <div style={{ position: 'absolute', left: '-5000px' }} aria-hidden="true">
+              <input type="text" name="b_74a9841949eb03e56b1133ee2_0eec7ce89e" tabIndex={-1} defaultValue="" />
+            </div>
             <button
               type="submit"
               disabled={status === 'loading'}
