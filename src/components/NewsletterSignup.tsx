@@ -18,13 +18,15 @@ const NewsletterSignup = ({ showRainbow, onHover }: NewsletterSignupProps) => {
   const placeholderColor = showRainbow ? 'placeholder:text-black/50' : 'placeholder:text-foreground/50';
 
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
     const trimmed = email.trim();
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return;
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      e.preventDefault();
+      return;
+    }
 
     setStatus('loading');
 
-    // Submit via hidden iframe so the page doesn't navigate
+    // Form submits naturally to the hidden iframe
     setTimeout(() => {
       setStatus('success');
       setEmail('');
