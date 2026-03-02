@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import mlpLogo from '@/assets/mlp-logo.png';
+import mlpLogoLocal from '@/assets/mlp-logo.png';
+import { cloudinaryImage } from '@/lib/cloudinary';
 import GigSection from '@/components/GigSection';
 import BackgroundManager from '@/components/BackgroundManager';
+
+// Replace with your Cloudinary public ID once uploaded, or leave empty to use local asset
+const LOGO_CLOUDINARY_ID = '';
+const mlpLogo = LOGO_CLOUDINARY_ID ? cloudinaryImage(LOGO_CLOUDINARY_ID, 512) : mlpLogoLocal;
 
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
