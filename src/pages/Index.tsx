@@ -156,6 +156,20 @@ const Index = () => {
             </div>
           </section>
 
+          {/* Newsletter Section */}
+          <section className="w-full space-y-8">
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
+              Subscribe to the Newsletter
+            </h2>
+            <div className={`overflow-hidden transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
+              <iframe
+                src="https://emt-dptiwtc9n.topmailer.net/hp/FdFKfo2-TjyTTQVZy11B6A/signup"
+                title="Subscribe to MY LIBERAL PONY newsletter"
+                style={{ width: '100%', height: '150px', border: 0, backgroundColor: 'transparent' }}
+              />
+            </div>
+          </section>
+
           {/* Footer Navigation */}
           <footer className={`py-8 flex flex-wrap justify-center gap-6 md:gap-12 transition-colors duration-500 ${showRainbow ? 'text-black' : 'text-foreground'}`}>
             <Link
