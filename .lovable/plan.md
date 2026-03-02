@@ -1,25 +1,42 @@
 
 
-## Replace Placeholder Icons with MLP Icon
+## Set Up Cloudinary Integration
 
-### What's Changing
+### Overview
+Integrate Cloudinary (cloud name: `dpy87lbpt`) across the project as a centralized media management solution. Since the cloud name is a public identifier, it's safe to store directly in code.
 
-The project currently uses generic/external placeholder icons in two places:
+### What Gets Created
 
-1. **Favicon** (`index.html` line 33) -- points to an external Google Storage URL. This is the browser tab icon visitors see.
-2. **`public/favicon.ico`** -- the default Lovable favicon file sitting in the public folder (unused since the HTML overrides it with the external URL).
+**1. `src/lib/cloudinary.ts` -- Cloudinary utility module**
+- Export the cloud name constant and helper functions for building Cloudinary URLs
+- `cloudinaryUrl(publicId, options?)` -- generates optimized delivery URLs with automatic format/quality
+- `cloudinaryImage(publicId, width?, height?)` -- shorthand for image URLs with responsive sizing
+- `cloudinaryVideo(publicId)` -- shorthand for video URLs
+- This centralizes all Cloudinary URL logic so any component can import and use it
 
-### Plan
+**2. `src/pages/Gallery.tsx` -- Upgrade from placeholder to Cloudinary-powered gallery**
+- Replace "Coming Soon" with a grid layout ready to display Cloudinary-hosted images/videos
+- Use a configurable array of Cloudinary public IDs (easy to update later)
+- Start with a placeholder message ("Add images to your Cloudinary account to see them here") until content is uploaded
+- Include responsive image loading with Cloudinary transformations (auto format, auto quality, responsive widths)
 
-1. **Copy the uploaded MLP icon** (the hand-drawn pony face) into the project as `public/mlp-favicon.png`
-2. **Update `index.html`** to use the local icon file instead of the external URL:
-   - Change the favicon `<link>` tag to point to `/mlp-favicon.png`
-   - Also update the JSON-LD `"logo"` field to use the same local path
-3. **Remove the old `public/favicon.ico`** since it will be replaced
+### What Gets Updated
 
-This means the browser tab will show the MLP pony face icon instead of whatever the external URL currently serves.
+**3. `src/pages/Index.tsx` -- Serve logo from Cloudinary**
+- Replace the local import `@/assets/mlp-logo.png` with a Cloudinary URL
+- Uses `cloudinaryImage()` helper for optimized delivery
+- Note: You'll need to upload the logo to your Cloudinary account and provide the public ID. For now, the code will fall back to the local asset if a Cloudinary public ID isn't configured
 
-### Notes
-- The `og:image` (social sharing image) is a separate, wider banner image -- that should stay as-is since it's a different format/purpose
-- No other placeholder icons were found in the UI components; all icons used are Lucide (arrow icons, etc.) which are functional, not branding placeholders
+### How It Works
+- Cloudinary URLs follow the pattern: `https://res.cloudinary.com/dpy87lbpt/image/upload/f_auto,q_auto/v1/{public_id}`
+- `f_auto` delivers the best format for each browser (WebP, AVIF, etc.)
+- `q_auto` optimizes quality automatically
+- Width/height transforms enable responsive images without serving oversized files
+- No API key needed for delivery -- the cloud name is all that's required for public assets
+
+### Technical Details
+- The cloud name `dpy87lbpt` is a public identifier (appears in all asset URLs), safe to store in code
+- No backend/edge function needed -- Cloudinary delivery URLs work directly from the browser
+- Upload management can be done through the Cloudinary dashboard at cloudinary.com
+- Future enhancement: could add an upload widget or admin page for direct uploads from the site
 
