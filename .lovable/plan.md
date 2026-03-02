@@ -1,38 +1,25 @@
 
 
-## Add Hidden Pages and Portfolio Button
+## Replace Placeholder Icons with MLP Icon
 
-### Overview
-Create three new placeholder pages (`/store`, `/gallery`, `/portfolio`) with minimal "coming soon" content, register them as routes, and add a "Creative Portfolio" button on the About page. None of these pages will be linked from the main navigation (keeping them hidden like the existing FAQ page).
+### What's Changing
 
-### New Files
+The project currently uses generic/external placeholder icons in two places:
 
-**1. `src/pages/Store.tsx`**
-- Minimal placeholder page styled consistently with the site (same fonts, uppercase, BackgroundManager, back-to-home link)
-- Heading: "Store" with a "Coming Soon" message
-- This will be the future home of Shopify integration
+1. **Favicon** (`index.html` line 33) -- points to an external Google Storage URL. This is the browser tab icon visitors see.
+2. **`public/favicon.ico`** -- the default Lovable favicon file sitting in the public folder (unused since the HTML overrides it with the external URL).
 
-**2. `src/pages/Gallery.tsx`**
-- Same consistent placeholder layout
-- Heading: "Gallery" with a "Coming Soon" message
-- Future home for photography/videography content
+### Plan
 
-**3. `src/pages/Portfolio.tsx`**
-- Same consistent placeholder layout
-- Heading: "Creative Portfolio" with a "Coming Soon" message
-- Could later link externally or host content directly
+1. **Copy the uploaded MLP icon** (the hand-drawn pony face) into the project as `public/mlp-favicon.png`
+2. **Update `index.html`** to use the local icon file instead of the external URL:
+   - Change the favicon `<link>` tag to point to `/mlp-favicon.png`
+   - Also update the JSON-LD `"logo"` field to use the same local path
+3. **Remove the old `public/favicon.ico`** since it will be replaced
 
-### Modified Files
-
-**4. `src/App.tsx`**
-- Import and add routes for `/store`, `/gallery`, and `/portfolio` above the catch-all route
-
-**5. `src/pages/About.tsx`**
-- Add a styled button/link below the about content that links to `/portfolio`
-- Label: "Creative Portfolio"
-- Styled consistently with the existing back button (bordered, uppercase, hover triggers rainbow background)
-- Uses an arrow-right icon to indicate forward navigation
+This means the browser tab will show the MLP pony face icon instead of whatever the external URL currently serves.
 
 ### Notes
-- No links to these pages from the main nav or footer (hidden, as requested)
-- All pages follow existing patterns: BackgroundManager, hover-triggered rainbow, consistent typography
+- The `og:image` (social sharing image) is a separate, wider banner image -- that should stay as-is since it's a different format/purpose
+- No other placeholder icons were found in the UI components; all icons used are Lucide (arrow icons, etc.) which are functional, not branding placeholders
+
