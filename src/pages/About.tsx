@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import BackgroundManager from '@/components/BackgroundManager';
 import { useAboutContent } from '@/hooks/useAboutContent';
 
@@ -38,6 +38,13 @@ const About = () => {
                 </p>
               ))
             )}
+          </div>
+
+          <div className="flex justify-center mt-8">
+            <Link to="/portfolio" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className={`inline-flex items-center gap-2 font-body text-lg md:text-xl lg:text-2xl uppercase px-6 py-3 md:px-8 md:py-4 min-h-[44px] transition-all duration-300 ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
+              CREATIVE PORTFOLIO
+              <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
+            </Link>
           </div>
         </article>
       </div>
