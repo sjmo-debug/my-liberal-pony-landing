@@ -1,17 +1,39 @@
 
 
-## Update Newsletter with Real Mailchimp Credentials
+## Fix: Newsletter form not submitting to Mailchimp
 
-### What's changing
-Update `src/components/NewsletterSignup.tsx` with the actual Mailchimp form details extracted from your embedded form code.
+### Problem
+`e.preventDefault()` in the `handleSubmit` function (line 21) blocks the form's native HTML POST to the hidden iframe. The email never reaches Mailchimp -- the form just shows a fake "success" message after a timeout.
 
-### Details
+### Fix
 
-**`src/components/NewsletterSignup.tsx`**:
-- Update `MAILCHIMP_ACTION_URL` to: `https://myliberalpony.us15.list-manage.com/subscribe/post?u=74a9841949eb03e56b1133ee2&id=0eec7ce89e&f_id=001f9ce1f0`
-- Add the Mailchimp honeypot field (hidden input named `b_74a9841949eb03e56b1133ee2_0eec7ce89e`) to prevent bot signups -- this is required by Mailchimp
-- Everything else stays the same: custom styling, theme support, hidden iframe submission
+**`src/components/NewsletterSignup.tsx`** -- modify `handleSubmit`:
+- Remove `e.preventDefault()`
+- Keep the email validation, but call `e.preventDefault()` only when validation fails (to block invalid submissions)
+- When validation passes, let the form submit naturally and set the loading/success states via timeout
 
-### No other files change
-The component is already wired up correctly in `Index.tsx`.
+```text
+Before:
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();                          <-- blocks ALL submissions
+    const trimmed = email.trim();
+    if (!trimmed || ...) return;
+    setStatus('loading');
+    setTimeout(() => { setStatus('success'); ... }, 2000);
+  };
+
+After:
+  const handleSubmit = (e: FormEvent) => {
+    const trimmed = email.trim();
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      e.preventDefault();                        <-- only block invalid submissions
+      return;
+    }
+    setStatus('loading');
+    setTimeout(() => { setStatus('success'); setEmail(''); }, 2000);
+    // form submits naturally to the hidden iframe
+  };
+```
+
+No other files need changes.
 
