@@ -1,39 +1,17 @@
 
 
-## Fix: Newsletter form not submitting to Mailchimp
+## Remove hover-triggered rainbow from Sign Up button
 
-### Problem
-`e.preventDefault()` in the `handleSubmit` function (line 21) blocks the form's native HTML POST to the hidden iframe. The email never reaches Mailchimp -- the form just shows a fake "success" message after a timeout.
+### What changes
+**`src/components/NewsletterSignup.tsx`**:
+- Remove `onMouseEnter` and `onMouseLeave` from the Sign Up button so hovering it no longer triggers the rainbow background
+- On successful submission (inside `handleSubmit`), call `onHover(true)` to activate the rainbow -- it stays on until the user hovers over another element elsewhere on the page, which will naturally call `onHover(false)`
 
-### Fix
+### Behavior after the change
+- Hovering the Sign Up button: no rainbow effect
+- Clicking Sign Up with a valid email: rainbow activates and persists
+- Hovering any other interactive element on the page (nav links, email link, footer links): rainbow deactivates as usual via their own `onMouseLeave` handlers
 
-**`src/components/NewsletterSignup.tsx`** -- modify `handleSubmit`:
-- Remove `e.preventDefault()`
-- Keep the email validation, but call `e.preventDefault()` only when validation fails (to block invalid submissions)
-- When validation passes, let the form submit naturally and set the loading/success states via timeout
-
-```text
-Before:
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();                          <-- blocks ALL submissions
-    const trimmed = email.trim();
-    if (!trimmed || ...) return;
-    setStatus('loading');
-    setTimeout(() => { setStatus('success'); ... }, 2000);
-  };
-
-After:
-  const handleSubmit = (e: FormEvent) => {
-    const trimmed = email.trim();
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      e.preventDefault();                        <-- only block invalid submissions
-      return;
-    }
-    setStatus('loading');
-    setTimeout(() => { setStatus('success'); setEmail(''); }, 2000);
-    // form submits naturally to the hidden iframe
-  };
-```
-
-No other files need changes.
+### No other files change
+The rainbow state is managed in `Index.tsx` via `isButtonHovered` -- the existing hover handlers on other elements already handle turning it off, so no changes needed there.
 
