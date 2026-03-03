@@ -24,6 +24,7 @@ const NewsletterSignup = ({ showRainbow, onHover }: NewsletterSignupProps) => {
       return;
     }
 
+    onHover(true);
     setStatus('loading');
 
     // Form submits naturally to the hidden iframe
@@ -69,8 +70,6 @@ const NewsletterSignup = ({ showRainbow, onHover }: NewsletterSignupProps) => {
             <button
               type="submit"
               disabled={status === 'loading'}
-              onMouseEnter={() => onHover(true)}
-              onMouseLeave={() => onHover(false)}
               className={`border-2 ${borderColor} ${textColor} font-body text-base md:text-lg uppercase tracking-wider px-8 py-4 hover:opacity-70 transition-all duration-300 disabled:opacity-50`}
             >
               {status === 'loading' ? 'Signing up...' : 'Sign Up'}
