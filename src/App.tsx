@@ -9,6 +9,11 @@ import FAQ from "./pages/FAQ";
 import Store from "./pages/Store";
 import Gallery from "./pages/Gallery";
 import Portfolio from "./pages/Portfolio";
+import PortfolioHome from "./pages/portfolio/PortfolioHome";
+import PortfolioProjects from "./pages/portfolio/PortfolioProjects";
+import PortfolioAbout from "./pages/portfolio/PortfolioAbout";
+import PortfolioContact from "./pages/portfolio/PortfolioContact";
+import PortfolioProjectDetail from "./pages/portfolio/PortfolioProjectDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,7 +29,15 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/store" element={<Store />} />
           <Route path="/gallery" element={<Gallery />} />
-          <Route path="/portfolio" element={<Portfolio />} />
+          
+          {/* Portfolio sub-routes */}
+          <Route path="/portfolio" element={<Portfolio />}>
+            <Route index element={<PortfolioHome />} />
+            <Route path="projects" element={<PortfolioProjects />} />
+            <Route path="about" element={<PortfolioAbout />} />
+            <Route path="contact" element={<PortfolioContact />} />
+            <Route path="project/:slug" element={<PortfolioProjectDetail />} />
+          </Route>
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

@@ -51,4 +51,20 @@ export function cloudinaryVideo(publicId: string): string {
   return `${BASE_URL}/video/upload/f_auto,q_auto/${publicId}`;
 }
 
+/**
+ * Convenience presets for common sizes used across the portfolio.
+ */
+export const cloudinaryPresets = {
+  /** Grid thumbnail – 600px wide */
+  thumbnail: (id: string) => cloudinaryUrl(id, { width: 600, crop: 'limit' }),
+  /** Card cover – 900px wide */
+  card: (id: string) => cloudinaryUrl(id, { width: 900, crop: 'limit' }),
+  /** Hero / detail – 1600px wide */
+  hero: (id: string) => cloudinaryUrl(id, { width: 1600, crop: 'limit' }),
+  /** Full resolution – auto format & quality only */
+  full: (id: string) => cloudinaryUrl(id),
+  /** Portrait – 400×600 */
+  portrait: (id: string) => cloudinaryUrl(id, { width: 400, height: 600, crop: 'fill', gravity: 'face' }),
+} as const;
+
 export { CLOUD_NAME };
