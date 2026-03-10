@@ -21,7 +21,16 @@ const textareaClass = "w-full bg-black text-white border-2 border-white px-3 py-
 const btnClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-white hover:bg-white hover:text-black transition-colors inline-flex items-center gap-2";
 const btnDangerClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-colors inline-flex items-center gap-2";
 
-const ADMIN_PASSWORD = 'sjm0sjm0sjm0';
+// SHA-256 hash of the admin password (never store plaintext)
+const ADMIN_PASSWORD_HASH = 'a0e9b38af44fb08feff297dd1c65b5aad3cff498b6bca7aa44ea13a2e0e15aca';
+
+async function hashPassword(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 export default function PortfolioAdmin() {
   const { projects, photographerInfo, updateProjects, updatePhotographerInfo } = usePortfolio();
@@ -33,8 +42,9 @@ export default function PortfolioAdmin() {
   const [editInfo, setEditInfo] = useState<ArtistInfo>(JSON.parse(JSON.stringify(photographerInfo)));
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
 
-  const handleLogin = () => {
-    if (password === ADMIN_PASSWORD) {
+  const handleLogin = async () => {
+    const inputHash = await hashPassword(password);
+    if (inputHash === ADMIN_PASSWORD_HASH) {
       setIsAuthenticated(true);
       setAuthError(false);
     } else {
