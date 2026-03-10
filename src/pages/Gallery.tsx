@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ImageIcon } from 'lucide-react';
 import BackgroundManager from '@/components/BackgroundManager';
@@ -10,6 +10,7 @@ const GALLERY_ITEMS: { publicId: string; alt: string }[] = [
 ];
 
 const Gallery = () => {
+  useEffect(() => { document.title = "MY LIBERAL PONY - Gallery"; }, []);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
 
   return (
