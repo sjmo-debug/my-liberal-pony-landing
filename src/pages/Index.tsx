@@ -157,8 +157,6 @@ const Index = () => {
             </div>
           </section>
 
-          {/* Newsletter Section */}
-          <NewsletterSignup showRainbow={showRainbow} onHover={setIsButtonHovered} />
 
           {/* Footer Navigation */}
           <footer className={`py-8 flex flex-wrap justify-center gap-6 md:gap-12 transition-colors duration-500 ${showRainbow ? 'text-black' : 'text-foreground'}`}>
