@@ -34,7 +34,7 @@ export function ProjectCard({
     >
       <Link
         to={`/theSJMO/project/${project.slug}`}
-        className="group block relative overflow-hidden rounded-sm"
+        className="group block relative overflow-hidden border-2 border-white"
       >
         <div className={cn('relative overflow-hidden bg-muted', aspectRatioClasses[ratio])}>
           {!isLoaded && <div className="absolute inset-0 bg-muted" />}
@@ -53,20 +53,18 @@ export function ProjectCard({
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
             <div className="absolute bottom-0 left-0 right-0 p-6 space-y-2">
-              <h3 className="text-xl md:text-2xl font-light tracking-wide" style={{ color: 'white' }}>
+              <h3 className="font-heading text-xl md:text-2xl uppercase tracking-widest" style={{ color: 'white' }}>
                 {project.title}
               </h3>
               {showCategory && (
-                <div className="flex items-center gap-3 text-sm font-light tracking-wide" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                  <span className="capitalize">{project.category}</span>
-                  <span>•</span>
+                <div className="flex items-center gap-3 text-sm font-mono uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                  <span>{project.category}</span>
+                  <span>—</span>
                   <span>{project.year}</span>
                 </div>
               )}
             </div>
           </div>
-
-          <div className="absolute inset-0 border-2 border-transparent group-hover:border-white/10 transition-colors duration-500" />
         </div>
       </Link>
     </motion.div>

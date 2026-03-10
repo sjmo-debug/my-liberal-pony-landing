@@ -7,6 +7,7 @@ import { ScrollReveal } from '@/components/portfolio/ScrollReveal';
 import { SEOHead } from '@/components/portfolio/SEOHead';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Marquee } from '@/components/portfolio/Marquee';
 
 export default function PortfolioHome() {
   const featuredProjects = getFeaturedProjects();
@@ -16,7 +17,7 @@ export default function PortfolioHome() {
       <SEOHead />
 
       <div className="min-h-screen">
-        {/* Hero Section */}
+        {/* Hero Section — untouched */}
         <section className="relative h-screen w-full overflow-hidden">
           <div className="absolute inset-0">
             <video
@@ -32,7 +33,7 @@ export default function PortfolioHome() {
 
           <div className="relative h-full flex flex-col items-center justify-center px-6">
             <motion.div className="text-center space-y-6 max-w-4xl" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: 'easeOut' }}>
-              <motion.h1 className="text-6xl md:text-8xl lg:text-9xl font-extralight tracking-widest" style={{ color: 'white' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
+              <motion.h1 className="text-6xl md:text-8xl lg:text-9xl font-heading uppercase tracking-widest" style={{ color: 'white' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
                 {photographerInfo.name.toUpperCase()}
               </motion.h1>
               <motion.p className="text-xl md:text-2xl font-light tracking-wide" style={{ color: 'rgba(255,255,255,0.9)' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.4 }}>
@@ -49,43 +50,51 @@ export default function PortfolioHome() {
           </div>
         </section>
 
-        {/* Introduction */}
-        <section className="py-24 md:py-32 px-6 lg:px-8 bg-background">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
+        {/* Introduction — brutalist */}
+        <section className="border-t-4 border-white py-20 md:py-28 px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto space-y-8">
             <ScrollReveal>
               <div className="space-y-6">
-                <h2 className="text-3xl md:text-4xl font-light tracking-wide">About My Work</h2>
-                <div className="space-y-4 text-lg font-light leading-relaxed text-muted-foreground">
+                <h2 className="font-heading text-5xl md:text-7xl uppercase tracking-widest">ABOUT MY WORK</h2>
+                <div className="max-w-3xl space-y-4 text-lg font-mono leading-relaxed text-muted-foreground">
                   <p>{photographerInfo.biography.split('\n\n')[0]}</p>
                 </div>
-                <Link to="/theSJMO/about" className="inline-flex items-center gap-2 text-base font-light tracking-wide text-foreground hover:text-muted-foreground transition-colors group">
-                  <span>Learn More About Me</span>
-                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                <Link
+                  to="/theSJMO/about"
+                  className="inline-flex items-center gap-3 font-heading text-lg uppercase tracking-widest border-2 border-white px-6 py-3 hover:bg-white hover:text-black transition-colors group"
+                >
+                  <span>LEARN MORE</span>
+                  <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
             </ScrollReveal>
           </div>
         </section>
 
-        {/* Featured Projects */}
-        <section className="py-24 md:py-32 border-t border-border">
+        {/* Marquee divider */}
+        <Marquee />
+
+        {/* Featured Projects — brutalist */}
+        <section className="py-20 md:py-28">
           <ScrollReveal>
-            <div className="text-center mb-16 space-y-4 px-6">
-              <h2 className="text-4xl md:text-5xl font-light tracking-wide">Featured Projects</h2>
-              <p className="text-lg text-muted-foreground font-light tracking-wide">A selection of recent work</p>
+            <div className="mb-12 px-6 lg:px-8">
+              <h2 className="font-heading text-5xl md:text-7xl lg:text-8xl uppercase tracking-widest">FEATURED</h2>
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
             {featuredProjects.map((project, index) => (
               <ProjectCard key={project.id} project={project} aspectRatio="landscape" showCategory={true} index={index} />
             ))}
           </div>
 
           <ScrollReveal delay={0.4}>
-            <div className="flex justify-center mt-16 px-6">
-              <Link to="/theSJMO/projects" className="group inline-flex items-center gap-2 text-lg font-light tracking-wide text-foreground hover:text-muted-foreground transition-colors">
-                <span>View All Projects</span>
+            <div className="mt-12 px-6 lg:px-8">
+              <Link
+                to="/theSJMO/projects"
+                className="inline-flex items-center gap-3 font-heading text-lg uppercase tracking-widest border-4 border-white px-8 py-4 hover:bg-white hover:text-black transition-colors group"
+              >
+                <span>VIEW ALL PROJECTS</span>
                 <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>

@@ -13,24 +13,28 @@ export default function PortfolioLayout() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <nav className="flex flex-wrap items-center gap-3 p-4 md:p-6">
+      <nav className="flex flex-wrap items-center gap-3 p-4 md:p-6 border-b-4 border-white">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 font-body text-sm md:text-base uppercase px-4 py-2 min-h-[44px] transition-all duration-300 border-2 border-white"
+          className="inline-flex items-center gap-2 font-heading text-sm md:text-base uppercase tracking-widest px-4 py-2 min-h-[44px] transition-all duration-200 border-2 border-white hover:bg-white hover:text-black"
           aria-label="Return to main site"
         >
           <ArrowLeft className="w-4 h-4" />
           Main Site
         </Link>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-0">
           {navLinks.map((link) => {
             const isActive = location.pathname === link.to;
             return (
               <Link
                 key={link.to}
                 to={link.to}
-                className={`font-body text-sm md:text-base uppercase px-4 py-2 min-h-[44px] transition-all duration-300 border-2 border-white ${isActive ? 'font-bold' : ''}`}
+                className={`font-heading text-sm md:text-base uppercase tracking-widest px-4 py-2 min-h-[44px] transition-all duration-200 border-2 border-white ${
+                  isActive
+                    ? 'bg-white text-black'
+                    : 'hover:bg-white hover:text-black'
+                }`}
               >
                 {link.label}
               </Link>
