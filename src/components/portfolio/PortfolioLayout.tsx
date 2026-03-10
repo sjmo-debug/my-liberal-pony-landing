@@ -6,7 +6,6 @@ const navLinks = [
   { to: '/theSJMO/projects', label: 'Projects' },
   { to: '/theSJMO/about', label: 'About' },
   { to: '/theSJMO/contact', label: 'Contact' },
-  { to: '/theSJMO/admin', label: 'Admin' },
 ];
 
 export default function PortfolioLayout() {
