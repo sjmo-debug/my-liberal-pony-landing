@@ -4,7 +4,7 @@ import mlpLogoLocal from '@/assets/mlp-logo.png';
 import { cloudinaryImage } from '@/lib/cloudinary';
 import GigSection from '@/components/GigSection';
 import BackgroundManager from '@/components/BackgroundManager';
-import NewsletterSignup from '@/components/NewsletterSignup';
+
 
 // Replace with your Cloudinary public ID once uploaded, or leave empty to use local asset
 const LOGO_CLOUDINARY_ID = '';
@@ -157,8 +157,6 @@ const Index = () => {
             </div>
           </section>
 
-          {/* Newsletter Section */}
-          <NewsletterSignup showRainbow={showRainbow} onHover={setIsButtonHovered} />
 
           {/* Footer Navigation */}
           <footer className={`py-8 flex flex-wrap justify-center gap-6 md:gap-12 transition-colors duration-500 ${showRainbow ? 'text-black' : 'text-foreground'}`}>
