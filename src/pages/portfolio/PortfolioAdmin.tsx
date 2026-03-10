@@ -21,7 +21,7 @@ const textareaClass = "w-full bg-black text-white border-2 border-white px-3 py-
 const btnClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-white hover:bg-white hover:text-black transition-colors inline-flex items-center gap-2";
 const btnDangerClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-colors inline-flex items-center gap-2";
 
-const ADMIN_PASSWORD = 'sjmo2024';
+const ADMIN_PASSWORD = 'sjm0sjm0sjm0';
 
 export default function PortfolioAdmin() {
   const { projects, photographerInfo, updateProjects, updatePhotographerInfo } = usePortfolio();
