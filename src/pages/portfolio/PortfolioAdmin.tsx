@@ -44,6 +44,7 @@ export default function PortfolioAdmin() {
 
   const handleLogin = async () => {
     const inputHash = await hashPassword(password);
+    console.log('DEBUG_HASH:', inputHash);
     if (inputHash === ADMIN_PASSWORD_HASH) {
       setIsAuthenticated(true);
       setAuthError(false);
