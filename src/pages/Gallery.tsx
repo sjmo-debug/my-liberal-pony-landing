@@ -10,6 +10,7 @@ const GALLERY_ITEMS: { publicId: string; alt: string }[] = [
 ];
 
 const Gallery = () => {
+  useEffect(() => { document.title = "MY LIBERAL PONY - Gallery"; }, []);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
 
   return (

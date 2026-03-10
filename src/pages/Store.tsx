@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import BackgroundManager from '@/components/BackgroundManager';
 
 const Store = () => {
+  useEffect(() => { document.title = "MY LIBERAL PONY - Store"; }, []);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
 
   return (

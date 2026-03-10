@@ -5,6 +5,7 @@ import BackgroundManager from '@/components/BackgroundManager';
 import { useAboutContent } from '@/hooks/useAboutContent';
 
 const About = () => {
+  useEffect(() => { document.title = "MY LIBERAL PONY - About"; }, []);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const { data: entries, isLoading } = useAboutContent();
 
