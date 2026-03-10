@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { PortfolioProvider } from "@/contexts/PortfolioContext";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
@@ -14,6 +15,7 @@ import PortfolioProjects from "./pages/portfolio/PortfolioProjects";
 import PortfolioAbout from "./pages/portfolio/PortfolioAbout";
 import PortfolioContact from "./pages/portfolio/PortfolioContact";
 import PortfolioProjectDetail from "./pages/portfolio/PortfolioProjectDetail";
+import PortfolioAdmin from "./pages/portfolio/PortfolioAdmin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,12 +33,13 @@ const App = () => (
           <Route path="/gallery" element={<Gallery />} />
           
           {/* Portfolio sub-routes */}
-          <Route path="/theSJMO" element={<Portfolio />}>
+          <Route path="/theSJMO" element={<PortfolioProvider><Portfolio /></PortfolioProvider>}>
             <Route index element={<PortfolioHome />} />
             <Route path="projects" element={<PortfolioProjects />} />
             <Route path="about" element={<PortfolioAbout />} />
             <Route path="contact" element={<PortfolioContact />} />
             <Route path="project/:slug" element={<PortfolioProjectDetail />} />
+            <Route path="admin" element={<PortfolioAdmin />} />
           </Route>
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

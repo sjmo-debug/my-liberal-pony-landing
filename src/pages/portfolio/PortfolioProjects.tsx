@@ -1,9 +1,11 @@
-import { projects } from '@/data/portfolio/projects';
+import { usePortfolio } from '@/contexts/PortfolioContext';
 import { PortfolioGrid } from '@/components/portfolio/PortfolioGrid';
 import { SEOHead } from '@/components/portfolio/SEOHead';
 import { motion } from 'framer-motion';
 
 export default function PortfolioProjects() {
+  const { projects } = usePortfolio();
+
   return (
     <>
       <SEOHead title="Portfolio" description="Browse Simon Oliver's portfolio of music, production, visual art, and collaborative creative projects." />

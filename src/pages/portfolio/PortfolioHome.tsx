@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
-import { photographerInfo } from '@/data/portfolio/photographer';
-import { getFeaturedProjects } from '@/data/portfolio/projects';
+import { usePortfolio } from '@/contexts/PortfolioContext';
 import { ProjectCard } from '@/components/portfolio/ProjectCard';
 import { ScrollIndicator } from '@/components/portfolio/ScrollIndicator';
 import { ScrollReveal } from '@/components/portfolio/ScrollReveal';
@@ -10,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { Marquee } from '@/components/portfolio/Marquee';
 
 export default function PortfolioHome() {
+  const { photographerInfo, getFeaturedProjects } = usePortfolio();
   const featuredProjects = getFeaturedProjects();
 
   return (
