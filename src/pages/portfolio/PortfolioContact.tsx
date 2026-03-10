@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin } from 'lucide-react';
-import { photographerInfo } from '@/data/portfolio/photographer';
+import { usePortfolio } from '@/contexts/PortfolioContext';
 import { ContactForm } from '@/components/portfolio/ContactForm';
 import { SEOHead } from '@/components/portfolio/SEOHead';
 
 export default function PortfolioContact() {
+  const { photographerInfo } = usePortfolio();
+
   return (
     <>
       <SEOHead title="Contact" description={`Get in touch with ${photographerInfo.name} for collaborations, bookings, and creative projects.`} />

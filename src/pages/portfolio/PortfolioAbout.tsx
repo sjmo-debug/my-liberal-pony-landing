@@ -1,12 +1,14 @@
 import { motion } from 'framer-motion';
 import { Instagram, Linkedin, Link as LinkIcon } from 'lucide-react';
-import { photographerInfo } from '@/data/portfolio/photographer';
+import { usePortfolio } from '@/contexts/PortfolioContext';
 import { SEOHead } from '@/components/portfolio/SEOHead';
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 
 export default function PortfolioAbout() {
+  const { photographerInfo } = usePortfolio();
+
   return (
     <>
       <SEOHead title="About" description={`Learn about ${photographerInfo.name}, ${photographerInfo.tagline}.`} image={photographerInfo.portraitImage} />

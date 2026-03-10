@@ -5,12 +5,13 @@ import { Calendar, MapPin, Camera, User } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { SEOHead } from '@/components/portfolio/SEOHead';
 import { ScrollReveal } from '@/components/portfolio/ScrollReveal';
-import { getProjectBySlug } from '@/data/portfolio/projects';
+import { usePortfolio } from '@/contexts/PortfolioContext';
 import { ImageWithLightbox } from '@/components/portfolio/ImageWithLightbox';
 import { Lightbox } from '@/components/portfolio/Lightbox';
 
 export default function PortfolioProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
+  const { getProjectBySlug } = usePortfolio();
   const project = slug ? getProjectBySlug(slug) : undefined;
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
