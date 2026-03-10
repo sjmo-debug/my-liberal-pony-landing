@@ -16,6 +16,7 @@ const Index = () => {
   const [hasGigs, setHasGigs] = useState(false);
 
   useEffect(() => {
+    document.title = "MY LIBERAL PONY - Watch & Listen - Upcoming Gigs";
     const timer = setTimeout(() => setIsVisible(true), 300);
     return () => clearTimeout(timer);
   }, []);
