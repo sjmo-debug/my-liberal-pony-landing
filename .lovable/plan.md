@@ -1,17 +1,21 @@
 
 
-## Remove hover-triggered rainbow from Sign Up button
+## Hash the Admin Password
 
-### What changes
-**`src/components/NewsletterSignup.tsx`**:
-- Remove `onMouseEnter` and `onMouseLeave` from the Sign Up button so hovering it no longer triggers the rainbow background
-- On successful submission (inside `handleSubmit`), call `onHover(true)` to activate the rainbow -- it stays on until the user hovers over another element elsewhere on the page, which will naturally call `onHover(false)`
+Currently the password `sjm0sjm0sjm0` is stored as plaintext on line 24. Anyone inspecting the JS bundle can read it. While this is client-side only (so never truly secure), we can raise the bar significantly by storing a SHA-256 hash and comparing against that.
 
-### Behavior after the change
-- Hovering the Sign Up button: no rainbow effect
-- Clicking Sign Up with a valid email: rainbow activates and persists
-- Hovering any other interactive element on the page (nav links, email link, footer links): rainbow deactivates as usual via their own `onMouseLeave` handlers
+### Approach
 
-### No other files change
-The rainbow state is managed in `Index.tsx` via `isButtonHovered` -- the existing hover handlers on other elements already handle turning it off, so no changes needed there.
+**`src/pages/portfolio/PortfolioAdmin.tsx`**
+
+1. Replace the plaintext constant with a pre-computed SHA-256 hash of `sjm0sjm0sjm0`
+2. Create an async `hashPassword` utility using the built-in Web Crypto API (`crypto.subtle.digest('SHA-256', ...)`) — no new dependencies
+3. Make `handleLogin` async: hash the user input, compare to the stored hash
+4. Remove the plaintext password entirely from the source code
+
+The hash will be computed once and hardcoded as a hex string constant. The login handler will hash the entered password at runtime and compare the two strings.
+
+### Limitation
+
+This is still client-side — a determined attacker could bypass the check entirely by modifying JS in devtools. But the password itself will no longer be readable from the source. For true security, server-side auth (e.g. Supabase Auth) would be needed.
 
