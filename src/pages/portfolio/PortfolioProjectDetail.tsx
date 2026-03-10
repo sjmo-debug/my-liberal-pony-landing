@@ -17,7 +17,7 @@ export default function PortfolioProjectDetail() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   if (!project) {
-    return <Navigate to="/portfolio/projects" replace />;
+    return <Navigate to="/theSJMO/projects" replace />;
   }
 
   const openLightbox = (index: number) => {

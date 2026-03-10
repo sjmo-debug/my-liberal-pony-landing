@@ -4,10 +4,10 @@ import { ArrowLeft } from 'lucide-react';
 import BackgroundManager from '@/components/BackgroundManager';
 
 const navLinks = [
-  { to: '/portfolio', label: 'Home' },
-  { to: '/portfolio/projects', label: 'Projects' },
-  { to: '/portfolio/about', label: 'About' },
-  { to: '/portfolio/contact', label: 'Contact' },
+  { to: '/theSJMO', label: 'Home' },
+  { to: '/theSJMO/projects', label: 'Projects' },
+  { to: '/theSJMO/about', label: 'About' },
+  { to: '/theSJMO/contact', label: 'Contact' },
 ];
 
 export default function PortfolioLayout() {

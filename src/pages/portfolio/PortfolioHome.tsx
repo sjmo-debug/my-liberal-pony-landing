@@ -84,7 +84,7 @@ export default function PortfolioHome() {
 
           <ScrollReveal delay={0.4}>
             <div className="flex justify-center mt-16 px-6">
-              <Link to="/portfolio/projects" className="group inline-flex items-center gap-2 text-lg font-light tracking-wide text-foreground hover:text-muted-foreground transition-colors">
+              <Link to="/theSJMO/projects" className="group inline-flex items-center gap-2 text-lg font-light tracking-wide text-foreground hover:text-muted-foreground transition-colors">
                 <span>View All Projects</span>
                 <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
               </Link>

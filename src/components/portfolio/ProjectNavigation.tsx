@@ -38,7 +38,7 @@ export function ProjectNavigation({ prev, next }: ProjectNavigationProps) {
 
       <div className={cn(!next && 'opacity-50')}>
         {next ? (
-          <Link to={`/portfolio/project/${next.slug}`} className="group block p-8 md:p-12 hover:bg-accent transition-colors duration-300">
+          <Link to={`/theSJMO/project/${next.slug}`} className="group block p-8 md:p-12 hover:bg-accent transition-colors duration-300">
             <motion.div className="space-y-4 text-right" whileHover={{ x: 5 }} transition={{ duration: 0.3 }}>
               <div className="flex items-center justify-end gap-3 text-muted-foreground group-hover:text-foreground transition-colors">
                 <span className="text-sm font-light tracking-wide uppercase">Next Project</span>
