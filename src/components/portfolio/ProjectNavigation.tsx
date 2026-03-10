@@ -14,7 +14,7 @@ export function ProjectNavigation({ prev, next }: ProjectNavigationProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-t border-border">
       <div className={cn('border-b md:border-b-0 md:border-r border-border', !prev && 'opacity-50')}>
         {prev ? (
-          <Link to={`/portfolio/project/${prev.slug}`} className="group block p-8 md:p-12 hover:bg-accent transition-colors duration-300">
+          <Link to={`/theSJMO/project/${prev.slug}`} className="group block p-8 md:p-12 hover:bg-accent transition-colors duration-300">
             <motion.div className="space-y-4" whileHover={{ x: -5 }} transition={{ duration: 0.3 }}>
               <div className="flex items-center gap-3 text-muted-foreground group-hover:text-foreground transition-colors">
                 <ArrowLeft className="size-5" />
@@ -38,7 +38,7 @@ export function ProjectNavigation({ prev, next }: ProjectNavigationProps) {
 
       <div className={cn(!next && 'opacity-50')}>
         {next ? (
-          <Link to={`/portfolio/project/${next.slug}`} className="group block p-8 md:p-12 hover:bg-accent transition-colors duration-300">
+          <Link to={`/theSJMO/project/${next.slug}`} className="group block p-8 md:p-12 hover:bg-accent transition-colors duration-300">
             <motion.div className="space-y-4 text-right" whileHover={{ x: 5 }} transition={{ duration: 0.3 }}>
               <div className="flex items-center justify-end gap-3 text-muted-foreground group-hover:text-foreground transition-colors">
                 <span className="text-sm font-light tracking-wide uppercase">Next Project</span>

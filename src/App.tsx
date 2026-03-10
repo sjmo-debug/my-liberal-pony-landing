@@ -31,7 +31,7 @@ const App = () => (
           <Route path="/gallery" element={<Gallery />} />
           
           {/* Portfolio sub-routes */}
-          <Route path="/portfolio" element={<Portfolio />}>
+          <Route path="/theSJMO" element={<Portfolio />}>
             <Route index element={<PortfolioHome />} />
             <Route path="projects" element={<PortfolioProjects />} />
             <Route path="about" element={<PortfolioAbout />} />

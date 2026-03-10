@@ -1,18 +1,17 @@
 
 
-## Rename `/portfolio` routes to `/theSJMO`
+## Remove hover-triggered rainbow from Sign Up button
 
-Update all route paths and internal links from `/portfolio` to `/theSJMO` across the project.
+### What changes
+**`src/components/NewsletterSignup.tsx`**:
+- Remove `onMouseEnter` and `onMouseLeave` from the Sign Up button so hovering it no longer triggers the rainbow background
+- On successful submission (inside `handleSubmit`), call `onHover(true)` to activate the rainbow -- it stays on until the user hovers over another element elsewhere on the page, which will naturally call `onHover(false)`
 
-### Files to modify
+### Behavior after the change
+- Hovering the Sign Up button: no rainbow effect
+- Clicking Sign Up with a valid email: rainbow activates and persists
+- Hovering any other interactive element on the page (nav links, email link, footer links): rainbow deactivates as usual via their own `onMouseLeave` handlers
 
-1. **`src/App.tsx`** — Change parent route from `/portfolio` to `/theSJMO`
-2. **`src/components/portfolio/PortfolioLayout.tsx`** — Update `navLinks` array paths (`/theSJMO`, `/theSJMO/projects`, etc.)
-3. **`src/components/portfolio/ProjectCard.tsx`** — Update link to `/theSJMO/project/${slug}`
-4. **`src/components/portfolio/ProjectNavigation.tsx`** — Update prev/next links to `/theSJMO/project/${slug}`
-5. **`src/pages/portfolio/PortfolioProjectDetail.tsx`** — Update redirect to `/theSJMO/projects`
-6. **`src/pages/portfolio/PortfolioHome.tsx`** — Update links to `/theSJMO/about` and `/theSJMO/projects`
-7. **`src/pages/About.tsx`** — Update link from `/portfolio` to `/theSJMO`
-
-All file names and component names stay the same — only the URL paths change.
+### No other files change
+The rainbow state is managed in `Index.tsx` via `isButtonHovered` -- the existing hover handlers on other elements already handle turning it off, so no changes needed there.
 

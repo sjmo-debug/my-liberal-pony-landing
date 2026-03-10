@@ -58,7 +58,7 @@ export default function PortfolioHome() {
                 <div className="space-y-4 text-lg font-light leading-relaxed text-muted-foreground">
                   <p>{photographerInfo.biography.split('\n\n')[0]}</p>
                 </div>
-                <Link to="/portfolio/about" className="inline-flex items-center gap-2 text-base font-light tracking-wide text-foreground hover:text-muted-foreground transition-colors group">
+                <Link to="/theSJMO/about" className="inline-flex items-center gap-2 text-base font-light tracking-wide text-foreground hover:text-muted-foreground transition-colors group">
                   <span>Learn More About Me</span>
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                 </Link>
@@ -84,7 +84,7 @@ export default function PortfolioHome() {
 
           <ScrollReveal delay={0.4}>
             <div className="flex justify-center mt-16 px-6">
-              <Link to="/portfolio/projects" className="group inline-flex items-center gap-2 text-lg font-light tracking-wide text-foreground hover:text-muted-foreground transition-colors">
+              <Link to="/theSJMO/projects" className="group inline-flex items-center gap-2 text-lg font-light tracking-wide text-foreground hover:text-muted-foreground transition-colors">
                 <span>View All Projects</span>
                 <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
               </Link>

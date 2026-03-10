@@ -33,7 +33,7 @@ export function ProjectCard({
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <Link
-        to={`/portfolio/project/${project.slug}`}
+        to={`/theSJMO/project/${project.slug}`}
         className="group block relative overflow-hidden rounded-sm"
       >
         <div className={cn('relative overflow-hidden bg-muted', aspectRatioClasses[ratio])}>
