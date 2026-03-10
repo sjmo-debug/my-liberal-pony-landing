@@ -21,12 +21,53 @@ const textareaClass = "w-full bg-black text-white border-2 border-white px-3 py-
 const btnClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-white hover:bg-white hover:text-black transition-colors inline-flex items-center gap-2";
 const btnDangerClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-colors inline-flex items-center gap-2";
 
+const ADMIN_PASSWORD = 'sjmo2024';
+
 export default function PortfolioAdmin() {
   const { projects, photographerInfo, updateProjects, updatePhotographerInfo } = usePortfolio();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>('projects');
   const [editProjects, setEditProjects] = useState<Project[]>(JSON.parse(JSON.stringify(projects)));
   const [editInfo, setEditInfo] = useState<ArtistInfo>(JSON.parse(JSON.stringify(photographerInfo)));
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
+
+  const handleLogin = () => {
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true);
+      setAuthError(false);
+    } else {
+      setAuthError(true);
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center p-8">
+        <SEOHead title="Admin" description="Admin access" />
+        <div className="w-full max-w-md border-4 border-white p-8">
+          <h1 className="font-heading text-3xl uppercase tracking-widest mb-8 text-center">Admin Access</h1>
+          <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }} className="space-y-4">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => { setPassword(e.target.value); setAuthError(false); }}
+              placeholder="Enter password"
+              className={inputClass}
+              autoFocus
+            />
+            {authError && (
+              <p className="text-red-500 font-mono text-sm uppercase tracking-wider">Access denied</p>
+            )}
+            <button type="submit" className={`${btnClass} w-full justify-center`}>
+              Authorize
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   const saveProjects = () => {
     updateProjects(editProjects);
