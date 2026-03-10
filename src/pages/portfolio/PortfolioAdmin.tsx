@@ -22,7 +22,7 @@ const btnClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 borde
 const btnDangerClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-colors inline-flex items-center gap-2";
 
 // SHA-256 hash of the admin password (never store plaintext)
-const ADMIN_PASSWORD_HASH = 'a0e9b38af44fb08feff297dd1c65b5aad3cff498b6bca7aa44ea13a2e0e15aca';
+const ADMIN_PASSWORD_HASH = 'b56704bedfca7eb60e352fd4d17d9f37d93d4646e37ae45bafa9de2564f31d68';
 
 async function hashPassword(password: string): Promise<string> {
   const encoder = new TextEncoder();
