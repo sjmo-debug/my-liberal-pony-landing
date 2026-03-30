@@ -11,9 +11,6 @@ const Index = () => {
   const mlpLogo = siteData.branding.cloudinaryLogoId
     ? cloudinaryImage(siteData.branding.cloudinaryLogoId, 512)
     : mlpLogoLocal;
-
-const Index = () => {
-  const { siteData } = useMLP();
   const [isVisible, setIsVisible] = useState(false);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [hasGigs, setHasGigs] = useState(false);
