@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PortfolioProvider } from "@/contexts/PortfolioContext";
+import { MLPProvider } from "@/contexts/MLPContext";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import FAQ from "./pages/FAQ";
@@ -16,6 +17,7 @@ import PortfolioAbout from "./pages/portfolio/PortfolioAbout";
 import PortfolioContact from "./pages/portfolio/PortfolioContact";
 import PortfolioProjectDetail from "./pages/portfolio/PortfolioProjectDetail";
 import PortfolioAdmin from "./pages/portfolio/PortfolioAdmin";
+import MLPAdmin from "./pages/MLPAdmin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,11 +28,13 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <MLPProvider>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
           <Route path="/store" element={<Store />} />
           <Route path="/gallery" element={<Gallery />} />
+          <Route path="/admin" element={<MLPAdmin />} />
           
           {/* Portfolio sub-routes */}
           <Route path="/theSJMO" element={<PortfolioProvider><Portfolio /></PortfolioProvider>}>
@@ -45,6 +49,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </MLPProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
