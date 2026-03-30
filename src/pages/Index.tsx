@@ -4,19 +4,19 @@ import mlpLogoLocal from '@/assets/mlp-logo.png';
 import { cloudinaryImage } from '@/lib/cloudinary';
 import GigSection from '@/components/GigSection';
 import BackgroundManager from '@/components/BackgroundManager';
-
-
-// Replace with your Cloudinary public ID once uploaded, or leave empty to use local asset
-const LOGO_CLOUDINARY_ID = '';
-const mlpLogo = LOGO_CLOUDINARY_ID ? cloudinaryImage(LOGO_CLOUDINARY_ID, 512) : mlpLogoLocal;
+import { useMLP } from '@/contexts/MLPContext';
 
 const Index = () => {
+  const { siteData } = useMLP();
+  const mlpLogo = siteData.branding.cloudinaryLogoId
+    ? cloudinaryImage(siteData.branding.cloudinaryLogoId, 512)
+    : mlpLogoLocal;
   const [isVisible, setIsVisible] = useState(false);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [hasGigs, setHasGigs] = useState(false);
 
   useEffect(() => {
-    document.title = "MY LIBERAL PONY - Watch & Listen - Upcoming Gigs";
+    document.title = `${siteData.branding.siteTitle} - ${siteData.branding.pageSubtitle}`;
     const timer = setTimeout(() => setIsVisible(true), 300);
     return () => clearTimeout(timer);
   }, []);
@@ -40,7 +40,7 @@ const Index = () => {
             About
           </Link>
           <a
-            href="https://instagram.com/myliberalpony"
+            href={siteData.socialLinks.instagram}
             target="_blank"
             rel="noopener noreferrer"
             onMouseEnter={() => setIsButtonHovered(true)}
@@ -60,7 +60,7 @@ const Index = () => {
             className={`w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 xl:w-[28rem] xl:h-[28rem] object-contain mx-auto mb-6 transition-all duration-500 relative z-10 ${showRainbow ? '' : 'filter invert'}`} />
 
           <h1 className="font-heading text-4xl lg:text-7xl xl:text-8xl font-bold tracking-wider uppercase md:text-7xl">
-            MY LIBERAL PONY
+            {siteData.branding.siteTitle}
           </h1>
         </header>
       </section>
@@ -82,8 +82,8 @@ const Index = () => {
                   <iframe
                     width="100%"
                     height="100%"
-                    src="https://www.youtube.com/embed/FRDczkLqBes"
-                    title="MY LIBERAL PONY - Fingerprints"
+                    src={`https://www.youtube.com/embed/${siteData.videos[0].youtubeId}`}
+                    title={siteData.videos[0].title}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
@@ -97,8 +97,8 @@ const Index = () => {
                   <iframe
                     width="100%"
                     height="100%"
-                    src="https://www.youtube.com/embed/jTpvijP76g8"
-                    title="MY LIBERAL PONY - Video 2"
+                    src={`https://www.youtube.com/embed/${siteData.videos[1].youtubeId}`}
+                    title={siteData.videos[1].title}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
@@ -121,7 +121,7 @@ const Index = () => {
                 scrolling="no"
                 frameBorder="no"
                 allow="autoplay"
-                src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/myliberalpony&color=%23000000&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"
+                src={siteData.soundcloudEmbedUrl}
                 title="MY LIBERAL PONY on SoundCloud"
               />
             </div>
@@ -146,13 +146,13 @@ const Index = () => {
                   FOR ALL BOOKING REQUESTS AND ENQUIRIES
                 </p>
                 <a
-                  href="mailto:myliberalpony@gmail.com"
+                  href={`mailto:${siteData.contactEmail}`}
                   onMouseEnter={() => setIsButtonHovered(true)}
                   onMouseLeave={() => setIsButtonHovered(false)}
-                  aria-label="Email MY LIBERAL PONY for bookings and enquiries"
+                  aria-label={`Email ${siteData.branding.siteTitle} for bookings and enquiries`}
                   className={`inline-block font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold uppercase px-6 py-4 md:px-8 md:py-5 lg:px-10 lg:py-6 min-h-[44px] transition-all duration-300 tracking-wider ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
 
-                  MYLIBERALPONY@GMAIL.COM
+                  {siteData.contactEmail.toUpperCase()}
                 </a>
               </div>
             </div>
@@ -169,7 +169,7 @@ const Index = () => {
               About
             </Link>
             <a
-              href="https://instagram.com/myliberalpony"
+              href={siteData.socialLinks.instagram}
               target="_blank"
               rel="noopener noreferrer"
               onMouseEnter={() => setIsButtonHovered(true)}
@@ -178,7 +178,7 @@ const Index = () => {
               Instagram
             </a>
             <a
-              href="https://soundcloud.com/myliberalpony"
+              href={siteData.socialLinks.soundcloud}
               target="_blank"
               rel="noopener noreferrer"
               onMouseEnter={() => setIsButtonHovered(true)}
@@ -187,7 +187,7 @@ const Index = () => {
               Soundcloud
             </a>
             <a
-              href="https://myliberalpony.bandcamp.com/"
+              href={siteData.socialLinks.bandcamp}
               target="_blank"
               rel="noopener noreferrer"
               onMouseEnter={() => setIsButtonHovered(true)}
@@ -196,7 +196,7 @@ const Index = () => {
               Bandcamp
             </a>
             <a
-              href="https://www.youtube.com/@MYLIBERALPONY"
+              href={siteData.socialLinks.youtube}
               target="_blank"
               rel="noopener noreferrer"
               onMouseEnter={() => setIsButtonHovered(true)}
