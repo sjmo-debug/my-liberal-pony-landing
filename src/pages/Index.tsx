@@ -40,7 +40,7 @@ const Index = () => {
             About
           </Link>
           <a
-            href="https://instagram.com/myliberalpony"
+            href={siteData.socialLinks.instagram}
             target="_blank"
             rel="noopener noreferrer"
             onMouseEnter={() => setIsButtonHovered(true)}
