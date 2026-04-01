@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface MLPVideo {
   youtubeId: string;
@@ -28,7 +29,8 @@ export interface MLPSiteData {
 
 interface MLPContextValue {
   siteData: MLPSiteData;
-  updateSiteData: (data: Partial<MLPSiteData>) => void;
+  isLoading: boolean;
+  updateSiteData: (data: Partial<MLPSiteData>) => Promise<void>;
 }
 
 const defaultSiteData: MLPSiteData = {
@@ -54,15 +56,76 @@ const defaultSiteData: MLPSiteData = {
 
 const MLPContext = createContext<MLPContextValue | undefined>(undefined);
 
+function rowToSiteData(row: any): MLPSiteData {
+  return {
+    videos: row.videos as [MLPVideo, MLPVideo],
+    soundcloudEmbedUrl: row.soundcloud_embed_url,
+    contactEmail: row.contact_email,
+    socialLinks: row.social_links as MLPSocialLinks,
+    branding: row.branding as MLPBranding,
+  };
+}
+
 export function MLPProvider({ children }: { children: ReactNode }) {
   const [siteData, setSiteData] = useState<MLPSiteData>(defaultSiteData);
+  const [isLoading, setIsLoading] = useState(true);
+  const [configId, setConfigId] = useState<string | null>(null);
 
-  const updateSiteData = (data: Partial<MLPSiteData>) => {
-    setSiteData((prev) => ({ ...prev, ...data }));
+  useEffect(() => {
+    async function fetchConfig() {
+      try {
+        const { data, error } = await supabase
+          .from('mlp_site_config')
+          .select('*')
+          .limit(1)
+          .maybeSingle();
+
+        if (error) {
+          console.error('Failed to fetch MLP config:', error);
+        } else if (data) {
+          setSiteData(rowToSiteData(data));
+          setConfigId(data.id);
+        }
+      } catch (err) {
+        console.error('Failed to fetch MLP config:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchConfig();
+  }, []);
+
+  const updateSiteData = async (data: Partial<MLPSiteData>) => {
+    const merged = { ...siteData, ...data };
+    setSiteData(merged);
+
+    const row: any = {
+      videos: merged.videos,
+      soundcloud_embed_url: merged.soundcloudEmbedUrl,
+      contact_email: merged.contactEmail,
+      social_links: merged.socialLinks,
+      branding: merged.branding,
+    };
+
+    if (configId) {
+      const { error } = await supabase
+        .from('mlp_site_config')
+        .update(row)
+        .eq('id', configId);
+      if (error) throw error;
+    } else {
+      const { data: inserted, error } = await supabase
+        .from('mlp_site_config')
+        .insert(row)
+        .select('id')
+        .single();
+      if (error) throw error;
+      if (inserted) setConfigId(inserted.id);
+    }
   };
 
   return (
-    <MLPContext.Provider value={{ siteData, updateSiteData }}>
+    <MLPContext.Provider value={{ siteData, isLoading, updateSiteData }}>
       {children}
     </MLPContext.Provider>
   );

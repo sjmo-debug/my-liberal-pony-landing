@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMLP, type MLPSiteData } from '@/contexts/MLPContext';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import type { Session } from '@supabase/supabase-js';
 
 type Tab = 'videos' | 'social' | 'branding';
 
@@ -14,48 +16,78 @@ const tabs: { key: Tab; label: string }[] = [
 const inputClass =
   'w-full bg-background text-foreground border-2 border-foreground px-3 py-2 font-body text-sm focus:outline-none focus:bg-foreground/5 placeholder:text-muted-foreground uppercase tracking-wider';
 
-// Same hash as SJMO admin
-const ADMIN_PASSWORD_HASH =
-  'b56704bedfca7eb60e352fd4d17d9f37d93d4646e37ae45bafa9de2564f31d68';
-
-async function hashPassword(password: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-
 export default function MLPAdmin() {
   const { siteData, updateSiteData } = useMLP();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [authError, setAuthError] = useState(false);
+  const [authError, setAuthError] = useState('');
   const [activeTab, setActiveTab] = useState<Tab>('videos');
   const [draft, setDraft] = useState<MLPSiteData>(JSON.parse(JSON.stringify(siteData)));
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setAuthLoading(false);
+    });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setAuthLoading(false);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Sync draft when siteData changes (e.g. after initial DB load)
+  useEffect(() => {
+    setDraft(JSON.parse(JSON.stringify(siteData)));
+  }, [siteData]);
 
   const handleLogin = async () => {
-    const inputHash = await hashPassword(password);
-    if (inputHash === ADMIN_PASSWORD_HASH) {
-      setIsAuthenticated(true);
-      setAuthError(false);
-    } else {
-      setAuthError(true);
+    setAuthError('');
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) setAuthError(error.message);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await updateSiteData(draft);
+      toast.success('Changes saved to database');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to save');
+    } finally {
+      setSaving(false);
     }
   };
 
-  const handleSave = () => {
-    updateSiteData(draft);
-    toast.success('Changes applied (local preview only)');
-  };
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <p className="font-heading uppercase tracking-widest text-sm">Loading…</p>
+      </div>
+    );
+  }
 
-  if (!isAuthenticated) {
+  if (!session) {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
         <div className="w-full max-w-md border-2 border-foreground p-8">
           <h1 className="font-heading text-2xl uppercase tracking-widest text-center mb-8">
             MLP Admin
           </h1>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            className={`${inputClass} mb-3`}
+          />
           <input
             type="password"
             value={password}
@@ -66,14 +98,14 @@ export default function MLPAdmin() {
           />
           {authError && (
             <p className="text-destructive-foreground mt-2 text-sm uppercase tracking-wider">
-              Invalid password
+              {authError}
             </p>
           )}
           <button
             onClick={handleLogin}
             className="mt-4 w-full font-heading uppercase tracking-widest text-sm px-4 py-3 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors"
           >
-            Enter
+            Sign In
           </button>
         </div>
       </div>
@@ -91,9 +123,10 @@ export default function MLPAdmin() {
           <div className="flex gap-4">
             <button
               onClick={handleSave}
-              className="font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors"
+              disabled={saving}
+              className="font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
             >
-              Save
+              {saving ? 'Saving…' : 'Save'}
             </button>
             <Link
               to="/"
@@ -101,12 +134,14 @@ export default function MLPAdmin() {
             >
               View Site
             </Link>
+            <button
+              onClick={handleLogout}
+              className="font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors"
+            >
+              Sign Out
+            </button>
           </div>
         </div>
-
-        <p className="font-body text-xs uppercase tracking-widest text-muted-foreground mb-8">
-          Changes are local preview only — they reset on refresh.
-        </p>
 
         {/* Tabs */}
         <div className="flex gap-0 mb-8 border-2 border-foreground">
