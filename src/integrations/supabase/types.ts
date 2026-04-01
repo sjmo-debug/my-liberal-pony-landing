@@ -14,7 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      mlp_site_config: {
+        Row: {
+          branding: Json
+          contact_email: string
+          id: string
+          social_links: Json
+          soundcloud_embed_url: string
+          updated_at: string
+          videos: Json
+        }
+        Insert: {
+          branding?: Json
+          contact_email?: string
+          id?: string
+          social_links?: Json
+          soundcloud_embed_url?: string
+          updated_at?: string
+          videos?: Json
+        }
+        Update: {
+          branding?: Json
+          contact_email?: string
+          id?: string
+          social_links?: Json
+          soundcloud_embed_url?: string
+          updated_at?: string
+          videos?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
