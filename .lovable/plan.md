@@ -1,45 +1,48 @@
 
 
-## MLP Admin Panel
+## Persistent MLP Admin with Lovable Cloud
 
-### What it manages
+### Goal
+Replace the in-memory React context with a Lovable Cloud database table so admin changes survive page refreshes and deploys.
 
-The main MLP site has a mix of content sources:
-- **Already editable via Google Sheets**: gigs, about page text, background text/video pairs
-- **Hardcoded in source files**: YouTube video embeds, SoundCloud embed, social links, contact email, page titles
+### Database
 
-The admin panel would cover the hardcoded content — the stuff you currently need to ask me to change.
+**Table: `mlp_site_config`**
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | uuid (PK) | Single row |
+| `videos` | jsonb | Array of `{youtubeId, title}` |
+| `soundcloud_embed_url` | text | |
+| `contact_email` | text | |
+| `social_links` | jsonb | `{instagram, soundcloud, bandcamp, youtube}` |
+| `branding` | jsonb | `{siteTitle, pageSubtitle, cloudinaryLogoId}` |
+| `updated_at` | timestamptz | Auto-updated |
 
-### Same model as SJMO admin
+RLS: public read (no auth needed to display site), write restricted to authenticated admin.
 
-Like the SJMO admin, this would be **local-only** (changes reset on refresh) and serve as a preview/staging tool. The actual values live in source code, so after previewing changes you'd still commit them here in chat. This is a client-side app limitation — there's no database to persist to without adding Supabase.
+### Authentication
 
-### Proposed route and structure
+Add a simple Lovable Cloud auth gate for the admin page instead of the current client-side SHA-256 password check. This provides real security — the current hash approach is visible in source code.
 
-**Route**: `/admin` (password-protected, same SHA-256 approach as SJMO)
+### Changes
 
-**Tabs**:
+| File | What |
+|------|------|
+| **Migration** | Create `mlp_site_config` table with a seed row containing current defaults |
+| `src/contexts/MLPContext.tsx` | Fetch config from Supabase on mount; `updateSiteData` writes to DB via upsert |
+| `src/pages/MLPAdmin.tsx` | Remove client-side password gate → use Supabase auth session check; Save button calls the context's `updateSiteData` which persists to DB |
+| `src/pages/Index.tsx` | No change needed — already reads from context |
 
-| Tab | Editable fields |
-|-----|----------------|
-| **Videos** | Video 1 YouTube URL/ID + title, Video 2 YouTube URL/ID + title, SoundCloud embed URL |
-| **Social & Contact** | Email address, Instagram URL, SoundCloud URL, Bandcamp URL, YouTube URL |
-| **Branding** | Site title, page subtitle text, Cloudinary logo ID |
+### How it works
 
-### Files
+1. On site load, `MLPContext` fetches the single config row from `mlp_site_config`
+2. Falls back to hardcoded defaults if the row doesn't exist yet
+3. Admin page authenticates via Supabase, edits the draft, hits Save
+4. Save upserts the row → context updates → site reflects changes immediately
+5. On next page load, the saved config is fetched from the database
 
-| File | Change |
-|------|--------|
-| `src/pages/MLPAdmin.tsx` | New file — admin panel component with password gate, tabs, and edit forms |
-| `src/contexts/MLPContext.tsx` | New file — React Context to hold editable MLP site data, with defaults pulled from current hardcoded values |
-| `src/App.tsx` | Add `/admin` route wrapped in the new context provider; wrap Index/About/etc. in the provider |
-| `src/pages/Index.tsx` | Read video URLs, social links, contact email from context instead of hardcoded values |
-
-### Design
-
-Matches the MLP aesthetic (not the SJMO brutalist style) — dark background, the same font and border styling used on the main site, uppercase tracking. Clean and minimal.
-
-### Limitation
-
-Same as SJMO: client-side only, changes are local. For persistent editing without code changes, you'd need a backend (Supabase or similar) — happy to plan that as a follow-up if you want.
+### What stays the same
+- The admin UI layout and tabs
+- The context API (`useMLP()` hook)
+- Google Sheets integration for gigs/about/background (unchanged)
 
