@@ -25,6 +25,8 @@ export interface MLPSpotlight {
   spotifyUrl: string;
   spotifyEmbedUrl: string;
   description: string;
+  ctaText: string;
+  pressBadgeLabel: string;
 }
 
 export interface MLPPressItem {
