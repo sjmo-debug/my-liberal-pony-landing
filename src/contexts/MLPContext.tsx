@@ -112,6 +112,7 @@ function rowToSiteData(row: any): MLPSiteData {
     branding: row.branding as MLPBranding,
     spotlight: { ...defaultSiteData.spotlight, ...(row.spotlight || {}) } as MLPSpotlight,
     press: (row.press || defaultSiteData.press) as MLPPressItem[],
+    navigation: (row.navigation || defaultSiteData.navigation) as MLPNavItem[],
   };
 }
 
