@@ -20,6 +20,7 @@ export interface MLPBranding {
 }
 
 export interface MLPSpotlight {
+  header: string;
   title: string;
   spotifyUrl: string;
   spotifyEmbedUrl: string;
