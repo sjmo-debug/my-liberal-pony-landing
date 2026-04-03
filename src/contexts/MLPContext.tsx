@@ -50,6 +50,7 @@ export interface MLPSiteData {
   branding: MLPBranding;
   spotlight: MLPSpotlight;
   press: MLPPressItem[];
+  navigation: MLPNavItem[];
 }
 
 interface MLPContextValue {
