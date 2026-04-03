@@ -110,6 +110,26 @@ export default function MLPAdmin() {
     setDraft({ ...draft, press });
   };
 
+  const addNavItem = () => {
+    setDraft({
+      ...draft,
+      navigation: [...draft.navigation, { label: '', url: '', isExternal: false }],
+    });
+  };
+
+  const removeNavItem = (index: number) => {
+    setDraft({
+      ...draft,
+      navigation: draft.navigation.filter((_, i) => i !== index),
+    });
+  };
+
+  const updateNavItem = (index: number, field: keyof MLPNavItem, value: string | boolean) => {
+    const navigation = [...draft.navigation];
+    navigation[index] = { ...navigation[index], [field]: value };
+    setDraft({ ...draft, navigation });
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground p-6 md:p-12">
       <div className="max-w-4xl mx-auto">
