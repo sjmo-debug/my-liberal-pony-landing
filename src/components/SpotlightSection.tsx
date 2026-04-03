@@ -13,7 +13,7 @@ export default function SpotlightSection({ spotlight, press, showRainbow, onHove
   return (
     <section className="w-full space-y-8">
       <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
-        New Single — {spotlight.title}
+        {spotlight.header || 'New Single'} — {spotlight.title}
       </h2>
 
       {spotlight.description && (

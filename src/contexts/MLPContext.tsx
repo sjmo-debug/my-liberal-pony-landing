@@ -20,6 +20,7 @@ export interface MLPBranding {
 }
 
 export interface MLPSpotlight {
+  header: string;
   title: string;
   spotifyUrl: string;
   spotifyEmbedUrl: string;
@@ -69,6 +70,7 @@ const defaultSiteData: MLPSiteData = {
     cloudinaryLogoId: '',
   },
   spotlight: {
+    header: 'New Single',
     title: 'Fingerprints',
     spotifyUrl: 'https://open.spotify.com/track/2MJXjtYkBRQYYLlyBTnXI0',
     spotifyEmbedUrl: 'https://open.spotify.com/embed/track/2MJXjtYkBRQYYLlyBTnXI0',
