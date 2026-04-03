@@ -36,6 +36,12 @@ export interface MLPPressItem {
   date: string;
 }
 
+export interface MLPNavItem {
+  label: string;
+  url: string;
+  isExternal: boolean;
+}
+
 export interface MLPSiteData {
   videos: [MLPVideo, MLPVideo];
   soundcloudEmbedUrl: string;
