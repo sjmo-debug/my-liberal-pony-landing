@@ -1,48 +1,93 @@
 
 
-## Persistent MLP Admin with Lovable Cloud
+## SEO-Optimised Single Release Layout + Admin Updates
 
-### Goal
-Replace the in-memory React context with a Lovable Cloud database table so admin changes survive page refreshes and deploys.
+### What we're doing
 
-### Database
+Restructuring the homepage to drive Spotify streams and YouTube views for the debut single, adding prominent press/radio credibility (BBC Introducing), and extending the admin panel so you can manage all of this yourself going forward.
 
-**Table: `mlp_site_config`**
-| Column | Type | Notes |
-|--------|------|-------|
-| `id` | uuid (PK) | Single row |
-| `videos` | jsonb | Array of `{youtubeId, title}` |
-| `soundcloud_embed_url` | text | |
-| `contact_email` | text | |
-| `social_links` | jsonb | `{instagram, soundcloud, bandcamp, youtube}` |
-| `branding` | jsonb | `{siteTitle, pageSubtitle, cloudinaryLogoId}` |
-| `updated_at` | timestamptz | Auto-updated |
+### Homepage layout changes
 
-RLS: public read (no auth needed to display site), write restricted to authenticated admin.
+The current page order is: Hero → Watch & Listen (2 videos) → Listen (SoundCloud) → Gigs → Contact → Footer.
 
-### Authentication
+New order, optimised for the single release:
 
-Add a simple Lovable Cloud auth gate for the admin page instead of the current client-side SHA-256 password check. This provides real security — the current hash approach is visible in source code.
+```text
+┌─────────────────────────────────┐
+│  HERO (logo + title)            │
+├─────────────────────────────────┤
+│  🎵 NEW SINGLE — SPOTLIGHT      │  ← NEW section
+│  Spotify embed (large)          │
+│  "Listen on Spotify" CTA button │
+│  BBC Introducing quote/badge    │
+├─────────────────────────────────┤
+│  WATCH — YouTube video          │  ← renamed, single featured video
+│  (music video for the single)   │
+├─────────────────────────────────┤
+│  MORE MUSIC                     │  ← secondary section
+│  Video 2 + SoundCloud embed     │
+├─────────────────────────────────┤
+│  GIGS                           │
+├─────────────────────────────────┤
+│  PRESS                          │  ← NEW section
+│  BBC Introducing link + any     │
+│  future press items             │
+├─────────────────────────────────┤
+│  CONTACT + FOOTER               │
+└─────────────────────────────────┘
+```
 
-### Changes
+### SEO enhancements
+
+- Add Spotify link to JSON-LD `sameAs` array and add a `MusicRecording` schema block for the single
+- Update `<meta>` description and OG tags to mention the single name
+- Add Spotify to `dns-prefetch` in `index.html`
+- Add `<link rel="canonical">` dynamically
+- Update `sitemap.xml` lastmod date
+- Add Spotify link to footer navigation
+
+### Data model changes
+
+Extend `mlp_site_config` with two new JSONB columns:
+
+| Column | Type | Purpose |
+|--------|------|---------|
+| `spotlight` | jsonb | `{ title, spotifyUrl, spotifyEmbedUrl, description }` — the featured release |
+| `press` | jsonb | Array of `{ title, url, source, date }` — press mentions |
+
+### Admin panel changes
+
+Add two new tabs:
+
+| Tab | Fields |
+|-----|--------|
+| **Spotlight** | Single/release title, Spotify track URL, Spotify embed URL, short description |
+| **Press** | Add/remove press items (title, URL, source name, date) |
+
+### Files to change
 
 | File | What |
 |------|------|
-| **Migration** | Create `mlp_site_config` table with a seed row containing current defaults |
-| `src/contexts/MLPContext.tsx` | Fetch config from Supabase on mount; `updateSiteData` writes to DB via upsert |
-| `src/pages/MLPAdmin.tsx` | Remove client-side password gate → use Supabase auth session check; Save button calls the context's `updateSiteData` which persists to DB |
-| `src/pages/Index.tsx` | No change needed — already reads from context |
+| **Migration** | `ALTER TABLE mlp_site_config ADD COLUMN spotlight jsonb`, `ADD COLUMN press jsonb`; seed with current Spotify + BBC data |
+| `src/contexts/MLPContext.tsx` | Add `spotlight` and `press` interfaces and fields; update `rowToSiteData` and `updateSiteData` |
+| `src/pages/Index.tsx` | Restructure layout: Spotlight section with Spotify embed + CTA at top, featured video below, secondary music section, new Press section before contact |
+| `src/pages/MLPAdmin.tsx` | Add "Spotlight" and "Press" tabs with editable fields |
+| `index.html` | Update meta description, add `MusicRecording` JSON-LD, add Spotify to `sameAs` and `dns-prefetch` |
+| `public/sitemap.xml` | Update lastmod to current date |
 
-### How it works
+### How the Spotify embed works
 
-1. On site load, `MLPContext` fetches the single config row from `mlp_site_config`
-2. Falls back to hardcoded defaults if the row doesn't exist yet
-3. Admin page authenticates via Supabase, edits the draft, hits Save
-4. Save upserts the row → context updates → site reflects changes immediately
-5. On next page load, the saved config is fetched from the database
+Spotify provides an oEmbed iframe. For the track `2MJXjtYkBRQYYLlyBTnXI0`, the embed URL is:
+`https://open.spotify.com/embed/track/2MJXjtYkBRQYYLlyBTnXI0`
 
-### What stays the same
-- The admin UI layout and tabs
-- The context API (`useMLP()` hook)
-- Google Sheets integration for gigs/about/background (unchanged)
+This renders a playable widget directly on the page — no API key needed.
+
+### Press section
+
+A simple list of linked items. The BBC Introducing entry would be:
+- **Source**: BBC Introducing
+- **Title**: (whatever the segment title is)
+- **URL**: `https://www.bbc.co.uk/sounds/play/m002t20g`
+
+Future press coverage gets added via the admin panel — no code changes needed.
 
