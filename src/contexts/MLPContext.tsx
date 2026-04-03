@@ -95,6 +95,10 @@ const defaultSiteData: MLPSiteData = {
       date: '2026-04-01',
     },
   ],
+  navigation: [
+    { label: 'About', url: '/about', isExternal: false },
+    { label: 'Instagram', url: 'https://instagram.com/myliberalpony', isExternal: true },
+  ],
 };
 
 const MLPContext = createContext<MLPContextValue | undefined>(undefined);
