@@ -157,6 +157,7 @@ export function MLPProvider({ children }: { children: ReactNode }) {
       branding: merged.branding,
       spotlight: merged.spotlight,
       press: merged.press,
+      navigation: merged.navigation,
     };
 
     if (configId) {
