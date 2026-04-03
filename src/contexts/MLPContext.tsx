@@ -25,6 +25,8 @@ export interface MLPSpotlight {
   spotifyUrl: string;
   spotifyEmbedUrl: string;
   description: string;
+  ctaText: string;
+  pressBadgeLabel: string;
 }
 
 export interface MLPPressItem {
@@ -75,6 +77,8 @@ const defaultSiteData: MLPSiteData = {
     spotifyUrl: 'https://open.spotify.com/track/2MJXjtYkBRQYYLlyBTnXI0',
     spotifyEmbedUrl: 'https://open.spotify.com/embed/track/2MJXjtYkBRQYYLlyBTnXI0',
     description: 'Debut single out now',
+    ctaText: 'Listen on Spotify',
+    pressBadgeLabel: 'As heard on',
   },
   press: [
     {

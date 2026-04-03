@@ -44,14 +44,14 @@ export default function SpotlightSection({ spotlight, press, showRainbow, onHove
         onMouseLeave={() => onHover(false)}
         className={`inline-block font-heading text-xl md:text-2xl lg:text-3xl font-bold uppercase px-8 py-5 md:px-10 md:py-6 tracking-wider transition-all duration-300 ${showRainbow ? 'border-2 border-black hover:bg-black hover:text-white' : 'border-2 border-foreground hover:bg-foreground hover:text-background'}`}
       >
-        Listen on Spotify
+        {spotlight.ctaText || 'Listen on Spotify'}
       </a>
 
       {/* BBC Introducing badge */}
       {firstPress && (
         <div className="pt-4">
           <p className="font-body text-sm md:text-base uppercase tracking-widest text-muted-foreground mb-2">
-            As heard on
+            {spotlight.pressBadgeLabel || 'As heard on'}
           </p>
           <a
             href={firstPress.url}

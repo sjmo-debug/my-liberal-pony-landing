@@ -139,6 +139,8 @@ export default function MLPAdmin() {
               <Field label="Spotify Track URL" value={draft.spotlight.spotifyUrl} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, spotifyUrl: v } })} placeholder="https://open.spotify.com/track/..." />
               <Field label="Spotify Embed URL" value={draft.spotlight.spotifyEmbedUrl} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, spotifyEmbedUrl: v } })} placeholder="https://open.spotify.com/embed/track/..." />
               <Field label="Description" value={draft.spotlight.description} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, description: v } })} placeholder="e.g. Debut single out now" />
+              <Field label="CTA Button Text" value={draft.spotlight.ctaText} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, ctaText: v } })} placeholder="e.g. Listen on Spotify" />
+              <Field label="Press Badge Label" value={draft.spotlight.pressBadgeLabel} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, pressBadgeLabel: v } })} placeholder="e.g. As heard on" />
             </Section>
           )}
 
