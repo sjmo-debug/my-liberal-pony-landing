@@ -1,0 +1,1 @@
+ALTER TABLE public.mlp_site_config ADD COLUMN navigation jsonb NOT NULL DEFAULT '[]'::jsonb;
