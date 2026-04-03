@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
 
-type Tab = 'spotlight' | 'videos' | 'social' | 'press' | 'branding';
+type Tab = 'spotlight' | 'videos' | 'social' | 'press' | 'branding' | 'navigation';
 
 const tabs: { key: Tab; label: string }[] = [
   { key: 'spotlight', label: 'Spotlight' },
@@ -13,6 +13,7 @@ const tabs: { key: Tab; label: string }[] = [
   { key: 'social', label: 'Social & Contact' },
   { key: 'press', label: 'Press' },
   { key: 'branding', label: 'Branding' },
+  { key: 'navigation', label: 'Navigation' },
 ];
 
 const inputClass =
