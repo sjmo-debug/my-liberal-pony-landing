@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useMLP, type MLPSiteData, type MLPPressItem } from '@/contexts/MLPContext';
+import { useMLP, type MLPSiteData, type MLPPressItem, type MLPNavItem } from '@/contexts/MLPContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
 
-type Tab = 'spotlight' | 'videos' | 'social' | 'press' | 'branding';
+type Tab = 'spotlight' | 'videos' | 'social' | 'press' | 'branding' | 'navigation';
 
 const tabs: { key: Tab; label: string }[] = [
   { key: 'spotlight', label: 'Spotlight' },
@@ -13,6 +13,7 @@ const tabs: { key: Tab; label: string }[] = [
   { key: 'social', label: 'Social & Contact' },
   { key: 'press', label: 'Press' },
   { key: 'branding', label: 'Branding' },
+  { key: 'navigation', label: 'Navigation' },
 ];
 
 const inputClass =
@@ -109,6 +110,26 @@ export default function MLPAdmin() {
     setDraft({ ...draft, press });
   };
 
+  const addNavItem = () => {
+    setDraft({
+      ...draft,
+      navigation: [...draft.navigation, { label: '', url: '', isExternal: false }],
+    });
+  };
+
+  const removeNavItem = (index: number) => {
+    setDraft({
+      ...draft,
+      navigation: draft.navigation.filter((_, i) => i !== index),
+    });
+  };
+
+  const updateNavItem = (index: number, field: keyof MLPNavItem, value: string | boolean) => {
+    const navigation = [...draft.navigation];
+    navigation[index] = { ...navigation[index], [field]: value };
+    setDraft({ ...draft, navigation });
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground p-6 md:p-12">
       <div className="max-w-4xl mx-auto">
@@ -199,6 +220,28 @@ export default function MLPAdmin() {
               <Field label="Site Title" value={draft.branding.siteTitle} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, siteTitle: v } })} />
               <Field label="Page Subtitle" value={draft.branding.pageSubtitle} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, pageSubtitle: v } })} />
               <Field label="Cloudinary Logo ID" value={draft.branding.cloudinaryLogoId} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, cloudinaryLogoId: v } })} placeholder="Leave empty to use local logo" />
+            </Section>
+          )}
+
+          {activeTab === 'navigation' && (
+            <Section title="Navigation Bar">
+              {draft.navigation.map((item, i) => (
+                <div key={i} className="border-2 border-foreground/30 p-4 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="font-heading text-sm uppercase tracking-widest">Link {i + 1}</span>
+                    <button onClick={() => removeNavItem(i)} className="font-heading uppercase tracking-widest text-xs px-3 py-1 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors">Remove</button>
+                  </div>
+                  <Field label="Label" value={item.label} onChange={(v) => updateNavItem(i, 'label', v)} placeholder="e.g. About" />
+                  <Field label="URL" value={item.url} onChange={(v) => updateNavItem(i, 'url', v)} placeholder="e.g. /about or https://..." />
+                  <div className="flex items-center gap-3">
+                    <input type="checkbox" checked={item.isExternal} onChange={(e) => updateNavItem(i, 'isExternal', e.target.checked)} className="w-4 h-4 accent-foreground" />
+                    <label className="font-body text-xs uppercase tracking-widest text-muted-foreground">External link (opens in new tab)</label>
+                  </div>
+                </div>
+              ))}
+              <button onClick={addNavItem} className="w-full font-heading uppercase tracking-widest text-sm px-4 py-3 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors">
+                + Add Nav Link
+              </button>
             </Section>
           )}
         </div>

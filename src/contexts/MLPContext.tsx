@@ -36,6 +36,12 @@ export interface MLPPressItem {
   date: string;
 }
 
+export interface MLPNavItem {
+  label: string;
+  url: string;
+  isExternal: boolean;
+}
+
 export interface MLPSiteData {
   videos: [MLPVideo, MLPVideo];
   soundcloudEmbedUrl: string;
@@ -44,6 +50,7 @@ export interface MLPSiteData {
   branding: MLPBranding;
   spotlight: MLPSpotlight;
   press: MLPPressItem[];
+  navigation: MLPNavItem[];
 }
 
 interface MLPContextValue {
@@ -88,6 +95,10 @@ const defaultSiteData: MLPSiteData = {
       date: '2026-04-01',
     },
   ],
+  navigation: [
+    { label: 'About', url: '/about', isExternal: false },
+    { label: 'Instagram', url: 'https://instagram.com/myliberalpony', isExternal: true },
+  ],
 };
 
 const MLPContext = createContext<MLPContextValue | undefined>(undefined);
@@ -101,6 +112,7 @@ function rowToSiteData(row: any): MLPSiteData {
     branding: row.branding as MLPBranding,
     spotlight: { ...defaultSiteData.spotlight, ...(row.spotlight || {}) } as MLPSpotlight,
     press: (row.press || defaultSiteData.press) as MLPPressItem[],
+    navigation: (row.navigation || defaultSiteData.navigation) as MLPNavItem[],
   };
 }
 
@@ -145,6 +157,7 @@ export function MLPProvider({ children }: { children: ReactNode }) {
       branding: merged.branding,
       spotlight: merged.spotlight,
       press: merged.press,
+      navigation: merged.navigation,
     };
 
     if (configId) {

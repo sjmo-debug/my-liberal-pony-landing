@@ -19,6 +19,7 @@ export type Database = {
           branding: Json
           contact_email: string
           id: string
+          navigation: Json
           press: Json
           social_links: Json
           soundcloud_embed_url: string
@@ -30,6 +31,7 @@ export type Database = {
           branding?: Json
           contact_email?: string
           id?: string
+          navigation?: Json
           press?: Json
           social_links?: Json
           soundcloud_embed_url?: string
@@ -41,6 +43,7 @@ export type Database = {
           branding?: Json
           contact_email?: string
           id?: string
+          navigation?: Json
           press?: Json
           social_links?: Json
           soundcloud_embed_url?: string
