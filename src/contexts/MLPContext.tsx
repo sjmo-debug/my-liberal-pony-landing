@@ -19,12 +19,28 @@ export interface MLPBranding {
   cloudinaryLogoId: string;
 }
 
+export interface MLPSpotlight {
+  title: string;
+  spotifyUrl: string;
+  spotifyEmbedUrl: string;
+  description: string;
+}
+
+export interface MLPPressItem {
+  title: string;
+  url: string;
+  source: string;
+  date: string;
+}
+
 export interface MLPSiteData {
   videos: [MLPVideo, MLPVideo];
   soundcloudEmbedUrl: string;
   contactEmail: string;
   socialLinks: MLPSocialLinks;
   branding: MLPBranding;
+  spotlight: MLPSpotlight;
+  press: MLPPressItem[];
 }
 
 interface MLPContextValue {
@@ -52,6 +68,20 @@ const defaultSiteData: MLPSiteData = {
     pageSubtitle: 'Watch & Listen - Upcoming Gigs',
     cloudinaryLogoId: '',
   },
+  spotlight: {
+    title: 'Fingerprints',
+    spotifyUrl: 'https://open.spotify.com/track/2MJXjtYkBRQYYLlyBTnXI0',
+    spotifyEmbedUrl: 'https://open.spotify.com/embed/track/2MJXjtYkBRQYYLlyBTnXI0',
+    description: 'Debut single out now',
+  },
+  press: [
+    {
+      title: 'BBC Introducing',
+      url: 'https://www.bbc.co.uk/sounds/play/m002t20g',
+      source: 'BBC Introducing',
+      date: '2026-04-01',
+    },
+  ],
 };
 
 const MLPContext = createContext<MLPContextValue | undefined>(undefined);
@@ -63,6 +93,8 @@ function rowToSiteData(row: any): MLPSiteData {
     contactEmail: row.contact_email,
     socialLinks: row.social_links as MLPSocialLinks,
     branding: row.branding as MLPBranding,
+    spotlight: (row.spotlight || defaultSiteData.spotlight) as MLPSpotlight,
+    press: (row.press || defaultSiteData.press) as MLPPressItem[],
   };
 }
 
@@ -105,6 +137,8 @@ export function MLPProvider({ children }: { children: ReactNode }) {
       contact_email: merged.contactEmail,
       social_links: merged.socialLinks,
       branding: merged.branding,
+      spotlight: merged.spotlight,
+      press: merged.press,
     };
 
     if (configId) {
