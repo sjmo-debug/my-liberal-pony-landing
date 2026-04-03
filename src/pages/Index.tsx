@@ -32,12 +32,17 @@ const Index = () => {
       {/* Hero */}
       <section className={`min-h-[60vh] flex flex-col items-center justify-center relative transition-colors duration-500 z-10 ${showRainbow ? '' : 'bg-background'}`}>
         <nav className={`absolute top-6 left-0 right-0 flex justify-between items-center px-6 md:px-12 transition-colors duration-500 ${showRainbow ? 'text-black' : 'text-foreground'}`}>
-          <Link to="/about" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className="font-body text-sm uppercase tracking-widest hover:opacity-70 transition-opacity md:text-3xl">
-            About
-          </Link>
-          <a href={siteData.socialLinks.instagram} target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className="font-body text-sm uppercase tracking-widest hover:opacity-70 transition-opacity md:text-3xl">
-            Instagram
-          </a>
+          {siteData.navigation.map((item, i) => (
+            item.isExternal ? (
+              <a key={i} href={item.url} target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className="font-body text-sm uppercase tracking-widest hover:opacity-70 transition-opacity md:text-3xl">
+                {item.label}
+              </a>
+            ) : (
+              <Link key={i} to={item.url} onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className="font-body text-sm uppercase tracking-widest hover:opacity-70 transition-opacity md:text-3xl">
+                {item.label}
+              </Link>
+            )
+          ))}
         </nav>
 
         <header className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} text-center ${showRainbow ? 'text-black' : 'text-foreground'}`}>

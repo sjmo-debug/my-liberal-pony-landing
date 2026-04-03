@@ -222,6 +222,28 @@ export default function MLPAdmin() {
               <Field label="Cloudinary Logo ID" value={draft.branding.cloudinaryLogoId} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, cloudinaryLogoId: v } })} placeholder="Leave empty to use local logo" />
             </Section>
           )}
+
+          {activeTab === 'navigation' && (
+            <Section title="Navigation Bar">
+              {draft.navigation.map((item, i) => (
+                <div key={i} className="border-2 border-foreground/30 p-4 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="font-heading text-sm uppercase tracking-widest">Link {i + 1}</span>
+                    <button onClick={() => removeNavItem(i)} className="font-heading uppercase tracking-widest text-xs px-3 py-1 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors">Remove</button>
+                  </div>
+                  <Field label="Label" value={item.label} onChange={(v) => updateNavItem(i, 'label', v)} placeholder="e.g. About" />
+                  <Field label="URL" value={item.url} onChange={(v) => updateNavItem(i, 'url', v)} placeholder="e.g. /about or https://..." />
+                  <div className="flex items-center gap-3">
+                    <input type="checkbox" checked={item.isExternal} onChange={(e) => updateNavItem(i, 'isExternal', e.target.checked)} className="w-4 h-4 accent-foreground" />
+                    <label className="font-body text-xs uppercase tracking-widest text-muted-foreground">External link (opens in new tab)</label>
+                  </div>
+                </div>
+              ))}
+              <button onClick={addNavItem} className="w-full font-heading uppercase tracking-widest text-sm px-4 py-3 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors">
+                + Add Nav Link
+              </button>
+            </Section>
+          )}
         </div>
       </div>
     </div>
