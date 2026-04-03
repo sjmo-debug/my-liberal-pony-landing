@@ -51,7 +51,7 @@ export default function SpotlightSection({ spotlight, press, showRainbow, onHove
       {firstPress && (
         <div className="pt-4">
           <p className="font-body text-sm md:text-base uppercase tracking-widest text-muted-foreground mb-2">
-            As heard on
+            {spotlight.pressBadgeLabel || 'As heard on'}
           </p>
           <a
             href={firstPress.url}
