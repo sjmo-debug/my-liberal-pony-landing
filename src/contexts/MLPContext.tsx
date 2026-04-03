@@ -95,7 +95,7 @@ function rowToSiteData(row: any): MLPSiteData {
     contactEmail: row.contact_email,
     socialLinks: row.social_links as MLPSocialLinks,
     branding: row.branding as MLPBranding,
-    spotlight: (row.spotlight || defaultSiteData.spotlight) as MLPSpotlight,
+    spotlight: { ...defaultSiteData.spotlight, ...(row.spotlight || {}) } as MLPSpotlight,
     press: (row.press || defaultSiteData.press) as MLPPressItem[],
   };
 }
