@@ -1,15 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import BackgroundManager from '@/components/BackgroundManager';
 import { useAboutContent } from '@/hooks/useAboutContent';
+import SEO from '@/components/SEO';
 
 const About = () => {
-  useEffect(() => { document.title = "MY LIBERAL PONY - About"; }, []);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const { data: entries, isLoading } = useAboutContent();
 
   return <div className="min-h-screen transition-all duration-500">
+      <SEO
+        title="MY LIBERAL PONY - About"
+        description="About MY LIBERAL PONY — a multimedia, genre-bending experimental artist from the UK creating live music and social commentary."
+        path="/about"
+      />
       <BackgroundManager isVisible={isButtonHovered} />
       <div className={`min-h-screen flex flex-col items-center justify-center p-4 md:p-8 transition-colors duration-500 relative z-10 ${isButtonHovered ? 'text-black' : 'bg-background text-foreground'}`}>
         <article className="w-full max-w-5xl mx-auto text-center space-y-8 md:space-y-12 px-4 md:px-8">
