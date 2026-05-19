@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
+import SEO from '@/components/SEO';
 
 type Tab = 'spotlight' | 'videos' | 'social' | 'press' | 'branding' | 'navigation';
 
@@ -29,6 +30,8 @@ export default function MLPAdmin() {
   const [activeTab, setActiveTab] = useState<Tab>('spotlight');
   const [draft, setDraft] = useState<MLPSiteData>(JSON.parse(JSON.stringify(siteData)));
   const [saving, setSaving] = useState(false);
+
+  // Render noindex on admin so it's never crawled
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -132,6 +135,7 @@ export default function MLPAdmin() {
 
   return (
     <div className="min-h-screen bg-background text-foreground p-6 md:p-12">
+      <SEO title="MLP Admin" description="Admin panel" path="/admin" noindex />
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <h1 className="font-heading text-2xl md:text-3xl uppercase tracking-widest">MLP Admin</h1>

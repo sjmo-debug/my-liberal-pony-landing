@@ -7,6 +7,7 @@ import BackgroundManager from '@/components/BackgroundManager';
 import { useMLP } from '@/contexts/MLPContext';
 import SpotlightSection from '@/components/SpotlightSection';
 import PressSection from '@/components/PressSection';
+import SEO from '@/components/SEO';
 
 const Index = () => {
   const { siteData } = useMLP();
@@ -25,8 +26,32 @@ const Index = () => {
 
   const showRainbow = isButtonHovered;
 
+  const pageTitle = `${siteData.branding.siteTitle} - ${siteData.spotlight.title || siteData.branding.pageSubtitle}`;
+  const pageDescription = siteData.spotlight.description
+    || `Experimental live music & multimedia art from ${siteData.branding.siteTitle}. Stream the latest single and find upcoming gigs.`;
+
+  const jsonLd: Record<string, unknown>[] = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://myliberalpony.co.uk/' },
+      ],
+    },
+  ];
+  if (siteData.spotlight.title && siteData.spotlight.spotifyUrl) {
+    jsonLd.push({
+      '@context': 'https://schema.org',
+      '@type': 'MusicRecording',
+      name: siteData.spotlight.title,
+      url: siteData.spotlight.spotifyUrl,
+      byArtist: { '@type': 'MusicGroup', name: siteData.branding.siteTitle },
+    });
+  }
+
   return (
     <div className="transition-all duration-500 relative">
+      <SEO title={pageTitle} description={pageDescription} path="/" jsonLd={jsonLd} />
       <BackgroundManager isVisible={showRainbow} />
       
       {/* Hero */}
@@ -46,7 +71,7 @@ const Index = () => {
         </nav>
 
         <header className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} text-center ${showRainbow ? 'text-black' : 'text-foreground'}`}>
-          <img src={mlpLogo} alt="MY LIBERAL PONY logo" className={`w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 xl:w-[28rem] xl:h-[28rem] object-contain mx-auto mb-6 transition-all duration-500 relative z-10 ${showRainbow ? '' : 'filter invert'}`} />
+          <img src={mlpLogo} alt="MY LIBERAL PONY logo" width={512} height={512} className={`w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 xl:w-[28rem] xl:h-[28rem] object-contain mx-auto mb-6 transition-all duration-500 relative z-10 ${showRainbow ? '' : 'filter invert'}`} />
           <h1 className="font-heading text-4xl lg:text-7xl xl:text-8xl font-bold tracking-wider uppercase md:text-7xl">
             {siteData.branding.siteTitle}
           </h1>
@@ -69,7 +94,7 @@ const Index = () => {
             </h2>
             <div className={`group relative overflow-hidden transition-all duration-300 hover:scale-[1.01] ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
               <div className="aspect-video">
-                <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${siteData.videos[0].youtubeId}`} title={siteData.videos[0].title} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="absolute inset-0 w-full h-full" />
+                <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${siteData.videos[0].youtubeId}`} title={siteData.videos[0].title} frameBorder="0" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="absolute inset-0 w-full h-full" />
               </div>
             </div>
           </section>
@@ -81,11 +106,11 @@ const Index = () => {
             </h2>
             <div className={`group relative overflow-hidden transition-all duration-300 hover:scale-[1.01] ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
               <div className="aspect-video">
-                <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${siteData.videos[1].youtubeId}`} title={siteData.videos[1].title} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="absolute inset-0 w-full h-full" />
+                <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${siteData.videos[1].youtubeId}`} title={siteData.videos[1].title} frameBorder="0" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="absolute inset-0 w-full h-full" />
               </div>
             </div>
             <div className={`overflow-hidden transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
-              <iframe width="100%" height="166" scrolling="no" frameBorder="no" allow="autoplay" src={siteData.soundcloudEmbedUrl} title="MY LIBERAL PONY on SoundCloud" />
+              <iframe width="100%" height="166" scrolling="no" frameBorder="no" loading="lazy" allow="autoplay" src={siteData.soundcloudEmbedUrl} title="MY LIBERAL PONY on SoundCloud" />
             </div>
           </section>
 
