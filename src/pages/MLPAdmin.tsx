@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useMLP, type MLPSiteData, type MLPPressItem, type MLPNavItem } from '@/contexts/MLPContext';
+import { useMLP, type MLPSiteData, type MLPNavItem } from '@/contexts/MLPContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
@@ -91,26 +91,6 @@ export default function MLPAdmin() {
       </div>
     );
   }
-
-  const addPressItem = () => {
-    setDraft({
-      ...draft,
-      press: [...draft.press, { title: '', url: '', source: '', date: '' }],
-    });
-  };
-
-  const removePressItem = (index: number) => {
-    setDraft({
-      ...draft,
-      press: draft.press.filter((_, i) => i !== index),
-    });
-  };
-
-  const updatePressItem = (index: number, field: keyof MLPPressItem, value: string) => {
-    const press = [...draft.press];
-    press[index] = { ...press[index], [field]: value };
-    setDraft({ ...draft, press });
-  };
 
   const addNavItem = () => {
     setDraft({
