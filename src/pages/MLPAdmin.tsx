@@ -6,13 +6,12 @@ import { Link } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
 import SEO from '@/components/SEO';
 
-type Tab = 'spotlight' | 'videos' | 'social' | 'press' | 'branding' | 'navigation';
+type Tab = 'spotlight' | 'videos' | 'social' | 'branding' | 'navigation';
 
 const tabs: { key: Tab; label: string }[] = [
   { key: 'spotlight', label: 'Spotlight' },
   { key: 'videos', label: 'Videos' },
   { key: 'social', label: 'Social & Contact' },
-  { key: 'press', label: 'Press' },
   { key: 'branding', label: 'Branding' },
   { key: 'navigation', label: 'Navigation' },
 ];
@@ -195,28 +194,9 @@ export default function MLPAdmin() {
                 <Field label="SoundCloud" value={draft.socialLinks.soundcloud} onChange={(v) => setDraft({ ...draft, socialLinks: { ...draft.socialLinks, soundcloud: v } })} />
                 <Field label="Bandcamp" value={draft.socialLinks.bandcamp} onChange={(v) => setDraft({ ...draft, socialLinks: { ...draft.socialLinks, bandcamp: v } })} />
                 <Field label="YouTube" value={draft.socialLinks.youtube} onChange={(v) => setDraft({ ...draft, socialLinks: { ...draft.socialLinks, youtube: v } })} />
+                <Field label="Buy Me a Coffee" value={draft.socialLinks.buyMeACoffee} onChange={(v) => setDraft({ ...draft, socialLinks: { ...draft.socialLinks, buyMeACoffee: v } })} placeholder="https://buymeacoffee.com/..." />
               </Section>
             </>
-          )}
-
-          {activeTab === 'press' && (
-            <Section title="Press & Media">
-              {draft.press.map((item, i) => (
-                <div key={i} className="border-2 border-foreground/30 p-4 space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="font-heading text-sm uppercase tracking-widest">Item {i + 1}</span>
-                    <button onClick={() => removePressItem(i)} className="font-heading uppercase tracking-widest text-xs px-3 py-1 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors">Remove</button>
-                  </div>
-                  <Field label="Source" value={item.source} onChange={(v) => updatePressItem(i, 'source', v)} placeholder="e.g. BBC Introducing" />
-                  <Field label="Title" value={item.title} onChange={(v) => updatePressItem(i, 'title', v)} placeholder="e.g. Interview segment title" />
-                  <Field label="URL" value={item.url} onChange={(v) => updatePressItem(i, 'url', v)} placeholder="https://..." />
-                  <Field label="Date" value={item.date} onChange={(v) => updatePressItem(i, 'date', v)} placeholder="YYYY-MM-DD" />
-                </div>
-              ))}
-              <button onClick={addPressItem} className="w-full font-heading uppercase tracking-widest text-sm px-4 py-3 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors">
-                + Add Press Item
-              </button>
-            </Section>
           )}
 
           {activeTab === 'branding' && (
