@@ -1,38 +1,23 @@
-## SEO Improvements
-
-### Scope
-Add per-route SEO control, expand sitemap coverage, and tighten on-page semantics. No backend or DB changes. No Twitter Card tags.
+## Add Buy Me a Coffee link & remove Press section
 
 ### Changes
 
-**1. Per-route SEO via `react-helmet-async`**
-- Install `react-helmet-async`.
-- Wrap `<App />` in `<HelmetProvider>` in `src/main.tsx`.
-- Add `src/components/SEO.tsx` — a small helper that renders `<title>`, `<meta name="description">`, `<link rel="canonical">`, and `og:title` / `og:description` / `og:url`. Optional `noindex` prop for admin routes.
-- Remove the static `<link rel="canonical">` from `index.html` so each route owns its own canonical (avoids duplicate canonicals).
-- Drop `<SEO>` into:
-  - `Index.tsx` — home (title from admin-managed branding + spotlight)
-  - `About.tsx`, `Gallery.tsx`, `Store.tsx`, `FAQ.tsx` — page-specific titles + descriptions
-  - `MLPAdmin.tsx` — `noindex`
+**1. Buy Me a Coffee (https://buymeacoffee.com/myliberalpony)**
+- Add `buyMeACoffeeUrl` field to `socialLinks` in `MLPContext` defaults and types.
+- Render a "Buy Me a Coffee" button in the Bookings & Enquiries section on `Index.tsx`, below the email button.
+- Add an editable field for the URL in the admin's "Social & Contact" tab in `MLPAdmin.tsx`.
 
-**2. Sitemap**
-- Expand `public/sitemap.xml` with `/about`, `/gallery`, `/store`, `/faq`, and the `/theSJMO` portfolio routes (home, about, projects, contact). Keep current `lastmod`.
+**2. Remove Press**
+- Remove the `<PressSection>` render and import from `Index.tsx`.
+- Remove the "As heard on / BBC Introducing" badge block from `SpotlightSection.tsx` (and the unused `press` prop).
+- Remove the "Press" tab and its editor UI from `MLPAdmin.tsx`.
+- Clear the existing press item from the database so the badge no longer appears.
 
-**3. `index.html` polish**
-- Add `<meta name="robots" content="index, follow" />`.
-- Add `og:image:alt`.
-- Remove the canonical tag (moves to per-route).
+### Files
+- `src/contexts/MLPContext.tsx` — extend `MLPSocialLinks` with `buyMeACoffee`, add default value.
+- `src/pages/Index.tsx` — render new button in bookings section; remove PressSection.
+- `src/components/SpotlightSection.tsx` — remove press badge block + prop.
+- `src/pages/MLPAdmin.tsx` — add field in Social tab, drop Press tab.
+- Database: update `mlp_site_config.press` to `[]`.
 
-**4. Homepage structured data (via Helmet)**
-- Add `MusicRecording` and `BreadcrumbList` JSON-LD on `Index.tsx` (complements the existing sitewide `MusicGroup` in `index.html`).
-
-**5. Image & performance polish**
-- Add `loading="lazy"` to YouTube and Spotify iframes on `Index.tsx` / `SpotlightSection.tsx`.
-- Audit `GigCard`, `SpotlightSection`, gallery thumbnails for missing or weak `alt` text.
-- Add explicit `width`/`height` to the hero logo `<img>` to reduce CLS.
-
-### Files touched
-`package.json`, `src/main.tsx`, `src/components/SEO.tsx` (new), `index.html`, `public/sitemap.xml`, `src/pages/Index.tsx`, `src/pages/About.tsx`, `src/pages/Gallery.tsx`, `src/pages/Store.tsx`, `src/pages/FAQ.tsx`, `src/pages/MLPAdmin.tsx`, `src/components/SpotlightSection.tsx`, `src/components/GigCard.tsx`.
-
-### Not included
-Twitter Card tags (you're not on the platform — OG tags already cover Instagram, Facebook, LinkedIn, WhatsApp, Discord, iMessage previews).
+Press data structure stays in the schema (not deleted) in case you want it back later — it's just hidden from the UI and admin.
