@@ -1,15 +1,12 @@
-import type { MLPSpotlight, MLPPressItem } from '@/contexts/MLPContext';
+import type { MLPSpotlight } from '@/contexts/MLPContext';
 
 interface Props {
   spotlight: MLPSpotlight;
-  press: MLPPressItem[];
   showRainbow: boolean;
   onHover: (v: boolean) => void;
 }
 
-export default function SpotlightSection({ spotlight, press, showRainbow, onHover }: Props) {
-  const firstPress = press[0];
-
+export default function SpotlightSection({ spotlight, showRainbow, onHover }: Props) {
   return (
     <section className="w-full space-y-8">
       <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
@@ -46,25 +43,6 @@ export default function SpotlightSection({ spotlight, press, showRainbow, onHove
       >
         {spotlight.ctaText || 'Listen on Spotify'}
       </a>
-
-      {/* BBC Introducing badge */}
-      {firstPress && (
-        <div className="pt-4">
-          <p className="font-body text-sm md:text-base uppercase tracking-widest text-muted-foreground mb-2">
-            {spotlight.pressBadgeLabel || 'As heard on'}
-          </p>
-          <a
-            href={firstPress.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onMouseEnter={() => onHover(true)}
-            onMouseLeave={() => onHover(false)}
-            className={`inline-block font-heading text-lg md:text-xl uppercase tracking-wider px-6 py-3 transition-all duration-300 ${showRainbow ? 'border-2 border-black hover:bg-black hover:text-white' : 'border-2 border-foreground hover:bg-foreground hover:text-background'}`}
-          >
-            {firstPress.source}
-          </a>
-        </div>
-      )}
     </section>
   );
 }

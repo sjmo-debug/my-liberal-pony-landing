@@ -11,6 +11,7 @@ export interface MLPSocialLinks {
   soundcloud: string;
   bandcamp: string;
   youtube: string;
+  buyMeACoffee: string;
 }
 
 export interface MLPBranding {
@@ -72,6 +73,7 @@ const defaultSiteData: MLPSiteData = {
     soundcloud: 'https://soundcloud.com/myliberalpony',
     bandcamp: 'https://myliberalpony.bandcamp.com/',
     youtube: 'https://www.youtube.com/@MYLIBERALPONY',
+    buyMeACoffee: 'https://buymeacoffee.com/myliberalpony',
   },
   branding: {
     siteTitle: 'MY LIBERAL PONY',
@@ -108,7 +110,7 @@ function rowToSiteData(row: any): MLPSiteData {
     videos: row.videos as [MLPVideo, MLPVideo],
     soundcloudEmbedUrl: row.soundcloud_embed_url,
     contactEmail: row.contact_email,
-    socialLinks: row.social_links as MLPSocialLinks,
+    socialLinks: { ...defaultSiteData.socialLinks, ...(row.social_links || {}) } as MLPSocialLinks,
     branding: row.branding as MLPBranding,
     spotlight: { ...defaultSiteData.spotlight, ...(row.spotlight || {}) } as MLPSpotlight,
     press: (row.press || defaultSiteData.press) as MLPPressItem[],

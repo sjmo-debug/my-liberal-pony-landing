@@ -6,7 +6,6 @@ import GigSection from '@/components/GigSection';
 import BackgroundManager from '@/components/BackgroundManager';
 import { useMLP } from '@/contexts/MLPContext';
 import SpotlightSection from '@/components/SpotlightSection';
-import PressSection from '@/components/PressSection';
 import SEO from '@/components/SEO';
 
 const Index = () => {
@@ -84,7 +83,7 @@ const Index = () => {
 
           {/* Spotlight — New Single */}
           {siteData.spotlight.spotifyEmbedUrl && (
-            <SpotlightSection spotlight={siteData.spotlight} press={siteData.press} showRainbow={showRainbow} onHover={setIsButtonHovered} />
+            <SpotlightSection spotlight={siteData.spotlight} showRainbow={showRainbow} onHover={setIsButtonHovered} />
           )}
 
           {/* Watch — Featured Video */}
@@ -117,11 +116,6 @@ const Index = () => {
           {/* Gigs */}
           <GigSection onButtonHover={setIsButtonHovered} isButtonHovered={isButtonHovered} showTitle={true} onGigsLoaded={setHasGigs} />
 
-          {/* Press */}
-          {siteData.press.length > 0 && (
-            <PressSection press={siteData.press} showRainbow={showRainbow} onHover={setIsButtonHovered} />
-          )}
-
           {/* Contact */}
           <section id="contact-section" className={`pt-16 border-t-4 py-16 transition-colors duration-500 ${showRainbow ? 'border-black bg-black/5' : 'border-foreground bg-foreground/5'}`}>
             <div className="text-center space-y-8">
@@ -135,6 +129,24 @@ const Index = () => {
                 <a href={`mailto:${siteData.contactEmail}`} onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} aria-label={`Email ${siteData.branding.siteTitle} for bookings and enquiries`} className={`inline-block font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold uppercase px-6 py-4 md:px-8 md:py-5 lg:px-10 lg:py-6 min-h-[44px] transition-all duration-300 tracking-wider ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
                   {siteData.contactEmail.toUpperCase()}
                 </a>
+                {siteData.socialLinks.buyMeACoffee && (
+                  <div className="pt-6">
+                    <p className="font-body text-base md:text-lg uppercase tracking-widest mb-3">
+                      Support the music
+                    </p>
+                    <a
+                      href={siteData.socialLinks.buyMeACoffee}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onMouseEnter={() => setIsButtonHovered(true)}
+                      onMouseLeave={() => setIsButtonHovered(false)}
+                      aria-label="Buy me a coffee"
+                      className={`inline-block font-body text-lg md:text-xl lg:text-2xl font-bold uppercase px-6 py-4 md:px-8 md:py-5 min-h-[44px] transition-all duration-300 tracking-wider ${showRainbow ? 'border-2 border-black hover:bg-black hover:text-white' : 'border-2 border-foreground hover:bg-foreground hover:text-background'}`}
+                    >
+                      ☕ Buy Me a Coffee
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </section>
