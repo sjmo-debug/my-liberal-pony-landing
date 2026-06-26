@@ -1,23 +1,22 @@
-## Add Buy Me a Coffee link & remove Press section
+## Fix the favicon (root cause of Google showing the Lovable icon)
+
+The current `public/mlp-favicon.png` is a PDF file with a `.png` extension. Browsers and Google's crawler can't decode it, so they fall back to the platform's default Lovable icon. No subpage references stray icons — the issue is entirely the one broken file at the site root.
 
 ### Changes
 
-**1. Buy Me a Coffee (https://buymeacoffee.com/myliberalpony)**
-- Add `buyMeACoffeeUrl` field to `socialLinks` in `MLPContext` defaults and types.
-- Render a "Buy Me a Coffee" button in the Bookings & Enquiries section on `Index.tsx`, below the email button.
-- Add an editable field for the URL in the admin's "Social & Contact" tab in `MLPAdmin.tsx`.
+1. **Save the uploaded pony icon as proper image files in `public/`:**
+   - `public/mlp-favicon.png` — real PNG, 512×512 (replaces the broken PDF-as-PNG)
+   - `public/favicon.ico` — multi-size ICO (16/32/48), so Google's `/favicon.ico` request succeeds
+   - `public/apple-touch-icon.png` — 180×180 PNG for iOS bookmarks/sharing
 
-**2. Remove Press**
-- Remove the `<PressSection>` render and import from `Index.tsx`.
-- Remove the "As heard on / BBC Introducing" badge block from `SpotlightSection.tsx` (and the unused `press` prop).
-- Remove the "Press" tab and its editor UI from `MLPAdmin.tsx`.
-- Clear the existing press item from the database so the badge no longer appears.
+2. **Update `index.html` `<head>`:**
+   - `<link rel="icon" type="image/x-icon" href="/favicon.ico">`
+   - `<link rel="icon" type="image/png" sizes="512x512" href="/mlp-favicon.png">`
+   - `<link rel="apple-touch-icon" href="/apple-touch-icon.png">`
+   - Change the JSON-LD `Organization.logo` from `/mlp-favicon.png` to the absolute URL `https://myliberalpony.co.uk/mlp-favicon.png` (Google requires absolute URLs in structured data).
 
-### Files
-- `src/contexts/MLPContext.tsx` — extend `MLPSocialLinks` with `buyMeACoffee`, add default value.
-- `src/pages/Index.tsx` — render new button in bookings section; remove PressSection.
-- `src/components/SpotlightSection.tsx` — remove press badge block + prop.
-- `src/pages/MLPAdmin.tsx` — add field in Social tab, drop Press tab.
-- Database: update `mlp_site_config.press` to `[]`.
+### Notes
 
-Press data structure stays in the schema (not deleted) in case you want it back later — it's just hidden from the UI and admin.
+- The uploaded image has a black background and white linework. I'll keep it as-is (no background removal) so it renders clearly in both light and dark browser chrome.
+- Google re-crawls favicons on its own schedule (often days to weeks). The fix will go live immediately on the site, but search-result icons will lag. Once deployed, you can speed it up by requesting re-indexing of the homepage in Google Search Console.
+- No subpage or component code changes are needed.
