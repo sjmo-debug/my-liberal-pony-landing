@@ -63,7 +63,7 @@ interface MLPContextValue {
 const defaultSiteData: MLPSiteData = {
   videos: [
     { youtubeId: 'FRDczkLqBes', title: 'MY LIBERAL PONY - Fingerprints' },
-    { youtubeId: 'jTpvijP76g8', title: 'MY LIBERAL PONY - Video 2' },
+    { youtubeId: 'jTpvijP76g8', title: 'MY LIBERAL PONY — Live' },
   ],
   soundcloudEmbedUrl:
     'https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/myliberalpony&color=%23000000&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false',
