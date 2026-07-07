@@ -7,6 +7,7 @@ import { PortfolioProvider } from "@/contexts/PortfolioContext";
 import { MLPProvider } from "@/contexts/MLPContext";
 import Index from "./pages/Index";
 import About from "./pages/About";
+import Listen from "./pages/Listen";
 import Gallery from "./pages/Gallery";
 import Portfolio from "./pages/Portfolio";
 import PortfolioHome from "./pages/portfolio/PortfolioHome";
@@ -30,6 +31,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
+          <Route path="/listen" element={<Listen />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/admin" element={<MLPAdmin />} />
           
