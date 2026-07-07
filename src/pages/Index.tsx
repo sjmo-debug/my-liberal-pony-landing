@@ -7,6 +7,7 @@ import BackgroundManager from '@/components/BackgroundManager';
 import { useMLP } from '@/contexts/MLPContext';
 import SpotlightSection from '@/components/SpotlightSection';
 import NewsletterSignup from '@/components/NewsletterSignup';
+import YouTubeFacade from '@/components/YouTubeFacade';
 import SEO from '@/components/SEO';
 
 const APPLE_MUSIC_URL = 'https://music.apple.com/gb/artist/my-liberal-pony/1887096161';
@@ -194,7 +195,12 @@ const Index = () => {
           {/* Spotlight — New Single */}
           {siteData.spotlight.spotifyEmbedUrl && (
             <div id="spotlight-section" className="scroll-mt-24">
-              <SpotlightSection spotlight={siteData.spotlight} showRainbow={showRainbow} onHover={setIsButtonHovered} />
+              <SpotlightSection
+                spotlight={siteData.spotlight}
+                showRainbow={showRainbow}
+                onHover={setIsButtonHovered}
+                latestPress={siteData.press?.[0]}
+              />
             </div>
           )}
 
@@ -206,26 +212,7 @@ const Index = () => {
             <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
               Watch
             </h2>
-            <div className={`group relative overflow-hidden transition-all duration-300 hover:scale-[1.01] ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
-              <div className="aspect-video">
-                <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${siteData.videos[0].youtubeId}`} title={siteData.videos[0].title} frameBorder="0" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="absolute inset-0 w-full h-full" />
-              </div>
-            </div>
-          </section>
-
-          {/* More Music */}
-          <section className="w-full space-y-8">
-            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
-              More Music
-            </h2>
-            <div className={`group relative overflow-hidden transition-all duration-300 hover:scale-[1.01] ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
-              <div className="aspect-video">
-                <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${siteData.videos[1].youtubeId}`} title={siteData.videos[1].title} frameBorder="0" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen className="absolute inset-0 w-full h-full" />
-              </div>
-            </div>
-            <div className={`overflow-hidden transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
-              <iframe width="100%" height="166" scrolling="no" frameBorder="no" loading="lazy" allow="autoplay" src={siteData.soundcloudEmbedUrl} title="MY LIBERAL PONY on SoundCloud" />
-            </div>
+            <YouTubeFacade youtubeId={siteData.videos[0].youtubeId} title={siteData.videos[0].title} showRainbow={showRainbow} />
           </section>
 
           {/* Gigs */}
@@ -237,17 +224,32 @@ const Index = () => {
           <section id="contact-section" className={`pt-16 border-t-4 py-16 transition-colors duration-500 ${showRainbow ? 'border-black bg-black/5' : 'border-foreground bg-foreground/5'}`}>
             <div className="text-center space-y-8">
               <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
-                BOOKINGS & ENQUIRIES
+                Get in Touch
               </h2>
-              <div className="space-y-4">
-                <p className="font-body text-lg md:text-xl lg:text-2xl xl:text-3xl leading-relaxed uppercase">
-                  FOR ALL BOOKING REQUESTS AND ENQUIRIES
-                </p>
-                <a href={`mailto:${siteData.contactEmail}`} onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} aria-label={`Email ${siteData.branding.siteTitle} for bookings and enquiries`} className={`inline-block font-body text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold uppercase px-6 py-4 md:px-8 md:py-5 lg:px-10 lg:py-6 min-h-[44px] transition-all duration-300 tracking-wider ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
-                  {siteData.contactEmail.toUpperCase()}
-                </a>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                {[
+                  { label: 'Bookings', subject: 'Booking%20enquiry' },
+                  { label: 'Everything Else', subject: 'Hello' },
+                ].map(({ label, subject }) => (
+                  <div key={label} className="space-y-3">
+                    <p className="font-heading text-xl md:text-2xl uppercase tracking-widest">
+                      {label}
+                    </p>
+                    <a
+                      href={`mailto:${siteData.contactEmail}?subject=${subject}`}
+                      onMouseEnter={() => setIsButtonHovered(true)}
+                      onMouseLeave={() => setIsButtonHovered(false)}
+                      aria-label={`Email ${siteData.branding.siteTitle} — ${label}`}
+                      className={`inline-block font-body text-base md:text-lg lg:text-xl font-bold uppercase px-6 py-4 md:px-8 md:py-5 min-h-[44px] transition-all duration-300 tracking-wider break-all ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}
+                    >
+                      {siteData.contactEmail.toUpperCase()}
+                    </a>
+                  </div>
+                ))}
+              </div>
+
                 {siteData.socialLinks.buyMeACoffee && (
-                  <div className="pt-6">
+                  <div className="pt-8">
                     <p className="font-body text-base md:text-lg uppercase tracking-widest mb-3">
                       Support the music
                     </p>
@@ -264,7 +266,6 @@ const Index = () => {
                     </a>
                   </div>
                 )}
-              </div>
             </div>
           </section>
 
