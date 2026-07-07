@@ -175,6 +175,11 @@ const Index = () => {
           <h1 className="font-heading text-4xl md:text-7xl lg:text-7xl xl:text-8xl font-bold tracking-wider uppercase">
             {siteData.branding.siteTitle}
           </h1>
+          {siteData.branding.tagline && (
+            <p className="font-body text-xs md:text-sm uppercase tracking-[0.3em] mt-4 opacity-90">
+              {siteData.branding.tagline}
+            </p>
+          )}
           {reducedMotion && (
             <div
               aria-hidden="true"
@@ -282,6 +287,12 @@ const Index = () => {
             <a href={SPOTIFY_ARTIST_URL} target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">Spotify</a>
             <a href={APPLE_MUSIC_URL} target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">Apple Music</a>
           </footer>
+
+          {siteData.branding.photoCredit && (
+            <p className={`pb-8 -mt-4 font-body text-xs uppercase tracking-widest opacity-60 ${showRainbow ? 'text-black' : 'text-foreground'}`}>
+              Photos: {siteData.branding.photoCredit}
+            </p>
+          )}
 
         </div>
       </main>
