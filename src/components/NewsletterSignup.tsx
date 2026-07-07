@@ -1,82 +1,95 @@
 import { useState, FormEvent } from 'react';
-
-// TODO: Replace with your Mailchimp form action URL
-// Go to Mailchimp > Audience > Signup forms > Embedded forms > copy the form action URL
-const MAILCHIMP_ACTION_URL = 'https://myliberalpony.us15.list-manage.com/subscribe/post?u=74a9841949eb03e56b1133ee2&id=0eec7ce89e&f_id=001f9ce1f0';
+import { supabase } from '@/integrations/supabase/client';
 
 interface NewsletterSignupProps {
   showRainbow: boolean;
   onHover: (hovered: boolean) => void;
+  id?: string;
 }
 
-const NewsletterSignup = ({ showRainbow, onHover }: NewsletterSignupProps) => {
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const NewsletterSignup = ({ showRainbow, onHover, id }: NewsletterSignupProps) => {
   const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   const borderColor = showRainbow ? 'border-black' : 'border-foreground';
   const textColor = showRainbow ? 'text-black' : 'text-foreground';
   const placeholderColor = showRainbow ? 'placeholder:text-black/50' : 'placeholder:text-foreground/50';
+  const ringColor = showRainbow ? 'focus-visible:ring-black' : 'focus-visible:ring-foreground';
 
-  const handleSubmit = (e: FormEvent) => {
-    const trimmed = email.trim();
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      e.preventDefault();
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    const trimmed = email.trim().toLowerCase();
+    if (!trimmed || !EMAIL_RE.test(trimmed) || trimmed.length > 255) {
+      setStatus('error');
       return;
     }
 
-    onHover(true);
     setStatus('loading');
+    const { error } = await supabase
+      .from('newsletter_subscribers')
+      .insert({ email: trimmed });
 
-    // Form submits naturally to the hidden iframe
-    setTimeout(() => {
-      setStatus('success');
-      setEmail('');
-    }, 2000);
+    // Treat duplicate (23505) as success — they're already in.
+    if (error && error.code !== '23505') {
+      setStatus('error');
+      return;
+    }
+
+    setStatus('success');
+    setEmail('');
   };
 
   return (
-    <section className="w-full space-y-8">
+    <section id={id} className="w-full space-y-6 scroll-mt-24">
       <h2 className={`font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider ${textColor}`}>
-        Subscribe to the Newsletter
+        Get the next one first
       </h2>
+      <p className={`font-body text-base md:text-lg uppercase tracking-wider ${textColor} opacity-80`}>
+        New releases and gigs, before anywhere else. No spam.
+      </p>
 
       {status === 'success' ? (
-        <p className={`font-body text-lg md:text-xl uppercase tracking-wider ${textColor}`}>
-          Thank you for subscribing!
+        <p className={`font-heading text-2xl md:text-3xl uppercase tracking-wider ${textColor}`} role="status" aria-live="polite">
+          You're in.
         </p>
       ) : (
-        <>
-          <form
-            action={MAILCHIMP_ACTION_URL}
-            method="POST"
-            target="mc-hidden-iframe"
-            onSubmit={handleSubmit}
-            className="flex flex-col sm:flex-row gap-4"
+        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4" noValidate>
+          <label htmlFor={`newsletter-email-${id || 'main'}`} className="sr-only">
+            Email address
+          </label>
+          <input
+            id={`newsletter-email-${id || 'main'}`}
+            type="email"
+            name="EMAIL"
+            value={email}
+            onChange={(e) => { setEmail(e.target.value); if (status === 'error') setStatus('idle'); }}
+            placeholder="YOUR EMAIL ADDRESS"
+            required
+            aria-invalid={status === 'error'}
+            aria-describedby={status === 'error' ? `newsletter-err-${id || 'main'}` : undefined}
+            className={`flex-1 bg-transparent border-2 ${borderColor} ${textColor} ${placeholderColor} font-body text-base md:text-lg uppercase tracking-wider px-6 py-4 outline-none focus-visible:ring-2 ${ringColor} focus-visible:ring-offset-0 transition-opacity min-h-[44px]`}
+          />
+          <button
+            type="submit"
+            onMouseEnter={() => onHover(true)}
+            onMouseLeave={() => onHover(false)}
+            disabled={status === 'loading'}
+            className={`border-2 ${borderColor} ${textColor} font-body text-base md:text-lg uppercase tracking-wider px-8 py-4 hover:opacity-70 transition-all duration-500 disabled:opacity-50 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 ${ringColor}`}
           >
-            {/* Mailchimp requires the email field to be named "EMAIL" */}
-            <input
-              type="email"
-              name="EMAIL"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="YOUR EMAIL ADDRESS"
-              required
-              className={`flex-1 bg-transparent border-2 ${borderColor} ${textColor} ${placeholderColor} font-body text-base md:text-lg uppercase tracking-wider px-6 py-4 outline-none focus:opacity-80 transition-opacity`}
-            />
-            {/* Mailchimp bot signup prevention */}
-            <div style={{ position: 'absolute', left: '-5000px' }} aria-hidden="true">
-              <input type="text" name="b_74a9841949eb03e56b1133ee2_0eec7ce89e" tabIndex={-1} defaultValue="" />
-            </div>
-            <button
-              type="submit"
-              disabled={status === 'loading'}
-              className={`border-2 ${borderColor} ${textColor} font-body text-base md:text-lg uppercase tracking-wider px-8 py-4 hover:opacity-70 transition-all duration-300 disabled:opacity-50`}
-            >
-              {status === 'loading' ? 'Signing up...' : 'Sign Up'}
-            </button>
-          </form>
-          <iframe name="mc-hidden-iframe" style={{ display: 'none' }} title="Mailchimp submission" />
-        </>
+            {status === 'loading' ? 'Signing up…' : 'Sign Up'}
+          </button>
+        </form>
+      )}
+      {status === 'error' && (
+        <p
+          id={`newsletter-err-${id || 'main'}`}
+          role="alert"
+          className={`font-body text-base uppercase tracking-wider ${textColor}`}
+        >
+          That email didn't work — try again.
+        </p>
       )}
     </section>
   );

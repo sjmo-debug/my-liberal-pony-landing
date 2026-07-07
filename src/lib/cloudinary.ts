@@ -52,6 +52,19 @@ export function cloudinaryVideo(publicId: string): string {
 }
 
 /**
+ * Build a responsive srcset string across the given widths.
+ */
+export function cloudinarySrcset(
+  publicId: string,
+  widths: number[] = [800, 1200, 1600]
+): string {
+  return widths
+    .map((w) => `${cloudinaryImage(publicId, w)} ${w}w`)
+    .join(', ');
+}
+
+
+/**
  * Convenience presets for common sizes used across the portfolio.
  */
 export const cloudinaryPresets = {
