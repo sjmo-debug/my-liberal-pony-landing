@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { track } from '@/lib/analytics';
 
 interface NewsletterSignupProps {
   showRainbow: boolean;
@@ -34,10 +35,12 @@ const NewsletterSignup = ({ showRainbow, onHover, id }: NewsletterSignupProps) =
     // Treat duplicate (23505) as success — they're already in.
     if (error && error.code !== '23505') {
       setStatus('error');
+      track.signupSubmit('error');
       return;
     }
 
     setStatus('success');
+    track.signupSubmit('success');
     setEmail('');
   };
 

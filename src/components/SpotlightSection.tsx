@@ -1,4 +1,6 @@
 import type { MLPSpotlight, MLPPressItem } from '@/contexts/MLPContext';
+import { Link } from 'react-router-dom';
+import { track } from '@/lib/analytics';
 
 interface Props {
   spotlight: MLPSpotlight;
@@ -44,10 +46,22 @@ export default function SpotlightSection({ spotlight, showRainbow, onHover, late
         rel="noopener noreferrer"
         onMouseEnter={() => onHover(true)}
         onMouseLeave={() => onHover(false)}
+        onClick={() => track.spotifyClick('spotlight_cta')}
         className={`inline-block font-heading text-xl md:text-2xl lg:text-3xl font-bold uppercase px-8 py-5 md:px-10 md:py-6 tracking-wider transition-all duration-300 ${showRainbow ? 'border-2 border-black hover:bg-black hover:text-white' : 'border-2 border-foreground hover:bg-foreground hover:text-background'}`}
       >
         {spotlight.ctaText || 'Listen on Spotify'}
       </a>
+
+      <div>
+        <Link
+          to="/oumuamua"
+          onMouseEnter={() => onHover(true)}
+          onMouseLeave={() => onHover(false)}
+          className={`inline-block font-heading text-base md:text-lg uppercase tracking-widest underline underline-offset-4 ${showRainbow ? 'text-black' : 'text-foreground'}`}
+        >
+          OUMUAMUA →
+        </Link>
+      </div>
 
       {pressLine && (
         <p className="font-body text-sm md:text-base uppercase tracking-widest opacity-90">
