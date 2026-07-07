@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Navigate, useSearchParams } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import type { Session } from '@supabase/supabase-js';
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import type { Project, ArtistInfo, ProjectCategory, SkillGroup, MethodologyItem, DiscographyEntry, ExperienceSection } from '@/types/portfolio';
 import { SEOHead } from '@/components/portfolio/SEOHead';
@@ -21,39 +24,46 @@ const textareaClass = "w-full bg-black text-white border-2 border-white px-3 py-
 const btnClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-white hover:bg-white hover:text-black transition-colors inline-flex items-center gap-2";
 const btnDangerClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-colors inline-flex items-center gap-2";
 
-// SHA-256 hash of the admin password (never store plaintext)
-const ADMIN_PASSWORD_HASH = 'b56704bedfca7eb60e352fd4d17d9f37d93d4646e37ae45bafa9de2564f31d68';
-
-async function hashPassword(password: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
 export default function PortfolioAdmin() {
   const { projects, photographerInfo, updateProjects, updatePhotographerInfo } = usePortfolio();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [searchParams] = useSearchParams();
+  const loginMode = searchParams.get('login') === '1';
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [authError, setAuthError] = useState(false);
+  const [authError, setAuthError] = useState('');
   const [activeTab, setActiveTab] = useState<Tab>('projects');
   const [editProjects, setEditProjects] = useState<Project[]>(JSON.parse(JSON.stringify(projects)));
   const [editInfo, setEditInfo] = useState<ArtistInfo>(JSON.parse(JSON.stringify(photographerInfo)));
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
 
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+      setAuthLoading(false);
+    });
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      setSession(s);
+      setAuthLoading(false);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
   const handleLogin = async () => {
-    const inputHash = await hashPassword(password);
-    
-    if (inputHash === ADMIN_PASSWORD_HASH) {
-      setIsAuthenticated(true);
-      setAuthError(false);
-    } else {
-      setAuthError(true);
-    }
+    setAuthError('');
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) setAuthError(error.message);
   };
 
-  if (!isAuthenticated) {
+  if (authLoading) {
+    return <div className="min-h-[80vh] flex items-center justify-center font-mono uppercase tracking-widest text-sm">Loading…</div>;
+  }
+
+  if (!session) {
+    if (!loginMode) {
+      return <Navigate to="/" replace />;
+    }
     return (
       <div className="min-h-[80vh] flex items-center justify-center p-8">
         <SEOHead title="Admin" description="Admin access" />
@@ -61,18 +71,25 @@ export default function PortfolioAdmin() {
           <h1 className="font-heading text-3xl uppercase tracking-widest mb-8 text-center">Admin Access</h1>
           <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }} className="space-y-4">
             <input
-              type="password"
-              value={password}
-              onChange={(e) => { setPassword(e.target.value); setAuthError(false); }}
-              placeholder="Enter password"
+              type="email"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); setAuthError(''); }}
+              placeholder="Email"
               className={inputClass}
               autoFocus
             />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => { setPassword(e.target.value); setAuthError(''); }}
+              placeholder="Password"
+              className={inputClass}
+            />
             {authError && (
-              <p className="text-red-500 font-mono text-sm uppercase tracking-wider">Access denied</p>
+              <p className="text-red-500 font-mono text-sm uppercase tracking-wider">{authError}</p>
             )}
             <button type="submit" className={`${btnClass} w-full justify-center`}>
-              Authorize
+              Sign In
             </button>
           </form>
         </div>
