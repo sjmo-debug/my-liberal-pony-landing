@@ -9,6 +9,7 @@ interface Gig {
   location: string;
   ticketInfo: string;
   buttonText: string;
+  photoId: string;
   parsedDate: Date;
 }
 
@@ -81,6 +82,8 @@ const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true, onGigsLo
                 // Column D (index 3) for button text, Column E (index 4) for hyperlink
                 const buttonText = rowArray[3] || '';
                 const hyperlink = rowArray[4] || '';
+                // Column F (index 5) — optional Cloudinary photo public ID for past gigs
+                const photoId = String(rowArray[5] || '').trim();
                 
                 // Combine them: if there's a hyperlink, pass it; otherwise just the text
                 const ticketInfo = hyperlink || buttonText;
@@ -95,6 +98,7 @@ const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true, onGigsLo
                   location,
                   ticketInfo,
                   buttonText,
+                  photoId,
                   parsedDate,
                 };
               })
@@ -114,14 +118,18 @@ const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true, onGigsLo
   // Create "yesterday" by subtracting one day from today at midnight
   const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
   const upcomingGigs = gigs?.filter(gig => gig.parsedDate > yesterday) || [];
+  const pastGigs = (gigs?.filter(gig => gig.parsedDate <= yesterday) || [])
+    .slice()
+    .sort((a, b) => b.parsedDate.getTime() - a.parsedDate.getTime());
   const hasUpcomingGigs = upcomingGigs.length > 0;
+  const hasPastGigs = pastGigs.length > 0;
 
   // Notify parent about gigs status
   useEffect(() => {
     if (!isLoading && onGigsLoaded) {
-      onGigsLoaded(hasUpcomingGigs);
+      onGigsLoaded(hasUpcomingGigs || hasPastGigs);
     }
-  }, [hasUpcomingGigs, isLoading, onGigsLoaded]);
+  }, [hasUpcomingGigs, hasPastGigs, isLoading, onGigsLoaded]);
 
   // Don't render anything if loading or no gigs
   if (isLoading) {
@@ -134,34 +142,62 @@ const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true, onGigsLo
     );
   }
 
-  if (error || !hasUpcomingGigs) {
-    return null; // Hide section entirely when no gigs
+  if (error || (!hasUpcomingGigs && !hasPastGigs)) {
+    return null; // Hide section entirely when no gigs at all
   }
 
   return (
     <section className="w-full max-w-3xl mx-auto">
-      {showTitle && (
+      {showTitle && hasUpcomingGigs && (
         <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider text-center mb-12">
           UPCOMING GIGS
         </h2>
       )}
-      <div className="grid grid-cols-1 gap-6">
-        {upcomingGigs.map((gig, index) => (
-          <GigCard
-            key={index}
-            date={gig.date}
-            venue={gig.venue}
-            location={gig.location}
-            ticketInfo={gig.ticketInfo}
-            buttonText={gig.buttonText}
-            onButtonHover={onButtonHover}
-            isButtonHovered={isButtonHovered}
-          />
-        ))}
-      </div>
-      <p className="font-heading text-xl md:text-2xl lg:text-3xl uppercase tracking-widest text-center mt-12">
-        Merch — At Shows Only.
-      </p>
+      {hasUpcomingGigs && (
+        <>
+          <div className="grid grid-cols-1 gap-6">
+            {upcomingGigs.map((gig, index) => (
+              <GigCard
+                key={`u-${index}`}
+                date={gig.date}
+                venue={gig.venue}
+                location={gig.location}
+                ticketInfo={gig.ticketInfo}
+                buttonText={gig.buttonText}
+                onButtonHover={onButtonHover}
+                isButtonHovered={isButtonHovered}
+              />
+            ))}
+          </div>
+          <p className="font-heading text-xl md:text-2xl lg:text-3xl uppercase tracking-widest text-center mt-12">
+            Merch — At Shows Only.
+          </p>
+        </>
+      )}
+
+      {hasPastGigs && (
+        <div className={hasUpcomingGigs ? 'mt-16' : ''}>
+          <h3 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-widest text-center mb-8">
+            Previously
+          </h3>
+          <div className="grid grid-cols-1 gap-3">
+            {pastGigs.map((gig, index) => (
+              <GigCard
+                key={`p-${index}`}
+                date={gig.date}
+                venue={gig.venue}
+                location={gig.location}
+                ticketInfo={gig.ticketInfo}
+                buttonText={gig.buttonText}
+                onButtonHover={onButtonHover}
+                isButtonHovered={isButtonHovered}
+                variant="past"
+                photoId={gig.photoId}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 };
