@@ -98,8 +98,11 @@ const defaultSiteData: MLPSiteData = {
     },
   ],
   navigation: [
+    { label: 'Listen', url: '#spotlight-section', isExternal: false },
+    { label: 'Watch', url: '#watch-section', isExternal: false },
+    { label: 'Live', url: '#gigs-section', isExternal: false },
     { label: 'About', url: '/about', isExternal: false },
-    { label: 'Instagram', url: 'https://instagram.com/myliberalpony', isExternal: true },
+    { label: 'Sign Up', url: '#newsletter-section', isExternal: false },
   ],
 };
 
