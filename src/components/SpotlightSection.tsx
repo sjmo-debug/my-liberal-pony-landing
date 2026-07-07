@@ -1,12 +1,17 @@
-import type { MLPSpotlight } from '@/contexts/MLPContext';
+import type { MLPSpotlight, MLPPressItem } from '@/contexts/MLPContext';
 
 interface Props {
   spotlight: MLPSpotlight;
   showRainbow: boolean;
   onHover: (v: boolean) => void;
+  latestPress?: MLPPressItem;
 }
 
-export default function SpotlightSection({ spotlight, showRainbow, onHover }: Props) {
+export default function SpotlightSection({ spotlight, showRainbow, onHover, latestPress }: Props) {
+  const badgePrefix = (spotlight.pressBadgeLabel || 'As heard on').toUpperCase();
+  const pressLine = latestPress
+    ? `${badgePrefix} "${latestPress.title}" — ${latestPress.source}`
+    : null;
   return (
     <section className="w-full space-y-8">
       <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
@@ -43,6 +48,25 @@ export default function SpotlightSection({ spotlight, showRainbow, onHover }: Pr
       >
         {spotlight.ctaText || 'Listen on Spotify'}
       </a>
+
+      {pressLine && (
+        <p className="font-body text-sm md:text-base uppercase tracking-widest opacity-90">
+          {latestPress!.url ? (
+            <a
+              href={latestPress!.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onMouseEnter={() => onHover(true)}
+              onMouseLeave={() => onHover(false)}
+              className="underline underline-offset-4 hover:opacity-70 transition-opacity"
+            >
+              {pressLine}
+            </a>
+          ) : (
+            <span>{pressLine}</span>
+          )}
+        </p>
+      )}
     </section>
   );
 }

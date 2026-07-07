@@ -187,8 +187,10 @@ export default function MLPAdmin() {
           {activeTab === 'branding' && (
             <Section title="Branding">
               <Field label="Site Title" value={draft.branding.siteTitle} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, siteTitle: v } })} />
+              <Field label="Tagline (under site title)" value={draft.branding.tagline} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, tagline: v } })} placeholder="e.g. EXPERIMENTAL FREAK POP. LOUDER IN PERSON." />
               <Field label="Page Subtitle" value={draft.branding.pageSubtitle} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, pageSubtitle: v } })} />
               <Field label="Cloudinary Logo ID" value={draft.branding.cloudinaryLogoId} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, cloudinaryLogoId: v } })} placeholder="Leave empty to use local logo" />
+              <Field label="Photo Credit (footer)" value={draft.branding.photoCredit} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, photoCredit: v } })} placeholder="e.g. Jane Doe" />
             </Section>
           )}
 

@@ -3,11 +3,14 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import BackgroundManager from '@/components/BackgroundManager';
 import { useAboutContent } from '@/hooks/useAboutContent';
+import { useMLP } from '@/contexts/MLPContext';
+import PressSection from '@/components/PressSection';
 import SEO from '@/components/SEO';
 
 const About = () => {
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const { data: entries, isLoading } = useAboutContent();
+  const { siteData } = useMLP();
 
   return <div className="min-h-screen transition-all duration-500">
       <SEO
@@ -52,6 +55,12 @@ const About = () => {
               <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
             </Link>
           </div>
+
+          {siteData.press && siteData.press.length > 0 && (
+            <div className="pt-8 md:pt-12">
+              <PressSection press={siteData.press} showRainbow={isButtonHovered} onHover={setIsButtonHovered} />
+            </div>
+          )}
         </article>
       </div>
     </div>;

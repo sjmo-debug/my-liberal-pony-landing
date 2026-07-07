@@ -159,6 +159,9 @@ const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true, onGigsLo
           />
         ))}
       </div>
+      <p className="font-heading text-xl md:text-2xl lg:text-3xl uppercase tracking-widest text-center mt-12">
+        Merch — At Shows Only.
+      </p>
     </section>
   );
 };

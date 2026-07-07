@@ -18,6 +18,8 @@ export interface MLPBranding {
   siteTitle: string;
   pageSubtitle: string;
   cloudinaryLogoId: string;
+  tagline: string;
+  photoCredit: string;
 }
 
 export interface MLPSpotlight {
@@ -79,6 +81,8 @@ const defaultSiteData: MLPSiteData = {
     siteTitle: 'MY LIBERAL PONY',
     pageSubtitle: 'Watch & Listen - Upcoming Gigs',
     cloudinaryLogoId: '',
+    tagline: 'EXPERIMENTAL FREAK POP. LOUDER IN PERSON.',
+    photoCredit: '[PHOTOGRAPHER NAME]',
   },
   spotlight: {
     header: 'New Single',
@@ -91,14 +95,20 @@ const defaultSiteData: MLPSiteData = {
   },
   press: [
     {
+      title: 'The Hello Goodbye Show',
+      source: 'Resonance FM',
+      url: 'https://www.mixcloud.com/Resonance/the-hello-goodbye-show-4th-july-2026/',
+      date: '2026-07-04',
+    },
+    {
       title: 'BBC Introducing',
-      url: 'https://www.bbc.co.uk/sounds/play/m002t20g',
       source: 'BBC Introducing',
+      url: '',
       date: '2026-04-01',
     },
   ],
   navigation: [
-    { label: 'Listen', url: '#spotlight-section', isExternal: false },
+    { label: 'Listen', url: '/listen', isExternal: false },
     { label: 'Watch', url: '#watch-section', isExternal: false },
     { label: 'Live', url: '#gigs-section', isExternal: false },
     { label: 'About', url: '/about', isExternal: false },
@@ -114,7 +124,7 @@ function rowToSiteData(row: any): MLPSiteData {
     soundcloudEmbedUrl: row.soundcloud_embed_url,
     contactEmail: row.contact_email,
     socialLinks: { ...defaultSiteData.socialLinks, ...(row.social_links || {}) } as MLPSocialLinks,
-    branding: row.branding as MLPBranding,
+    branding: { ...defaultSiteData.branding, ...(row.branding || {}) } as MLPBranding,
     spotlight: { ...defaultSiteData.spotlight, ...(row.spotlight || {}) } as MLPSpotlight,
     press: (row.press || defaultSiteData.press) as MLPPressItem[],
     navigation: (row.navigation || defaultSiteData.navigation) as MLPNavItem[],
