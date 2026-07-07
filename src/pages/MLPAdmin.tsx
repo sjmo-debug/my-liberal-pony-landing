@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useMLP, type MLPSiteData, type MLPNavItem } from '@/contexts/MLPContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
 import SEO from '@/components/SEO';
 
@@ -23,6 +23,8 @@ export default function MLPAdmin() {
   const { siteData, updateSiteData } = useMLP();
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [searchParams] = useSearchParams();
+  const loginMode = searchParams.get('login') === '1';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState('');
@@ -79,6 +81,9 @@ export default function MLPAdmin() {
   }
 
   if (!session) {
+    if (!loginMode) {
+      return <Navigate to="/" replace />;
+    }
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
         <div className="w-full max-w-md border-2 border-foreground p-8">
