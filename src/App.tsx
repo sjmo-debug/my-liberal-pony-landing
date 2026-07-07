@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Listen from "./pages/Listen";
 import Gallery from "./pages/Gallery";
+import Oumuamua from "./pages/Oumuamua";
 import Portfolio from "./pages/Portfolio";
 import PortfolioHome from "./pages/portfolio/PortfolioHome";
 import PortfolioProjects from "./pages/portfolio/PortfolioProjects";
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/listen" element={<Listen />} />
           <Route path="/gallery" element={<Gallery />} />
+          <Route path="/oumuamua" element={<Oumuamua />} />
           <Route path="/admin" element={<MLPAdmin />} />
           
           {/* Portfolio sub-routes */}

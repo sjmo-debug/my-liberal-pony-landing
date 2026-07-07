@@ -71,6 +71,72 @@ export type Database = {
         }
         Relationships: []
       }
+      releases: {
+        Row: {
+          apple_music_url: string
+          bandcamp_url: string
+          cover_public_id: string
+          created_at: string
+          credits_mastering: string
+          credits_production: string
+          credits_writing: string
+          id: string
+          label: string
+          lyrics: string
+          og_image_url: string
+          released_on: string | null
+          slug: string
+          soundcloud_url: string
+          spotify_embed_url: string
+          spotify_url: string
+          title: string
+          updated_at: string
+          youtube_url: string
+        }
+        Insert: {
+          apple_music_url?: string
+          bandcamp_url?: string
+          cover_public_id?: string
+          created_at?: string
+          credits_mastering?: string
+          credits_production?: string
+          credits_writing?: string
+          id?: string
+          label?: string
+          lyrics?: string
+          og_image_url?: string
+          released_on?: string | null
+          slug: string
+          soundcloud_url?: string
+          spotify_embed_url?: string
+          spotify_url?: string
+          title: string
+          updated_at?: string
+          youtube_url?: string
+        }
+        Update: {
+          apple_music_url?: string
+          bandcamp_url?: string
+          cover_public_id?: string
+          created_at?: string
+          credits_mastering?: string
+          credits_production?: string
+          credits_writing?: string
+          id?: string
+          label?: string
+          lyrics?: string
+          og_image_url?: string
+          released_on?: string | null
+          slug?: string
+          soundcloud_url?: string
+          spotify_embed_url?: string
+          spotify_url?: string
+          title?: string
+          updated_at?: string
+          youtube_url?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
