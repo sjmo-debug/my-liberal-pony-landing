@@ -55,6 +55,7 @@ const Oumuamua = () => {
         description={`OUMUAMUA — out now via ${OUMUAMUA.label}. Listen on Spotify, Bandcamp, Apple Music, YouTube and SoundCloud.`}
         path={`/${OUMUAMUA.slug}`}
         jsonLd={jsonLd}
+        ogImage={OUMUAMUA.ogImage}
       />
       <BackgroundManager isVisible={hover} />
       <div className={`min-h-screen flex flex-col items-center p-4 md:p-8 relative z-10 transition-colors duration-500 ${hover ? 'text-black' : 'bg-background text-foreground'}`}>
