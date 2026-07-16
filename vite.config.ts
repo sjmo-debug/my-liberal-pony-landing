@@ -2,7 +2,6 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import fs from "fs";
-import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/supabase/vite";
 
 // Static per-route HTML shells. Crawlers (Googlebot, LinkedIn, Slack, etc.)
 // that don't execute JS still see a real <title>, meta description, og tags,
@@ -161,7 +160,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
-  plugins: [react(), prerenderPlugin(), mcpPlugin()],
+  plugins: [react(), prerenderPlugin()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
