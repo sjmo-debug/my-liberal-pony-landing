@@ -2,7 +2,6 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import fs from "fs";
-import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/supabase/vite";
 
 // Static per-route HTML shells. Crawlers (Googlebot, LinkedIn, Slack, etc.)
 // that don't execute JS still see a real <title>, meta description, og tags,
@@ -150,7 +149,18 @@ function prerenderPlugin() {
           fs.writeFileSync(path.join(dir, "index.html"), html, "utf8");
         }
       }
-      console.log(`[mlp-static-shells] wrote ${SHELLS.length} route shells`);
+
+      // SPA fallback for GitHub Pages: deep links to client-side routes
+      // (/gallery, /admin, /login, /theSJMO/*) are served this file with a
+      // 404 status; React Router boots and renders the real page. noindex
+      // keeps the 404-status copy out of search results — indexable routes
+      // all have prerendered 200 shells above.
+      const fallback = baseHtml.replace(
+        /<\/head>/,
+        `  <meta name="robots" content="noindex">\n  </head>`,
+      );
+      fs.writeFileSync(path.join(distDir, "404.html"), fallback, "utf8");
+      console.log(`[mlp-static-shells] wrote ${SHELLS.length} route shells + 404.html`);
     },
   };
 }
@@ -161,7 +171,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
-  plugins: [react(), prerenderPlugin(), mcpPlugin()],
+  plugins: [react(), prerenderPlugin()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

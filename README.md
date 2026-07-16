@@ -1,73 +1,45 @@
-# Welcome to your Lovable project
+# MY LIBERAL PONY — myliberalpony.co.uk
 
-## Project info
+Website for MY LIBERAL PONY (experimental freak pop, UK), plus the `/theSJMO` portfolio section.
 
-**URL**: https://lovable.dev/projects/e8f89759-4212-463f-8048-dae48b891999
+Single-page React app, hosted on **GitHub Pages** and deployed automatically by GitHub Actions on every push to `main`. The backend (site config, releases, newsletter signups, admin auth) is a self-owned **Supabase** project.
 
-## How can I edit this code?
+## Stack
 
-There are several ways of editing your application.
+- Vite 5 + React 18 + TypeScript, Tailwind CSS, shadcn/ui (Radix), React Router (`BrowserRouter`)
+- Supabase (`@supabase/supabase-js`) for data + auth, secured with Row-Level Security
+- Plausible analytics (cookieless)
+- GitHub Actions → GitHub Pages for CI/CD
 
-**Use Lovable**
+## Editing the site
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e8f89759-4212-463f-8048-dae48b891999) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Everything flows through Git:
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+npm ci          # install exact dependencies
+npm run dev     # local dev server on http://localhost:8080
+npm run build   # production build into dist/ (also writes SEO shells + 404.html)
+npm run preview # serve the production build locally
+npm run lint    # eslint (informational; not a deploy gate)
 ```
 
-**Edit a file directly in GitHub**
+Push to `main` (or merge a PR) and `.github/workflows/deploy.yml` builds and publishes to GitHub Pages automatically. No other publishing step exists.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Content stored in the database (spotlight release, videos, social links, branding) is edited live at `/login` → `/admin` with an admin account — no deploy needed for those changes.
 
-**Use GitHub Codespaces**
+## Backend (Supabase)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- Connection values live in the committed `.env` (`VITE_SUPABASE_PROJECT_ID`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`). The publishable/anon key is public by design; all access control is enforced by RLS policies.
+- The schema is fully described by `supabase/migrations/`. To rebuild the backend from scratch: create a Supabase project, `npx supabase link --project-ref <ref>`, `npx supabase db push`.
+- Tables: `mlp_site_config` (single-row site config), `releases`, `newsletter_subscribers`, `user_roles` (drives admin RLS checks).
+- Admin access: create a user in Supabase Dashboard → Authentication, then insert a row into `public.user_roles` with `role = 'admin'`.
 
-## What technologies are used for this project?
+## Hosting / DNS
 
-This project is built with:
+- GitHub Pages serves `dist/` via the Actions workflow; `public/CNAME` pins the custom domain.
+- DNS: apex `A` records → 185.199.108.153 / 185.199.109.153 / 185.199.110.153 / 185.199.111.153, `www` `CNAME` → `sjmo-debug.github.io`.
+- SPA routing: the build emits static SEO shells for `/`, `/about`, `/listen`, `/oumuamua` (see `prerenderPlugin` in `vite.config.ts`) and a `404.html` fallback so deep links to client-side routes work on Pages.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## History
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/e8f89759-4212-463f-8048-dae48b891999) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Originally built with Lovable; migrated fully to GitHub-based editing/hosting and a self-owned Supabase backend in July 2026. No Lovable services or packages are used anymore.
