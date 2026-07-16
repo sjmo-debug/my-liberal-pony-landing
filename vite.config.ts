@@ -149,7 +149,18 @@ function prerenderPlugin() {
           fs.writeFileSync(path.join(dir, "index.html"), html, "utf8");
         }
       }
-      console.log(`[mlp-static-shells] wrote ${SHELLS.length} route shells`);
+
+      // SPA fallback for GitHub Pages: deep links to client-side routes
+      // (/gallery, /admin, /login, /theSJMO/*) are served this file with a
+      // 404 status; React Router boots and renders the real page. noindex
+      // keeps the 404-status copy out of search results — indexable routes
+      // all have prerendered 200 shells above.
+      const fallback = baseHtml.replace(
+        /<\/head>/,
+        `  <meta name="robots" content="noindex">\n  </head>`,
+      );
+      fs.writeFileSync(path.join(distDir, "404.html"), fallback, "utf8");
+      console.log(`[mlp-static-shells] wrote ${SHELLS.length} route shells + 404.html`);
     },
   };
 }
