@@ -26,7 +26,7 @@ import { Button } from '@/components/ui/button';
 const contactFormSchema = z.object({
   name: z.string().trim().min(2, { message: 'Name must be at least 2 characters' }).max(100),
   email: z.string().trim().email({ message: 'Please enter a valid email address' }).max(255),
-  projectType: z.enum(['performance', 'production', 'collaboration'], { required_error: 'Please select a project type' }),
+  projectType: z.enum(['performance', 'production', 'collaboration'], { message: 'Please select a project type' }),
   message: z.string().trim().min(10, { message: 'Message must be at least 10 characters' }).max(1000),
 });
 
