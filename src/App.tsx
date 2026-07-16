@@ -18,6 +18,8 @@ import PortfolioContact from "./pages/portfolio/PortfolioContact";
 import PortfolioProjectDetail from "./pages/portfolio/PortfolioProjectDetail";
 import PortfolioAdmin from "./pages/portfolio/PortfolioAdmin";
 import MLPAdmin from "./pages/MLPAdmin";
+import Login from "./pages/Login";
+import OAuthConsent from "./pages/OAuthConsent";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +38,8 @@ const App = () => (
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/oumuamua" element={<Oumuamua />} />
           <Route path="/admin" element={<MLPAdmin />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
           
           {/* Portfolio sub-routes */}
           <Route path="/theSJMO" element={<PortfolioProvider><Portfolio /></PortfolioProvider>}>
