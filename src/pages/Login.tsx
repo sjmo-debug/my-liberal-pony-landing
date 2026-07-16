@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
 
@@ -71,6 +71,9 @@ export default function Login() {
         >
           {busy ? "Signing in…" : "Sign In"}
         </button>
+        <p className="mt-4 text-center text-sm uppercase tracking-wider">
+          <Link to="/reset-password" className="underline hover:no-underline">Forgot password?</Link>
+        </p>
       </form>
     </div>
   );
