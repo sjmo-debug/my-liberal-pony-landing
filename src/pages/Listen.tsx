@@ -15,8 +15,8 @@ const Listen = () => {
   return (
     <div className="min-h-screen transition-all duration-500 relative">
       <SEO
-        title={`${siteData.branding.siteTitle} - Listen`}
-        description={`Listen to ${siteData.branding.siteTitle} — full YouTube, SoundCloud and Bandcamp.`}
+        title="OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS - Listen"
+        description="Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events."
         path="/listen"
       />
       <BackgroundManager isVisible={showRainbow} />

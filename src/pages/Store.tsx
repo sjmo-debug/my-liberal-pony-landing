@@ -10,8 +10,8 @@ const Store = () => {
   return (
     <div className="min-h-screen transition-all duration-500">
       <SEO
-        title="MY LIBERAL PONY - Store"
-        description="MY LIBERAL PONY store — merch and releases coming soon."
+        title="OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS - Store"
+        description="Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events."
         path="/store"
       />
       <BackgroundManager isVisible={isButtonHovered} />

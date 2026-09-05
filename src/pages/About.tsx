@@ -14,8 +14,8 @@ const About = () => {
 
   return <div className="min-h-screen transition-all duration-500">
       <SEO
-        title="MY LIBERAL PONY - About"
-        description="About MY LIBERAL PONY — a multimedia, genre-bending experimental artist from the UK creating live music and social commentary."
+        title="OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS - About"
+        description="Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events."
         path="/about"
       />
       <BackgroundManager isVisible={isButtonHovered} />
