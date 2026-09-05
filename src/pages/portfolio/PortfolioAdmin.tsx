@@ -170,7 +170,9 @@ export default function PortfolioAdmin() {
 
         {/* Content */}
         <div className="px-6 lg:px-8 py-8 max-w-5xl">
+          {activeTab === 'enquiries' && <EnquiriesTab />}
           {activeTab === 'projects' && <ProjectsTab
+
             projects={editProjects}
             editingId={editingProjectId}
             setEditingId={setEditingProjectId}
