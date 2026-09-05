@@ -279,7 +279,7 @@ function ContactTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: 
         <h3 className="font-heading text-xl uppercase tracking-widest">SOCIAL LINKS</h3>
         <Field label="Instagram" value={info.socialLinks.instagram || ''} onChange={v => setInfo({ ...info, socialLinks: { ...info.socialLinks, instagram: v } })} />
         <Field label="LinkedIn" value={info.socialLinks.linkedin || ''} onChange={v => setInfo({ ...info, socialLinks: { ...info.socialLinks, linkedin: v } })} />
-        <Field label="Linktree" value={info.socialLinks.linktree || ''} onChange={v => setInfo({ ...info, socialLinks: { ...info.socialLinks, linktree: v } })} />
+        
         <Field label="Behance" value={info.socialLinks.behance || ''} onChange={v => setInfo({ ...info, socialLinks: { ...info.socialLinks, behance: v } })} />
       </div>
     </div>
