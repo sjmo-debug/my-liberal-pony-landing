@@ -166,13 +166,13 @@ const Index = () => {
         <header className={`relative z-10 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} text-center px-4 ${showRainbow ? 'text-black' : 'text-white'}`}>
           <img
             src={mlpLogo}
-            alt="MY LIBERAL PONY logo"
+            alt="MY LIBERAL PONY official logo"
             width={512}
             height={512}
             className={`w-56 h-56 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain mx-auto mb-6 transition-all duration-500 relative z-10 ${showRainbow ? '' : 'filter invert'}`}
           />
           <h1 className="font-heading text-4xl md:text-7xl lg:text-7xl xl:text-8xl font-bold tracking-wider uppercase">
-            {siteData.branding.siteTitle}
+            MY LIBERAL PONY — Experimental Music & Multimedia Art
           </h1>
           {siteData.branding.tagline && (
             <p className="font-body text-xs md:text-sm uppercase tracking-[0.3em] mt-4 opacity-90">
