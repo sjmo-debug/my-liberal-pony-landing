@@ -145,7 +145,7 @@ export default function PortfolioAbout() {
           <div className="max-w-4xl mx-auto space-y-12">
             <motion.div className="space-y-2" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
               <h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest">METHODOLOGY</h2>
-              <p className="text-muted-foreground font-mono uppercase tracking-wide">The NHS / Psychology Edge</p>
+              <p className="text-muted-foreground font-mono uppercase tracking-wide">The Psychology Edge</p>
             </motion.div>
             <div className="grid md:grid-cols-3 gap-0">
               {photographerInfo.methodology.map((item, i) => (
