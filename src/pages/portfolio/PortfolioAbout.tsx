@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Instagram, Linkedin, Link as LinkIcon } from 'lucide-react';
+import { Instagram, Linkedin } from 'lucide-react';
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { SEOHead } from '@/components/portfolio/SEOHead';
 import {
@@ -41,9 +41,6 @@ export default function PortfolioAbout() {
                   {photographerInfo.socialLinks.linkedin && (
                     <a href={photographerInfo.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 border-2 border-white hover:bg-white hover:text-black transition-colors" aria-label="LinkedIn"><Linkedin className="size-5" /></a>
                   )}
-                  {photographerInfo.socialLinks.linktree && (
-                    <a href={photographerInfo.socialLinks.linktree} target="_blank" rel="noopener noreferrer" className="p-3 border-2 border-white hover:bg-white hover:text-black transition-colors" aria-label="Linktree"><LinkIcon className="size-5" /></a>
-                  )}
                 </div>
               </motion.div>
 
@@ -66,6 +63,41 @@ export default function PortfolioAbout() {
             </div>
           </div>
         </section>
+
+        {/* Selected clients & shared stages */}
+        <section className="py-16 md:py-24 px-6 lg:px-8 border-t-4 border-white">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 lg:gap-16">
+            <motion.div className="space-y-6" initial={{ opacity: 0.8, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <h2 className="font-heading text-3xl md:text-4xl uppercase tracking-widest">SELECTED CLIENTS</h2>
+              <div className="flex flex-wrap gap-2">
+                {photographerInfo.clients.map((client) => (
+                  <span key={client} className="px-3 py-1.5 text-sm font-mono uppercase tracking-wide border-2 border-white">{client}</span>
+                ))}
+              </div>
+            </motion.div>
+            <motion.div className="space-y-6" initial={{ opacity: 0.8, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
+              <h2 className="font-heading text-3xl md:text-4xl uppercase tracking-widest">SHARED STAGES WITH</h2>
+              <div className="flex flex-wrap gap-2">
+                {(photographerInfo.sharedStages ?? []).map((act) => (
+                  <span key={act} className="px-3 py-1.5 text-sm font-mono uppercase tracking-wide border-2 border-white">{act}</span>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Highlights */}
+        <section className="py-16 md:py-24 px-6 lg:px-8 border-t-4 border-white">
+          <div className="max-w-6xl mx-auto space-y-8">
+            <motion.h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>HIGHLIGHTS</motion.h2>
+            <ul className="grid md:grid-cols-2 gap-4">
+              {photographerInfo.awards.map((award) => (
+                <li key={award} className="text-sm md:text-base font-mono leading-relaxed text-muted-foreground pl-4 border-l-4 border-white">{award}</li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
 
         {/* Experience */}
         <section className="py-16 md:py-24 px-6 lg:px-8 border-t-4 border-white">
@@ -110,7 +142,7 @@ export default function PortfolioAbout() {
           <div className="max-w-4xl mx-auto space-y-12">
             <motion.div className="space-y-2" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
               <h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest">METHODOLOGY</h2>
-              <p className="text-muted-foreground font-mono uppercase tracking-wide">The NHS / Psychology Edge</p>
+              <p className="text-muted-foreground font-mono uppercase tracking-wide">The Psychology Edge</p>
             </motion.div>
             <div className="grid md:grid-cols-3 gap-0">
               {photographerInfo.methodology.map((item, i) => (

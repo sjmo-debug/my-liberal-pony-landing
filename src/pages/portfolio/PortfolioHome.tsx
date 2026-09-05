@@ -8,7 +8,16 @@ import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Marquee } from '@/components/portfolio/Marquee';
 
+const services = [
+  { type: 'visuals', title: 'Live Visuals', description: 'Bespoke audio-reactive visual identities for bands and events, via Iridiphore. 100+ performances delivered.' },
+  { type: 'sound', title: 'Live Sound & Stage', description: 'Front-of-house engineering, stage management and logistics for gigs and multi-stage festivals.' },
+  { type: 'production', title: 'Recording & Production', description: 'Tracking, production and engineering for singles and EPs, from DIY sessions to full studio builds.' },
+  { type: 'performance', title: 'Performance & Session', description: 'Double bass, bass, guitar, drums and vocals for live shows, dep work and studio sessions.' },
+  { type: 'consultation', title: 'Consultation', description: 'Event planning, accessible and inclusive programming, and guidance for artists building a live show.' },
+] as const;
+
 export default function PortfolioHome() {
+
   const { photographerInfo, getFeaturedProjects } = usePortfolio();
   const featuredProjects = getFeaturedProjects();
 
@@ -71,8 +80,37 @@ export default function PortfolioHome() {
           </div>
         </section>
 
+        {/* Services */}
+        <section className="border-t-4 border-white py-20 md:py-28 px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto space-y-12">
+            <ScrollReveal>
+              <h2 className="font-heading text-5xl md:text-7xl uppercase tracking-widest">WHAT I DO</h2>
+            </ScrollReveal>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-0">
+              {services.map((service, i) => (
+                <ScrollReveal key={service.title} delay={i * 0.05}>
+                  <Link
+                    to={`/theSJMO/contact?type=${service.type}`}
+                    className="group block h-full p-6 border-2 border-white hover:bg-white hover:text-black transition-colors space-y-3"
+                  >
+                    <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground group-hover:text-black/60">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <h3 className="font-heading text-2xl uppercase tracking-widest">{service.title}</h3>
+                    <p className="font-mono text-sm leading-relaxed text-muted-foreground group-hover:text-black/70">{service.description}</p>
+                  </Link>
+                </ScrollReveal>
+              ))}
+            </div>
+            <ScrollReveal>
+              <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">{photographerInfo.availability}</p>
+            </ScrollReveal>
+          </div>
+        </section>
+
         {/* Marquee divider */}
         <Marquee />
+
 
         {/* Featured Projects — brutalist */}
         <section className="py-20 md:py-28">

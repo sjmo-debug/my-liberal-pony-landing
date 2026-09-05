@@ -8,9 +8,10 @@ import { SEOHead } from '@/components/portfolio/SEOHead';
 import { toast } from 'sonner';
 import { Plus, Trash2, Save, X } from 'lucide-react';
 
-type Tab = 'projects' | 'bio' | 'contact' | 'skills' | 'discography' | 'experience';
+type Tab = 'enquiries' | 'projects' | 'bio' | 'contact' | 'skills' | 'discography' | 'experience';
 
 const tabs: { key: Tab; label: string }[] = [
+  { key: 'enquiries', label: 'Enquiries' },
   { key: 'projects', label: 'Projects' },
   { key: 'bio', label: 'Bio' },
   { key: 'contact', label: 'Contact' },
@@ -18,6 +19,17 @@ const tabs: { key: Tab; label: string }[] = [
   { key: 'discography', label: 'Discography' },
   { key: 'experience', label: 'Experience' },
 ];
+
+interface Enquiry {
+  id: string;
+  name: string;
+  email: string;
+  project_type: string;
+  message: string;
+  handled: boolean;
+  created_at: string;
+}
+
 
 const inputClass = "w-full bg-black text-white border-2 border-white px-3 py-2 font-mono text-sm focus:outline-none focus:bg-white/5 placeholder:text-white/30";
 const textareaClass = "w-full bg-black text-white border-2 border-white px-3 py-2 font-mono text-sm focus:outline-none focus:bg-white/5 placeholder:text-white/30 min-h-[100px] resize-y";
@@ -33,7 +45,7 @@ export default function PortfolioAdmin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState('');
-  const [activeTab, setActiveTab] = useState<Tab>('projects');
+  const [activeTab, setActiveTab] = useState<Tab>('enquiries');
   const [editProjects, setEditProjects] = useState<Project[]>(JSON.parse(JSON.stringify(projects)));
   const [editInfo, setEditInfo] = useState<ArtistInfo>(JSON.parse(JSON.stringify(photographerInfo)));
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
@@ -158,7 +170,9 @@ export default function PortfolioAdmin() {
 
         {/* Content */}
         <div className="px-6 lg:px-8 py-8 max-w-5xl">
+          {activeTab === 'enquiries' && <EnquiriesTab />}
           {activeTab === 'projects' && <ProjectsTab
+
             projects={editProjects}
             editingId={editingProjectId}
             setEditingId={setEditingProjectId}
@@ -177,6 +191,84 @@ export default function PortfolioAdmin() {
     </>
   );
 }
+
+/* ── Enquiries Tab ── */
+function EnquiriesTab() {
+  const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showHandled, setShowHandled] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    supabase
+      .from('portfolio_enquiries')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) toast.error('Could not load enquiries');
+        else setEnquiries((data as Enquiry[]) ?? []);
+        setLoading(false);
+      });
+    return () => { active = false; };
+  }, []);
+
+  const toggleHandled = async (enquiry: Enquiry) => {
+    const next = !enquiry.handled;
+    setEnquiries(prev => prev.map(e => e.id === enquiry.id ? { ...e, handled: next } : e));
+    const { error } = await supabase
+      .from('portfolio_enquiries')
+      .update({ handled: next })
+      .eq('id', enquiry.id);
+    if (error) {
+      toast.error('Could not update enquiry');
+      setEnquiries(prev => prev.map(e => e.id === enquiry.id ? { ...e, handled: !next } : e));
+    }
+  };
+
+  const visible = showHandled ? enquiries : enquiries.filter(e => !e.handled);
+
+  if (loading) {
+    return <p className="font-mono text-sm uppercase tracking-widest">Loading enquiries…</p>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap gap-4 items-center">
+        <button onClick={() => setShowHandled(!showHandled)} className={btnClass}>
+          {showHandled ? 'Hide Handled' : 'Show Handled'}
+        </button>
+        <span className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
+          {enquiries.filter(e => !e.handled).length} open / {enquiries.length} total
+        </span>
+      </div>
+
+      {visible.length === 0 && (
+        <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">No enquiries here.</p>
+      )}
+
+      {visible.map(enquiry => (
+        <div key={enquiry.id} className={`border-2 border-white p-4 space-y-3 ${enquiry.handled ? 'opacity-60' : ''}`}>
+          <div className="flex flex-wrap justify-between gap-3 items-start">
+            <div>
+              <p className="font-heading text-lg uppercase tracking-widest">{enquiry.name}</p>
+              <a href={`mailto:${enquiry.email}`} className="font-mono text-sm text-muted-foreground hover:text-white break-all">{enquiry.email}</a>
+            </div>
+            <div className="text-right space-y-1">
+              <p className="font-mono text-xs uppercase tracking-widest">{enquiry.project_type}</p>
+              <p className="font-mono text-xs text-muted-foreground">{new Date(enquiry.created_at).toLocaleString('en-GB')}</p>
+            </div>
+          </div>
+          <p className="font-mono text-sm leading-relaxed whitespace-pre-wrap">{enquiry.message}</p>
+          <button onClick={() => toggleHandled(enquiry)} className={btnClass}>
+            {enquiry.handled ? 'Mark As Open' : 'Mark As Handled'}
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 
 /* ── Projects Tab ── */
 function ProjectsTab({ projects, editingId, setEditingId, updateProject, addProject, removeProject, onSave }: {
@@ -272,14 +364,14 @@ function ContactTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: 
     <div className="space-y-6 max-w-3xl">
       <button onClick={onSave} className={btnClass}><Save className="size-4" /> Save</button>
       <Field label="Email" value={info.email} onChange={v => u('email', v)} />
-      <Field label="Phone" value={info.phone} onChange={v => u('phone', v)} />
+      
       <Field label="Location" value={info.location} onChange={v => u('location', v)} />
       <Field label="Availability" value={info.availability} onChange={v => u('availability', v)} />
       <div className="border-t-4 border-white pt-6 space-y-4">
         <h3 className="font-heading text-xl uppercase tracking-widest">SOCIAL LINKS</h3>
         <Field label="Instagram" value={info.socialLinks.instagram || ''} onChange={v => setInfo({ ...info, socialLinks: { ...info.socialLinks, instagram: v } })} />
         <Field label="LinkedIn" value={info.socialLinks.linkedin || ''} onChange={v => setInfo({ ...info, socialLinks: { ...info.socialLinks, linkedin: v } })} />
-        <Field label="Linktree" value={info.socialLinks.linktree || ''} onChange={v => setInfo({ ...info, socialLinks: { ...info.socialLinks, linktree: v } })} />
+        
         <Field label="Behance" value={info.socialLinks.behance || ''} onChange={v => setInfo({ ...info, socialLinks: { ...info.socialLinks, behance: v } })} />
       </div>
     </div>

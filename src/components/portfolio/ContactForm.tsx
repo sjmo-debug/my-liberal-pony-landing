@@ -3,7 +3,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 import { Loader2, CheckCircle2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { portfolioProjectTypes, type PortfolioProjectType } from '@/types/portfolio';
 import {
   Form,
   FormControl,
@@ -23,11 +26,14 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 
+const projectTypeValues = portfolioProjectTypes.map(t => t.value) as [PortfolioProjectType, ...PortfolioProjectType[]];
+
 const contactFormSchema = z.object({
   name: z.string().trim().min(2, { message: 'Name must be at least 2 characters' }).max(100),
   email: z.string().trim().email({ message: 'Please enter a valid email address' }).max(255),
-  projectType: z.enum(['performance', 'production', 'collaboration'], { message: 'Please select a project type' }),
+  projectType: z.enum(projectTypeValues, { message: 'Please select a project type' }),
   message: z.string().trim().min(10, { message: 'Message must be at least 10 characters' }).max(1000),
+  website: z.string().max(0).optional(),
 });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
@@ -35,27 +41,31 @@ type ContactFormValues = z.infer<typeof contactFormSchema>;
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [searchParams] = useSearchParams();
+  const typeParam = searchParams.get('type');
+  const presetType = portfolioProjectTypes.find(t => t.value === typeParam)?.value;
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
-    defaultValues: { name: '', email: '', projectType: undefined, message: '' },
+    defaultValues: { name: '', email: '', projectType: presetType, message: '', website: '' },
   });
 
   const onSubmit = async (data: ContactFormValues) => {
+    // Honeypot: silently drop bot submissions.
+    if (data.website) {
+      setIsSuccess(true);
+      form.reset();
+      return;
+    }
     setIsSubmitting(true);
     try {
-      const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          projectType: data.projectType,
-          message: data.message,
-          _subject: `New ${data.projectType} inquiry from ${data.name}`,
-        }),
+      const { error } = await supabase.from('portfolio_enquiries').insert({
+        name: data.name,
+        email: data.email,
+        project_type: data.projectType,
+        message: data.message,
       });
-      if (!response.ok) throw new Error('Failed to send message');
+      if (error) throw error;
       setIsSuccess(true);
       form.reset();
       setTimeout(() => setIsSuccess(false), 5000);
@@ -105,9 +115,9 @@ export function ContactForm() {
                 <SelectTrigger className="font-light"><SelectValue placeholder="Select project type" /></SelectTrigger>
               </FormControl>
               <SelectContent className="bg-popover z-50">
-                <SelectItem value="performance" className="font-light">Performance</SelectItem>
-                <SelectItem value="production" className="font-light">Production</SelectItem>
-                <SelectItem value="collaboration" className="font-light">Collaboration</SelectItem>
+                {portfolioProjectTypes.map(t => (
+                  <SelectItem key={t.value} value={t.value} className="font-light">{t.label}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <FormMessage className="text-xs font-light" />
@@ -121,6 +131,16 @@ export function ContactForm() {
             <FormMessage className="text-xs font-light" />
           </FormItem>
         )} />
+
+        {/* Honeypot — hidden from humans */}
+        <input
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="hidden"
+          {...form.register('website')}
+        />
 
         {form.formState.errors.root && (
           <div className="text-sm text-destructive font-light">{form.formState.errors.root.message}</div>

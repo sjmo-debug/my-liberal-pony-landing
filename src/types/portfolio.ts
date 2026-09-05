@@ -60,16 +60,16 @@ export interface ArtistInfo {
   journey: string;
   awards: string[];
   clients: string[];
+  sharedStages?: string[];
   education: string;
   location: string;
   email: string;
-  phone: string;
+  phone?: string;
   availability: string;
   socialLinks: {
     instagram?: string;
     linkedin?: string;
     behance?: string;
-    linktree?: string;
   };
   portraitImage: string;
   skills: SkillGroup[];
@@ -78,10 +78,28 @@ export interface ArtistInfo {
   experience: ExperienceSection[];
 }
 
+export type PortfolioProjectType =
+  | 'visuals'
+  | 'sound'
+  | 'production'
+  | 'performance'
+  | 'consultation'
+  | 'other';
+
+export const portfolioProjectTypes: { value: PortfolioProjectType; label: string }[] = [
+  { value: 'visuals', label: 'Live Visuals / Iridiphore' },
+  { value: 'sound', label: 'Live Sound & Stage' },
+  { value: 'production', label: 'Recording & Production' },
+  { value: 'performance', label: 'Performance / Session' },
+  { value: 'consultation', label: 'Consultation' },
+  { value: 'other', label: 'Something else' },
+];
+
 export interface ContactSubmission {
   name: string;
   email: string;
-  projectType: 'performance' | 'production' | 'collaboration';
+  projectType: PortfolioProjectType;
   message: string;
   timestamp: Date;
 }
+
