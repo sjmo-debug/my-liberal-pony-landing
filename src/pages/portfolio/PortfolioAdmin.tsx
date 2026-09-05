@@ -45,7 +45,7 @@ export default function PortfolioAdmin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState('');
-  const [activeTab, setActiveTab] = useState<Tab>('projects');
+  const [activeTab, setActiveTab] = useState<Tab>('enquiries');
   const [editProjects, setEditProjects] = useState<Project[]>(JSON.parse(JSON.stringify(projects)));
   const [editInfo, setEditInfo] = useState<ArtistInfo>(JSON.parse(JSON.stringify(photographerInfo)));
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
