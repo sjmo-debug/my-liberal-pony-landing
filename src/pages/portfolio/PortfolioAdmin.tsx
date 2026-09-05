@@ -8,9 +8,10 @@ import { SEOHead } from '@/components/portfolio/SEOHead';
 import { toast } from 'sonner';
 import { Plus, Trash2, Save, X } from 'lucide-react';
 
-type Tab = 'projects' | 'bio' | 'contact' | 'skills' | 'discography' | 'experience';
+type Tab = 'enquiries' | 'projects' | 'bio' | 'contact' | 'skills' | 'discography' | 'experience';
 
 const tabs: { key: Tab; label: string }[] = [
+  { key: 'enquiries', label: 'Enquiries' },
   { key: 'projects', label: 'Projects' },
   { key: 'bio', label: 'Bio' },
   { key: 'contact', label: 'Contact' },
@@ -18,6 +19,17 @@ const tabs: { key: Tab; label: string }[] = [
   { key: 'discography', label: 'Discography' },
   { key: 'experience', label: 'Experience' },
 ];
+
+interface Enquiry {
+  id: string;
+  name: string;
+  email: string;
+  project_type: string;
+  message: string;
+  handled: boolean;
+  created_at: string;
+}
+
 
 const inputClass = "w-full bg-black text-white border-2 border-white px-3 py-2 font-mono text-sm focus:outline-none focus:bg-white/5 placeholder:text-white/30";
 const textareaClass = "w-full bg-black text-white border-2 border-white px-3 py-2 font-mono text-sm focus:outline-none focus:bg-white/5 placeholder:text-white/30 min-h-[100px] resize-y";
