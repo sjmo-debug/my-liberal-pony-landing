@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Instagram, Linkedin, Link as LinkIcon } from 'lucide-react';
+import { Instagram, Linkedin } from 'lucide-react';
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { SEOHead } from '@/components/portfolio/SEOHead';
 import {
