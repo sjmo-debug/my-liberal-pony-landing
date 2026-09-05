@@ -46,13 +46,7 @@ export default function PortfolioContact() {
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
-                    <div className="p-3 border-2 border-white"><Phone className="size-5" /></div>
-                    <div className="space-y-1">
-                      <p className="text-sm font-mono uppercase tracking-wide text-muted-foreground">Phone</p>
-                      <a href={`tel:${photographerInfo.phone}`} className="text-base md:text-lg font-light hover:text-muted-foreground transition-colors">{photographerInfo.phone}</a>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
+
                     <div className="p-3 border-2 border-white"><MapPin className="size-5" /></div>
                     <div className="space-y-1">
                       <p className="text-sm font-mono uppercase tracking-wide text-muted-foreground">Location</p>
