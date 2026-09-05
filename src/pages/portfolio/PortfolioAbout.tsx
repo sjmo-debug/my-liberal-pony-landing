@@ -41,9 +41,6 @@ export default function PortfolioAbout() {
                   {photographerInfo.socialLinks.linkedin && (
                     <a href={photographerInfo.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 border-2 border-white hover:bg-white hover:text-black transition-colors" aria-label="LinkedIn"><Linkedin className="size-5" /></a>
                   )}
-                  {photographerInfo.socialLinks.linktree && (
-                    <a href={photographerInfo.socialLinks.linktree} target="_blank" rel="noopener noreferrer" className="p-3 border-2 border-white hover:bg-white hover:text-black transition-colors" aria-label="Linktree"><LinkIcon className="size-5" /></a>
-                  )}
                 </div>
               </motion.div>
 
