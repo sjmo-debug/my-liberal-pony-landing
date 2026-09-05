@@ -144,7 +144,7 @@ export default function MLPAdmin() {
           {activeTab === 'spotlight' && (
             <Section title="Featured Release">
               <Field label="Section Header" value={draft.spotlight.header} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, header: v } })} placeholder="e.g. New Single" />
-              <Field label="Release Title" value={draft.spotlight.title} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, title: v } })} placeholder="e.g. Fingerprints" />
+              <Field label="Release Title" value={draft.spotlight.title} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, title: v } })} placeholder="e.g. OUMUAMUA" />
               <Field label="Spotify Track URL" value={draft.spotlight.spotifyUrl} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, spotifyUrl: v } })} placeholder="https://open.spotify.com/track/..." />
               <Field label="Spotify Embed URL" value={draft.spotlight.spotifyEmbedUrl} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, spotifyEmbedUrl: v } })} placeholder="https://open.spotify.com/embed/track/..." />
               <Field label="Description" value={draft.spotlight.description} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, description: v } })} placeholder="e.g. Debut single out now" />

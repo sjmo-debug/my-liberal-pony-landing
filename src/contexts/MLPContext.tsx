@@ -64,7 +64,7 @@ interface MLPContextValue {
 
 const defaultSiteData: MLPSiteData = {
   videos: [
-    { youtubeId: 'FRDczkLqBes', title: 'MY LIBERAL PONY - Fingerprints' },
+    { youtubeId: 'FRDczkLqBes', title: 'MY LIBERAL PONY - OUMUAMUA' },
     { youtubeId: 'jTpvijP76g8', title: 'MY LIBERAL PONY — Live' },
   ],
   soundcloudEmbedUrl:
@@ -86,10 +86,10 @@ const defaultSiteData: MLPSiteData = {
   },
   spotlight: {
     header: 'New Single',
-    title: 'Fingerprints',
-    spotifyUrl: 'https://open.spotify.com/track/2MJXjtYkBRQYYLlyBTnXI0',
-    spotifyEmbedUrl: 'https://open.spotify.com/embed/track/2MJXjtYkBRQYYLlyBTnXI0',
-    description: 'Debut single out now',
+    title: 'OUMUAMUA',
+    spotifyUrl: 'https://open.spotify.com/artist/2BgfhrMJ3h63DMazpBwQwE',
+    spotifyEmbedUrl: '',
+    description: 'Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events.',
     ctaText: 'Listen on Spotify',
     pressBadgeLabel: 'As heard on',
   },

@@ -30,7 +30,7 @@ const Index = () => {
   const [hasGigs, setHasGigs] = useState(false);
 
   useEffect(() => {
-    document.title = `${siteData.branding.siteTitle} - ${siteData.spotlight.title || siteData.branding.pageSubtitle}`;
+    document.title = 'OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS';
     const timer = setTimeout(() => setIsVisible(true), 300);
     return () => clearTimeout(timer);
   }, []);
@@ -66,9 +66,8 @@ const Index = () => {
     if (isTouch) setTouchLatched((v) => !v);
   };
 
-  const pageTitle = `${siteData.branding.siteTitle} - ${siteData.spotlight.title || siteData.branding.pageSubtitle}`;
-  const pageDescription = siteData.spotlight.description
-    || `Experimental live music & multimedia art from ${siteData.branding.siteTitle}. Stream the latest single and find upcoming gigs.`;
+  const pageTitle = 'OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS';
+  const pageDescription = 'Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events.';
 
   const jsonLd: Record<string, unknown>[] = [
     {

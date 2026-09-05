@@ -51,8 +51,8 @@ const Oumuamua = () => {
   return (
     <div className="min-h-screen relative">
       <SEO
-        title={`OUMUAMUA — new single from MY LIBERAL PONY`}
-        description={`OUMUAMUA — out now via ${OUMUAMUA.label}. Listen on Spotify, Bandcamp, Apple Music, YouTube and SoundCloud.`}
+        title="OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS"
+        description="Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events."
         path={`/${OUMUAMUA.slug}`}
         jsonLd={jsonLd}
         ogImage={OUMUAMUA.ogImage}

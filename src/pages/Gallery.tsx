@@ -16,8 +16,8 @@ const Gallery = () => {
   return (
     <div className="min-h-screen transition-all duration-500">
       <SEO
-        title="MY LIBERAL PONY - Gallery"
-        description="Photos and visual moments from MY LIBERAL PONY live performances, releases, and behind the scenes."
+        title="OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS - Gallery"
+        description="Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events."
         path="/gallery"
       />
       <BackgroundManager isVisible={isButtonHovered} />

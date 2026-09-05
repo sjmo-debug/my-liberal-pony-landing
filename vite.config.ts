@@ -22,12 +22,12 @@ const SITE = "https://myliberalpony.co.uk";
 const SHELLS: Shell[] = [
   {
     route: "",
-    title: "MY LIBERAL PONY — experimental live music from the UK",
+    title: "OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS",
     description:
-      "MY LIBERAL PONY is a multimedia, genre-bending artist. Stream the latest single Fingerprints, watch live videos, and find upcoming UK gigs.",
+      "Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events.",
     h1: "MY LIBERAL PONY",
     bodyText:
-      "Experimental freak pop from the UK. Louder in person. Stream the latest single Fingerprints on Spotify, watch live footage, and find every upcoming show.",
+      "Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events.",
     jsonLd: {
       "@context": "https://schema.org",
       "@type": "MusicGroup",
@@ -37,27 +37,27 @@ const SHELLS: Shell[] = [
   },
   {
     route: "about",
-    title: "About MY LIBERAL PONY",
+    title: "OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS - About",
     description:
-      "MY LIBERAL PONY — a multimedia, genre-bending artist creating experimental live music and social commentary from the UK.",
+      "Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events.",
     h1: "About MY LIBERAL PONY",
     bodyText:
       "MY LIBERAL PONY is a multimedia, genre-bending artist creating experimental live music and social commentary from the perspective of a disabled member of the LGBT community in England.",
   },
   {
     route: "listen",
-    title: "MY LIBERAL PONY — Listen",
+    title: "OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS - Listen",
     description:
-      "Listen to MY LIBERAL PONY — full YouTube live videos, SoundCloud stream and Bandcamp releases.",
+      "Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events.",
     h1: "Listen",
     bodyText:
       "Full live videos on YouTube, the SoundCloud stream, and the Bandcamp catalogue — all in one place.",
   },
   {
     route: "oumuamua",
-    title: "OUMUAMUA — new single from MY LIBERAL PONY",
+    title: "OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS",
     description:
-      "OUMUAMUA — out now via Hot Earth Records. Listen on Spotify, Bandcamp, Apple Music, YouTube and SoundCloud.",
+      "Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events.",
     ogImage:
       "https://res.cloudinary.com/dpy87lbpt/image/upload/f_auto,q_auto,w_1200,h_630,c_fill/mlp/oumuamua-cover.jpg",
     ogType: "music.song",
