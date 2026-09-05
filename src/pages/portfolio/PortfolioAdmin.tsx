@@ -192,6 +192,84 @@ export default function PortfolioAdmin() {
   );
 }
 
+/* ── Enquiries Tab ── */
+function EnquiriesTab() {
+  const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showHandled, setShowHandled] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    supabase
+      .from('portfolio_enquiries')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) toast.error('Could not load enquiries');
+        else setEnquiries((data as Enquiry[]) ?? []);
+        setLoading(false);
+      });
+    return () => { active = false; };
+  }, []);
+
+  const toggleHandled = async (enquiry: Enquiry) => {
+    const next = !enquiry.handled;
+    setEnquiries(prev => prev.map(e => e.id === enquiry.id ? { ...e, handled: next } : e));
+    const { error } = await supabase
+      .from('portfolio_enquiries')
+      .update({ handled: next })
+      .eq('id', enquiry.id);
+    if (error) {
+      toast.error('Could not update enquiry');
+      setEnquiries(prev => prev.map(e => e.id === enquiry.id ? { ...e, handled: !next } : e));
+    }
+  };
+
+  const visible = showHandled ? enquiries : enquiries.filter(e => !e.handled);
+
+  if (loading) {
+    return <p className="font-mono text-sm uppercase tracking-widest">Loading enquiries…</p>;
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap gap-4 items-center">
+        <button onClick={() => setShowHandled(!showHandled)} className={btnClass}>
+          {showHandled ? 'Hide Handled' : 'Show Handled'}
+        </button>
+        <span className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
+          {enquiries.filter(e => !e.handled).length} open / {enquiries.length} total
+        </span>
+      </div>
+
+      {visible.length === 0 && (
+        <p className="font-mono text-sm uppercase tracking-wide text-muted-foreground">No enquiries here.</p>
+      )}
+
+      {visible.map(enquiry => (
+        <div key={enquiry.id} className={`border-2 border-white p-4 space-y-3 ${enquiry.handled ? 'opacity-60' : ''}`}>
+          <div className="flex flex-wrap justify-between gap-3 items-start">
+            <div>
+              <p className="font-heading text-lg uppercase tracking-widest">{enquiry.name}</p>
+              <a href={`mailto:${enquiry.email}`} className="font-mono text-sm text-muted-foreground hover:text-white break-all">{enquiry.email}</a>
+            </div>
+            <div className="text-right space-y-1">
+              <p className="font-mono text-xs uppercase tracking-widest">{enquiry.project_type}</p>
+              <p className="font-mono text-xs text-muted-foreground">{new Date(enquiry.created_at).toLocaleString('en-GB')}</p>
+            </div>
+          </div>
+          <p className="font-mono text-sm leading-relaxed whitespace-pre-wrap">{enquiry.message}</p>
+          <button onClick={() => toggleHandled(enquiry)} className={btnClass}>
+            {enquiry.handled ? 'Mark As Open' : 'Mark As Handled'}
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
 /* ── Projects Tab ── */
 function ProjectsTab({ projects, editingId, setEditingId, updateProject, addProject, removeProject, onSave }: {
   projects: Project[]; editingId: string | null; setEditingId: (id: string | null) => void;
