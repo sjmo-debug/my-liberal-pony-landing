@@ -8,7 +8,16 @@ import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Marquee } from '@/components/portfolio/Marquee';
 
+const services = [
+  { type: 'visuals', title: 'Live Visuals', description: 'Bespoke audio-reactive visual identities for bands and events, via Iridiphore. 100+ performances delivered.' },
+  { type: 'sound', title: 'Live Sound & Stage', description: 'Front-of-house engineering, stage management and logistics for gigs and multi-stage festivals.' },
+  { type: 'production', title: 'Recording & Production', description: 'Tracking, production and engineering for singles and EPs, from DIY sessions to full studio builds.' },
+  { type: 'performance', title: 'Performance & Session', description: 'Double bass, bass, guitar, drums and vocals for live shows, dep work and studio sessions.' },
+  { type: 'consultation', title: 'Consultation', description: 'Event planning, accessible and inclusive programming, and guidance for artists building a live show.' },
+] as const;
+
 export default function PortfolioHome() {
+
   const { photographerInfo, getFeaturedProjects } = usePortfolio();
   const featuredProjects = getFeaturedProjects();
 
