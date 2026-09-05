@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, MapPin } from 'lucide-react';
 import { usePortfolio } from '@/contexts/PortfolioContext';
 import { ContactForm } from '@/components/portfolio/ContactForm';
 import { SEOHead } from '@/components/portfolio/SEOHead';
