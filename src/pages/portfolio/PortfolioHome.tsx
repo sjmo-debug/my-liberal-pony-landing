@@ -43,7 +43,7 @@ export default function PortfolioHome() {
           <div className="relative h-full flex flex-col items-center justify-center px-6">
             <motion.div className="text-center space-y-6 max-w-4xl" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: 'easeOut' }}>
               <motion.h1 className="text-6xl md:text-8xl lg:text-9xl font-heading uppercase tracking-widest" style={{ color: 'white' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
-                {photographerInfo.name.toUpperCase()}
+                Simon Oliver — Live Visuals, Sound & Production
               </motion.h1>
               <motion.p className="text-xl md:text-2xl font-light tracking-wide" style={{ color: 'rgba(255,255,255,0.9)' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.4 }}>
                 {photographerInfo.tagline}
@@ -72,7 +72,7 @@ export default function PortfolioHome() {
                   to="/theSJMO/about"
                   className="inline-flex items-center gap-3 font-heading text-lg uppercase tracking-widest border-2 border-white px-6 py-3 hover:bg-white hover:text-black transition-colors group"
                 >
-                  <span>LEARN MORE</span>
+                  <span>Learn about the artist</span>
                   <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>

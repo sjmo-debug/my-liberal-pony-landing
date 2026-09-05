@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ImageIcon } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import BackgroundManager from '@/components/BackgroundManager';
 import { cloudinaryImage } from '@/lib/cloudinary';
 import SEO from '@/components/SEO';
 
-// Add your Cloudinary public IDs here to populate the gallery
 const GALLERY_ITEMS: { publicId: string; alt: string }[] = [
-  // Example: { publicId: "my-folder/image-name", alt: "Description" },
+  { publicId: 'mlp/oumuamua-cover', alt: 'OUMUAMUA — debut single cover art from MY LIBERAL PONY' },
+  { publicId: 'mlp/live-hero', alt: 'MY LIBERAL PONY live performance — experimental music and multimedia art' },
 ];
 
 const Gallery = () => {
@@ -40,33 +40,21 @@ const Gallery = () => {
             Gallery
           </h1>
 
-          {GALLERY_ITEMS.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {GALLERY_ITEMS.map((item, index) => (
-                <div
-                  key={item.publicId}
-                  className={`group relative overflow-hidden aspect-square transition-all duration-300 hover:scale-[1.02] ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`}
-                >
-                  <img
-                    src={cloudinaryImage(item.publicId, 800)}
-                    alt={item.alt}
-                    loading={index < 6 ? 'eager' : 'lazy'}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className={`flex flex-col items-center justify-center py-24 space-y-6 ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
-              <ImageIcon className="w-16 h-16 opacity-40" />
-              <p className="font-body text-lg md:text-xl lg:text-2xl uppercase text-center opacity-60">
-                Coming Soon
-              </p>
-              <p className="font-body text-sm md:text-base opacity-40 text-center max-w-md">
-                Upload images to your Cloudinary account and add public IDs to display them here
-              </p>
-            </div>
-          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {GALLERY_ITEMS.map((item, index) => (
+              <div
+                key={item.publicId}
+                className={`group relative overflow-hidden aspect-square transition-all duration-300 hover:scale-[1.02] ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`}
+              >
+                <img
+                  src={cloudinaryImage(item.publicId, 800)}
+                  alt={item.alt}
+                  loading={index < 6 ? 'eager' : 'lazy'}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+            ))}
+          </div>
         </article>
       </div>
     </div>
