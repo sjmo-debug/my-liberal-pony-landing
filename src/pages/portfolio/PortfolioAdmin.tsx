@@ -272,7 +272,7 @@ function ContactTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: 
     <div className="space-y-6 max-w-3xl">
       <button onClick={onSave} className={btnClass}><Save className="size-4" /> Save</button>
       <Field label="Email" value={info.email} onChange={v => u('email', v)} />
-      <Field label="Phone" value={info.phone} onChange={v => u('phone', v)} />
+      
       <Field label="Location" value={info.location} onChange={v => u('location', v)} />
       <Field label="Availability" value={info.availability} onChange={v => u('availability', v)} />
       <div className="border-t-4 border-white pt-6 space-y-4">
