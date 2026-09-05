@@ -71,6 +71,36 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolio_enquiries: {
+        Row: {
+          created_at: string
+          email: string
+          handled: boolean
+          id: string
+          message: string
+          name: string
+          project_type: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          handled?: boolean
+          id?: string
+          message: string
+          name: string
+          project_type: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          handled?: boolean
+          id?: string
+          message?: string
+          name?: string
+          project_type?: string
+        }
+        Relationships: []
+      }
       releases: {
         Row: {
           apple_music_url: string
