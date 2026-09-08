@@ -40,7 +40,7 @@ export default function PortfolioHome() {
               alt="Simon Oliver performing live, photographed in black and white"
               className="w-full h-full object-cover object-center"
               loading="eager"
-              fetchPriority="high"
+              {...({ fetchpriority: "high" } as Record<string, string>)}
               decoding="async"
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
