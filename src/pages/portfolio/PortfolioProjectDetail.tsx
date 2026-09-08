@@ -16,6 +16,8 @@ export default function PortfolioProjectDetail() {
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [coverFailed, setCoverFailed] = useState(false);
+
 
   if (!project) {
     return <Navigate to="/theSJMO/projects" replace />;
@@ -31,10 +33,24 @@ export default function PortfolioProjectDetail() {
       <SEOHead title={project.title} description={project.description} image={project.coverImage} type="article" />
 
       <div className="min-h-screen">
-        <motion.div className="relative w-full h-[70vh] overflow-hidden bg-muted" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
-          <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" loading="eager" fetchPriority="high" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+        <motion.div className="relative w-full h-[70vh] overflow-hidden bg-background" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
+          {coverFailed ? (
+            <div className="absolute inset-0 flex flex-col justify-end gap-3 p-8 md:p-12 border-b-4 border-white">
+              <h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest">{project.title}</h2>
+              <div className="flex flex-wrap items-center gap-3 font-mono text-xs md:text-sm uppercase tracking-widest text-muted-foreground">
+                {project.role && <span>{project.role}</span>}
+                {project.role && <span>—</span>}
+                <span>{project.year}</span>
+              </div>
+            </div>
+          ) : (
+            <>
+              <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" loading="eager" {...({ fetchpriority: "high" } as Record<string, string>)} onError={() => setCoverFailed(true)} />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+            </>
+          )}
         </motion.div>
+
 
         <section className="max-w-4xl mx-auto px-6 lg:px-8 py-12 md:py-16">
           <motion.div className="space-y-8" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>

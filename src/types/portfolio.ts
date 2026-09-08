@@ -12,7 +12,10 @@ export interface ProjectImage {
   alt: string;
   aspectRatio: AspectRatio;
   caption?: string;
+  /** Photographer credit shown beneath / over the image */
+  credit?: string;
 }
+
 
 export interface Project {
   id: string;
@@ -72,6 +75,11 @@ export interface ArtistInfo {
     behance?: string;
   };
   portraitImage: string;
+  /** Photo credit rendered beneath the About portrait */
+  portraitCredit?: string;
+  /** Photo credit rendered over the home hero image */
+  heroCredit?: string;
+
   skills: SkillGroup[];
   methodology: MethodologyItem[];
   discography: DiscographyEntry[];

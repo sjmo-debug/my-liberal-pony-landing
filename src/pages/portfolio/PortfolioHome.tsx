@@ -7,6 +7,10 @@ import { SEOHead } from '@/components/portfolio/SEOHead';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Marquee } from '@/components/portfolio/Marquee';
+import { cloudinaryImage, cloudinarySrcset } from '@/lib/cloudinary';
+
+const HERO_IMAGE_ID = 'sjmo_portfolio/hero-live';
+
 
 const services = [
   { type: 'visuals', title: 'Live Visuals', description: 'Bespoke audio-reactive visual identities for bands and events, via Iridiphore. 100+ performances delivered.' },
@@ -26,38 +30,56 @@ export default function PortfolioHome() {
       <SEOHead />
 
       <div className="min-h-screen">
-        {/* Hero Section — untouched */}
+        {/* Hero Section — owner's own photograph, grayscale */}
         <section className="relative h-screen w-full overflow-hidden">
-          <div className="absolute inset-0">
-            <video
-              autoPlay muted loop playsInline preload="metadata"
-              poster="https://images.pexels.com/videos/2675516/free-video-2675516.jpg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200"
-              className="w-full h-full object-cover"
-              onError={(e) => { e.currentTarget.style.opacity = '0'; }}
-            >
-              <source src="https://videos.pexels.com/video-files/2675516/2675516-sd_960_540_24fps.mp4" type="video/mp4" />
-            </video>
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
+          <div className="absolute inset-0 bg-background">
+            <img
+              src={cloudinaryImage(HERO_IMAGE_ID, 1600, undefined, true)}
+              srcSet={cloudinarySrcset(HERO_IMAGE_ID, [800, 1200, 1600, 2000], true)}
+              sizes="100vw"
+              alt="Simon Oliver performing live, photographed in black and white"
+              className="w-full h-full object-cover object-center"
+              loading="eager"
+              {...({ fetchpriority: "high" } as Record<string, string>)}
+              decoding="async"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+
+            {/* Legibility: strong wash on the left where the type sits, plus vertical gradient */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/70" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/10" />
           </div>
 
-          <div className="relative h-full flex flex-col items-center justify-center px-6">
-            <motion.div className="text-center space-y-6 max-w-4xl" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: 'easeOut' }}>
-              <motion.h1 className="text-6xl md:text-8xl lg:text-9xl font-heading uppercase tracking-widest" style={{ color: 'white' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
+          <div className="relative h-full flex flex-col justify-end md:justify-center px-6 lg:px-8 pb-28 md:pb-0">
+            <motion.div
+              className="text-left space-y-6 w-full md:w-[55%] md:max-w-3xl"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: 'easeOut' }}
+            >
+              <motion.h1 className="text-5xl md:text-7xl lg:text-8xl font-heading uppercase tracking-widest" style={{ color: 'white' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
                 Simon Oliver — Live Visuals, Sound & Production
               </motion.h1>
-              <motion.p className="text-xl md:text-2xl font-light tracking-wide" style={{ color: 'rgba(255,255,255,0.9)' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.4 }}>
+              <motion.p className="text-xl md:text-2xl font-light tracking-wide" style={{ color: 'rgba(255,255,255,0.95)' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.4 }}>
                 {photographerInfo.tagline}
               </motion.p>
-              <motion.p className="text-base md:text-lg font-light leading-relaxed max-w-2xl mx-auto" style={{ color: 'rgba(255,255,255,0.8)' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.6 }}>
+              <motion.p className="text-base md:text-lg font-light leading-relaxed max-w-2xl" style={{ color: 'rgba(255,255,255,0.92)' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.6 }}>
                 {photographerInfo.heroIntroduction}
               </motion.p>
             </motion.div>
 
-            <motion.div className="absolute bottom-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2, duration: 0.8 }}>
+            {photographerInfo.heroCredit && (
+              <p className="absolute bottom-4 right-4 font-mono text-[10px] md:text-xs uppercase tracking-widest text-white/60">
+                {photographerInfo.heroCredit}
+              </p>
+            )}
+
+            <motion.div className="absolute bottom-12 left-1/2 -translate-x-1/2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2, duration: 0.8 }}>
               <ScrollIndicator />
             </motion.div>
           </div>
         </section>
+
 
         {/* Introduction — brutalist */}
         <section className="border-t-4 border-white py-20 md:py-28 px-6 lg:px-8">

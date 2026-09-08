@@ -9,6 +9,8 @@ interface CloudinaryOptions {
   gravity?: string;
   quality?: string;
   format?: string;
+  /** Render the asset in black & white via Cloudinary's e_grayscale effect */
+  grayscale?: boolean;
 }
 
 /**
@@ -24,6 +26,7 @@ export function cloudinaryUrl(
   if (options.height) transforms.push(`h_${options.height}`);
   if (options.crop) transforms.push(`c_${options.crop}`);
   if (options.gravity) transforms.push(`g_${options.gravity}`);
+  if (options.grayscale) transforms.push('e_grayscale');
 
   const transformString = transforms.join(',');
   return `${BASE_URL}/image/upload/${transformString}/${publicId}`;
@@ -35,12 +38,14 @@ export function cloudinaryUrl(
 export function cloudinaryImage(
   publicId: string,
   width?: number,
-  height?: number
+  height?: number,
+  grayscale = false
 ): string {
   return cloudinaryUrl(publicId, {
     width,
     height,
     crop: width || height ? 'limit' : undefined,
+    grayscale,
   });
 }
 
@@ -56,12 +61,14 @@ export function cloudinaryVideo(publicId: string): string {
  */
 export function cloudinarySrcset(
   publicId: string,
-  widths: number[] = [800, 1200, 1600]
+  widths: number[] = [800, 1200, 1600],
+  grayscale = false
 ): string {
   return widths
-    .map((w) => `${cloudinaryImage(publicId, w)} ${w}w`)
+    .map((w) => `${cloudinaryImage(publicId, w, undefined, grayscale)} ${w}w`)
     .join(', ');
 }
+
 
 
 /**
@@ -78,6 +85,12 @@ export const cloudinaryPresets = {
   full: (id: string) => cloudinaryUrl(id),
   /** Portrait – 400×600 */
   portrait: (id: string) => cloudinaryUrl(id, { width: 400, height: 600, crop: 'fill', gravity: 'face' }),
+  /** Portrait in black & white – 800×1067 for crisp retina rendering */
+  portraitGrayscale: (id: string) =>
+    cloudinaryUrl(id, { width: 800, height: 1067, crop: 'fill', gravity: 'auto', grayscale: true }),
+  /** Hero / detail in black & white – 1600px wide */
+  heroGrayscale: (id: string) => cloudinaryUrl(id, { width: 1600, crop: 'limit', grayscale: true }),
 } as const;
+
 
 export { CLOUD_NAME };
