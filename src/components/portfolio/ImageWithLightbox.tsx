@@ -19,6 +19,7 @@ export function ImageWithLightbox({
   index = 0,
 }: ImageWithLightboxProps) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   const aspectRatioClasses = {
@@ -26,6 +27,19 @@ export function ImageWithLightbox({
     landscape: 'aspect-[3/2]',
     square: 'aspect-square',
   };
+
+  if (hasError) {
+    return (
+      <div className={cn('relative', className)}>
+        <div className={cn('flex flex-col justify-end gap-2 p-6 border-2 border-white', aspectRatioClasses[image.aspectRatio])}>
+          <p className="font-heading text-xl md:text-2xl uppercase tracking-widest">{image.alt}</p>
+          {image.credit && (
+            <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{image.credit}</p>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -51,6 +65,7 @@ export function ImageWithLightbox({
           )}
           loading={priority ? 'eager' : 'lazy'}
           onLoad={() => setIsLoaded(true)}
+          onError={() => setHasError(true)}
         />
 
         <motion.div
@@ -74,7 +89,14 @@ export function ImageWithLightbox({
             </motion.div>
           </div>
         </motion.div>
+
+        {image.credit && (
+          <p className="absolute bottom-2 right-2 font-mono text-[10px] uppercase tracking-widest text-white/60">
+            {image.credit}
+          </p>
+        )}
       </div>
     </motion.div>
   );
 }
+

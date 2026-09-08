@@ -352,7 +352,10 @@ function BioTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: Arti
         <textarea value={info.journey} onChange={e => setInfo({ ...info, journey: e.target.value })} className={textareaClass} />
       </div>
       <Field label="Portrait Image URL" value={info.portraitImage} onChange={v => u('portraitImage', v)} />
+      <Field label="Portrait Photo Credit" value={info.portraitCredit || ''} onChange={v => u('portraitCredit', v)} />
+      <Field label="Hero Photo Credit" value={info.heroCredit || ''} onChange={v => u('heroCredit', v)} />
       <Field label="Education" value={info.education} onChange={v => u('education', v)} />
+
     </div>
   );
 }
