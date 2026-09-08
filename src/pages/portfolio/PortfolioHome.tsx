@@ -32,7 +32,7 @@ export default function PortfolioHome() {
       <div className="min-h-screen">
         {/* Hero Section — owner's own photograph, grayscale */}
         <section className="relative h-screen w-full overflow-hidden">
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-background">
             <img
               src={cloudinaryImage(HERO_IMAGE_ID, 1600, undefined, true)}
               srcSet={cloudinarySrcset(HERO_IMAGE_ID, [800, 1200, 1600, 2000], true)}
@@ -42,7 +42,9 @@ export default function PortfolioHome() {
               loading="eager"
               fetchPriority="high"
               decoding="async"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
+
             {/* Legibility: strong wash on the left where the type sits, plus vertical gradient */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/70" />
             <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/10" />

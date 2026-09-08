@@ -29,15 +29,21 @@ export default function PortfolioAbout() {
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-start">
               <motion.div className="space-y-6" initial={{ opacity: 0.8, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
-                <div className="aspect-[3/4] relative overflow-hidden border-2 border-white bg-muted">
+                <div className="aspect-[3/4] relative overflow-hidden border-2 border-white bg-background">
+                  <div className="absolute inset-0 flex flex-col justify-end gap-1 p-6">
+                    <span className="font-heading text-2xl uppercase tracking-widest">{photographerInfo.name.toUpperCase()}</span>
+                    <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">{photographerInfo.location}</span>
+                  </div>
                   <img
                     src={photographerInfo.portraitImage}
                     alt={`${photographerInfo.name}, portrait`}
                     className="absolute inset-0 w-full h-full object-cover object-center"
                     loading="eager"
                     decoding="async"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   />
                 </div>
+
                 {photographerInfo.portraitCredit && (
                   <p className="font-mono text-[10px] md:text-xs uppercase tracking-widest text-muted-foreground">
                     {photographerInfo.portraitCredit}
