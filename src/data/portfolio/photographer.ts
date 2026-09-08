@@ -47,7 +47,10 @@ I approach each project as a collaboration — listening deeply, experimenting f
     instagram: 'https://instagram.com/theSJMO',
     linkedin: 'https://www.linkedin.com/in/thesjmo/',
   },
-  portraitImage: cloudinaryPresets.portrait('portfolio/simon-portrait'),
+  portraitImage: cloudinaryPresets.portraitGrayscale('sjmo_portfolio/simon-portrait'),
+  portraitCredit: 'PHOTO: [PHOTOGRAPHER NAME]',
+  heroCredit: 'PHOTO: [PHOTOGRAPHER NAME]',
+
   skills: [
     {
       label: 'Performance',
