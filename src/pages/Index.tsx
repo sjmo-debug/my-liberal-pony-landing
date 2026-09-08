@@ -172,7 +172,7 @@ const Index = () => {
             className={`w-56 h-56 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain mx-auto mb-6 transition-all duration-500 relative z-10 ${showRainbow ? '' : 'filter invert'}`}
           />
           <h1 className="font-heading text-4xl md:text-7xl lg:text-7xl xl:text-8xl font-bold tracking-wider uppercase">
-            MY LIBERAL PONY — Experimental Music & Multimedia Art
+            MY LIBERAL PONY
           </h1>
           {siteData.branding.tagline && (
             <p className="font-body text-xs md:text-sm uppercase tracking-[0.3em] mt-4 opacity-90">
