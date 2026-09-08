@@ -30,10 +30,20 @@ export default function PortfolioAbout() {
             <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-start">
               <motion.div className="space-y-6" initial={{ opacity: 0.8, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
                 <div className="aspect-[3/4] relative overflow-hidden border-2 border-white bg-muted">
-                  <video autoPlay muted loop playsInline preload="metadata" poster="https://images.pexels.com/videos/3888252/afro-hair-fashion-model-3888252.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=630&w=1200" className="absolute inset-0 w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }}>
-                    <source src="https://videos.pexels.com/video-files/3888252/3888252-sd_426_226_25fps.mp4" type="video/mp4" />
-                  </video>
+                  <img
+                    src={photographerInfo.portraitImage}
+                    alt={`${photographerInfo.name}, portrait`}
+                    className="absolute inset-0 w-full h-full object-cover object-center"
+                    loading="eager"
+                    decoding="async"
+                  />
                 </div>
+                {photographerInfo.portraitCredit && (
+                  <p className="font-mono text-[10px] md:text-xs uppercase tracking-widest text-muted-foreground">
+                    {photographerInfo.portraitCredit}
+                  </p>
+                )}
+
                 <div className="flex items-center gap-3">
                   {photographerInfo.socialLinks.instagram && (
                     <a href={photographerInfo.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="p-3 border-2 border-white hover:bg-white hover:text-black transition-colors" aria-label="Instagram"><Instagram className="size-5" /></a>
