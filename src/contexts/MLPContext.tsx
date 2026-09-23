@@ -142,6 +142,7 @@ function rowToSiteData(row: any): MLPSiteData {
     spotlight: { ...defaultSiteData.spotlight, ...(row.spotlight || {}) } as MLPSpotlight,
     press: (row.press || defaultSiteData.press) as MLPPressItem[],
     navigation: (row.navigation || defaultSiteData.navigation) as MLPNavItem[],
+    gallery: (row.gallery?.length ? row.gallery : defaultSiteData.gallery) as MLPGalleryItem[],
   };
 }
 
@@ -187,6 +188,7 @@ export function MLPProvider({ children }: { children: ReactNode }) {
       spotlight: merged.spotlight,
       press: merged.press,
       navigation: merged.navigation,
+      gallery: merged.gallery,
     };
 
     if (configId) {
