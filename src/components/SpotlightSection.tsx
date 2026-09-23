@@ -1,6 +1,7 @@
 import type { MLPSpotlight, MLPPressItem } from '@/contexts/MLPContext';
 import { Link } from 'react-router-dom';
 import { track } from '@/lib/analytics';
+import { resolvePhotoSrc } from '@/components/admin/PhotoField';
 
 interface Props {
   spotlight: MLPSpotlight;
@@ -19,6 +20,18 @@ export default function SpotlightSection({ spotlight, showRainbow, onHover, late
       <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
         {spotlight.header || 'New Single'} — {spotlight.title}
       </h2>
+
+      {spotlight.coverImage && (
+        <div className={`overflow-hidden max-w-md transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
+          <img
+            src={resolvePhotoSrc(spotlight.coverImage, 800)}
+            alt={`${spotlight.title} — artwork`}
+            loading="lazy"
+            className="w-full h-auto object-cover"
+            onError={(e) => { e.currentTarget.parentElement!.style.display = 'none'; }}
+          />
+        </div>
+      )}
 
       {spotlight.description && (
         <p className="font-body text-lg md:text-xl lg:text-2xl uppercase tracking-wider">
