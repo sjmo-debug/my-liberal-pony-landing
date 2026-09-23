@@ -37,12 +37,19 @@ export interface MLPPressItem {
   url: string;
   source: string;
   date: string;
+  image?: string;
 }
 
 export interface MLPNavItem {
   label: string;
   url: string;
   isExternal: boolean;
+}
+
+export interface MLPGalleryItem {
+  image: string;
+  alt: string;
+  caption?: string;
 }
 
 export interface MLPSiteData {
@@ -54,6 +61,7 @@ export interface MLPSiteData {
   spotlight: MLPSpotlight;
   press: MLPPressItem[];
   navigation: MLPNavItem[];
+  gallery: MLPGalleryItem[];
 }
 
 interface MLPContextValue {
