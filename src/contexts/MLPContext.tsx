@@ -30,6 +30,7 @@ export interface MLPSpotlight {
   description: string;
   ctaText: string;
   pressBadgeLabel: string;
+  coverImage?: string;
 }
 
 export interface MLPPressItem {
@@ -100,6 +101,7 @@ const defaultSiteData: MLPSiteData = {
     description: 'Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events.',
     ctaText: 'Listen on Spotify',
     pressBadgeLabel: 'As heard on',
+    coverImage: '',
   },
   press: [
     {
@@ -121,6 +123,10 @@ const defaultSiteData: MLPSiteData = {
     { label: 'Live', url: '#gigs-section', isExternal: false },
     { label: 'About', url: '/about', isExternal: false },
     { label: 'Sign Up', url: '#newsletter-section', isExternal: false },
+  ],
+  gallery: [
+    { image: 'mlp/oumuamua-cover', alt: 'OUMUAMUA — debut single cover art from MY LIBERAL PONY' },
+    { image: 'mlp/live-hero', alt: 'MY LIBERAL PONY live performance — experimental music and multimedia art' },
   ],
 };
 
