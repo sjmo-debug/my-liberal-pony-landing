@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           branding: Json
           contact_email: string
+          gallery: Json
           id: string
           navigation: Json
           press: Json
@@ -30,6 +31,7 @@ export type Database = {
         Insert: {
           branding?: Json
           contact_email?: string
+          gallery?: Json
           id?: string
           navigation?: Json
           press?: Json
@@ -42,6 +44,7 @@ export type Database = {
         Update: {
           branding?: Json
           contact_email?: string
+          gallery?: Json
           id?: string
           navigation?: Json
           press?: Json
@@ -164,6 +167,27 @@ export type Database = {
           title?: string
           updated_at?: string
           youtube_url?: string
+        }
+        Relationships: []
+      }
+      sjmo_site_config: {
+        Row: {
+          artist_info: Json
+          id: string
+          projects: Json
+          updated_at: string
+        }
+        Insert: {
+          artist_info?: Json
+          id?: string
+          projects?: Json
+          updated_at?: string
+        }
+        Update: {
+          artist_info?: Json
+          id?: string
+          projects?: Json
+          updated_at?: string
         }
         Relationships: []
       }

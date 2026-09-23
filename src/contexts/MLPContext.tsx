@@ -30,6 +30,7 @@ export interface MLPSpotlight {
   description: string;
   ctaText: string;
   pressBadgeLabel: string;
+  coverImage?: string;
 }
 
 export interface MLPPressItem {
@@ -37,12 +38,19 @@ export interface MLPPressItem {
   url: string;
   source: string;
   date: string;
+  image?: string;
 }
 
 export interface MLPNavItem {
   label: string;
   url: string;
   isExternal: boolean;
+}
+
+export interface MLPGalleryItem {
+  image: string;
+  alt: string;
+  caption?: string;
 }
 
 export interface MLPSiteData {
@@ -54,6 +62,7 @@ export interface MLPSiteData {
   spotlight: MLPSpotlight;
   press: MLPPressItem[];
   navigation: MLPNavItem[];
+  gallery: MLPGalleryItem[];
 }
 
 interface MLPContextValue {
@@ -92,6 +101,7 @@ const defaultSiteData: MLPSiteData = {
     description: 'Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events.',
     ctaText: 'Listen on Spotify',
     pressBadgeLabel: 'As heard on',
+    coverImage: '',
   },
   press: [
     {
@@ -114,6 +124,10 @@ const defaultSiteData: MLPSiteData = {
     { label: 'About', url: '/about', isExternal: false },
     { label: 'Sign Up', url: '#newsletter-section', isExternal: false },
   ],
+  gallery: [
+    { image: 'mlp/oumuamua-cover', alt: 'OUMUAMUA — debut single cover art from MY LIBERAL PONY' },
+    { image: 'mlp/live-hero', alt: 'MY LIBERAL PONY live performance — experimental music and multimedia art' },
+  ],
 };
 
 const MLPContext = createContext<MLPContextValue | undefined>(undefined);
@@ -128,6 +142,7 @@ function rowToSiteData(row: any): MLPSiteData {
     spotlight: { ...defaultSiteData.spotlight, ...(row.spotlight || {}) } as MLPSpotlight,
     press: (row.press || defaultSiteData.press) as MLPPressItem[],
     navigation: (row.navigation || defaultSiteData.navigation) as MLPNavItem[],
+    gallery: (row.gallery?.length ? row.gallery : defaultSiteData.gallery) as MLPGalleryItem[],
   };
 }
 
@@ -173,6 +188,7 @@ export function MLPProvider({ children }: { children: ReactNode }) {
       spotlight: merged.spotlight,
       press: merged.press,
       navigation: merged.navigation,
+      gallery: merged.gallery,
     };
 
     if (configId) {

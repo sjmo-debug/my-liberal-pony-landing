@@ -1,4 +1,5 @@
 import type { MLPPressItem } from '@/contexts/MLPContext';
+import { resolvePhotoSrc } from '@/components/admin/PhotoField';
 
 interface Props {
   press: MLPPressItem[];
@@ -15,11 +16,22 @@ export default function PressSection({ press, showRainbow, onHover }: Props) {
       <div className="space-y-4">
         {press.map((item, i) => {
           const inner = (
-            <>
-              <span className="font-bold">{item.source}</span>
-              {item.title !== item.source && <span> — {item.title}</span>}
-              {item.date && <span className="text-muted-foreground text-sm ml-4">{item.date}</span>}
-            </>
+            <span className="flex items-center gap-4">
+              {item.image && (
+                <img
+                  src={resolvePhotoSrc(item.image, 200)}
+                  alt=""
+                  loading="lazy"
+                  className="w-14 h-14 object-cover shrink-0"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+              )}
+              <span>
+                <span className="font-bold">{item.source}</span>
+                {item.title !== item.source && <span> — {item.title}</span>}
+                {item.date && <span className="text-muted-foreground text-sm ml-4">{item.date}</span>}
+              </span>
+            </span>
           );
           const cls = `block font-body text-lg md:text-xl uppercase tracking-wider px-6 py-4 transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`;
           return item.url ? (
