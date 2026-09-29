@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { photographerInfo } from '@/data/portfolio/photographer';
+import { usePortfolio } from '@/contexts/PortfolioContext';
 import { cloudinaryPresets } from '@/lib/cloudinary';
 
 interface SEOHeadProps {
@@ -20,6 +20,7 @@ export function SEOHead({
 }: SEOHeadProps) {
 
   const location = useLocation();
+  const { photographerInfo } = usePortfolio();
 
   const fullTitle = title
     ? `${title} | ${photographerInfo.name}`

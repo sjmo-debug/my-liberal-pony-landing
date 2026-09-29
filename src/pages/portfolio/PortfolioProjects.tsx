@@ -4,11 +4,11 @@ import { SEOHead } from '@/components/portfolio/SEOHead';
 import { motion } from 'framer-motion';
 
 export default function PortfolioProjects() {
-  const { projects } = usePortfolio();
+  const { projects, photographerInfo } = usePortfolio();
 
   return (
     <>
-      <SEOHead title="Portfolio" description="Browse Simon Oliver's portfolio of music, production, visual art, and collaborative creative projects." />
+      <SEOHead title="Portfolio" description={`Browse ${photographerInfo.name}'s portfolio of music, production, visual art, and collaborative creative projects.`} />
 
       <div className="min-h-screen">
         <section className="relative py-20 md:py-28 px-6 lg:px-8 border-b-4 border-white">

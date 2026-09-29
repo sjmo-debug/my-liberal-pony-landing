@@ -3,7 +3,7 @@ import { Navigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import type { Session } from '@supabase/supabase-js';
 import { usePortfolio } from '@/contexts/PortfolioContext';
-import type { Project, ArtistInfo, ProjectCategory, SkillGroup, MethodologyItem, DiscographyEntry, ExperienceSection } from '@/types/portfolio';
+import type { Project, ArtistInfo, ProjectCategory, ProjectImage, AspectRatio, SkillGroup, MethodologyItem, DiscographyEntry, ExperienceSection } from '@/types/portfolio';
 import { SEOHead } from '@/components/portfolio/SEOHead';
 import { toast } from 'sonner';
 import PhotoField from '@/components/admin/PhotoField';
@@ -332,6 +332,52 @@ function ProjectsTab({ projects, editingId, setEditingId, updateProject, addProj
               <div className="md:col-span-2">
                 <label className="block font-heading text-xs uppercase tracking-widest mb-1">Description</label>
                 <textarea value={project.description} onChange={e => updateProject(project.id, { description: e.target.value })} className={textareaClass} />
+              </div>
+              <div className="md:col-span-2 space-y-4">
+                <h3 className="font-heading text-sm uppercase tracking-widest">Project Images ({project.images.length})</h3>
+                {project.images.map((img, i) => {
+                  const setImages = (images: ProjectImage[]) => updateProject(project.id, { images });
+                  const patch = (u: Partial<ProjectImage>) => setImages(project.images.map((x, k) => k === i ? { ...x, ...u } : x));
+                  const move = (dir: -1 | 1) => {
+                    const j = i + dir;
+                    if (j < 0 || j >= project.images.length) return;
+                    const next = [...project.images];
+                    [next[i], next[j]] = [next[j], next[i]];
+                    setImages(next);
+                  };
+                  return (
+                    <div key={img.id} className="border border-white/40 p-3 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="font-mono text-xs uppercase tracking-widest">Image {i + 1}</span>
+                        <div className="flex gap-2">
+                          <button onClick={() => move(-1)} disabled={i === 0} className="text-xs font-mono uppercase border border-white px-2 py-1 hover:bg-white hover:text-black transition-colors disabled:opacity-30">Up</button>
+                          <button onClick={() => move(1)} disabled={i === project.images.length - 1} className="text-xs font-mono uppercase border border-white px-2 py-1 hover:bg-white hover:text-black transition-colors disabled:opacity-30">Down</button>
+                          <button onClick={() => setImages(project.images.filter((_, k) => k !== i))} className="text-xs font-mono uppercase border border-red-500 text-red-500 px-2 py-1 hover:bg-red-500 hover:text-black transition-colors"><Trash2 className="size-3" /></button>
+                        </div>
+                      </div>
+                      <PhotoField label="Photo" theme="dark" folder="sjmo/projects" value={img.src} onChange={v => patch({ src: v })} />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <Field label="Description (alt text)" value={img.alt} onChange={v => patch({ alt: v })} />
+                        <div>
+                          <label className="block font-heading text-xs uppercase tracking-widest mb-1">Shape</label>
+                          <select value={img.aspectRatio} onChange={e => patch({ aspectRatio: e.target.value as AspectRatio })} className={inputClass}>
+                            <option value="landscape">Landscape</option>
+                            <option value="portrait">Portrait</option>
+                            <option value="square">Square</option>
+                          </select>
+                        </div>
+                        <Field label="Caption (optional)" value={img.caption || ''} onChange={v => patch({ caption: v })} />
+                        <Field label="Photo credit (optional)" value={img.credit || ''} onChange={v => patch({ credit: v })} />
+                      </div>
+                    </div>
+                  );
+                })}
+                <button
+                  onClick={() => updateProject(project.id, { images: [...project.images, { id: `${project.id}-${Date.now()}`, src: '', alt: '', aspectRatio: 'landscape' }] })}
+                  className={btnClass}
+                >
+                  <Plus className="size-4" /> Add Image
+                </button>
               </div>
             </div>
           )}

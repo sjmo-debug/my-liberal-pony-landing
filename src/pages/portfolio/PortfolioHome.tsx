@@ -58,7 +58,7 @@ export default function PortfolioHome() {
               transition={{ duration: 1, ease: 'easeOut' }}
             >
               <motion.h1 className="text-5xl md:text-7xl lg:text-8xl font-heading uppercase tracking-widest" style={{ color: 'white' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }}>
-                Simon Oliver — Live Visuals, Sound & Production
+                {photographerInfo.name} — Live Visuals, Sound & Production
               </motion.h1>
               <motion.p className="text-xl md:text-2xl font-light tracking-wide" style={{ color: 'rgba(255,255,255,0.95)' }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.4 }}>
                 {photographerInfo.tagline}
