@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import mlpLogoLocal from '@/assets/mlp-logo.png';
-import { cloudinaryImage, cloudinarySrcset } from '@/lib/cloudinary';
+import { cloudinarySrcset } from '@/lib/cloudinary';
+import { resolvePhotoSrc } from '@/components/admin/PhotoField';
 import GigSection from '@/components/GigSection';
 import BackgroundManager from '@/components/BackgroundManager';
 import { useMLP } from '@/contexts/MLPContext';
@@ -12,14 +13,15 @@ import SEO from '@/components/SEO';
 
 const APPLE_MUSIC_URL = 'https://music.apple.com/gb/artist/my-liberal-pony/1887096161';
 const SPOTIFY_ARTIST_URL = 'https://open.spotify.com/artist/2BgfhrMJ3h63DMazpBwQwE';
-const HERO_PUBLIC_ID = 'mlp/live-hero';
 
 const isHashLink = (url: string) => url.startsWith('#');
 
 const Index = () => {
   const { siteData } = useMLP();
+  const heroImage = siteData.branding.heroImage || 'mlp/live-hero';
+  const heroIsUrl = /^(https?:)?\/\/|^\//.test(heroImage);
   const mlpLogo = siteData.branding.cloudinaryLogoId
-    ? cloudinaryImage(siteData.branding.cloudinaryLogoId, 512)
+    ? resolvePhotoSrc(siteData.branding.cloudinaryLogoId, 512)
     : mlpLogoLocal;
   const [isVisible, setIsVisible] = useState(false);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
@@ -100,8 +102,8 @@ const Index = () => {
       >
         {/* Hero photograph — grayscale at rest, full color during rainbow */}
         <img
-          src={cloudinaryImage(HERO_PUBLIC_ID, 1600)}
-          srcSet={cloudinarySrcset(HERO_PUBLIC_ID, [800, 1200, 1600])}
+          src={resolvePhotoSrc(heroImage, 1600)}
+          srcSet={heroIsUrl ? undefined : cloudinarySrcset(heroImage, [800, 1200, 1600])}
           sizes="100vw"
           alt=""
           aria-hidden="true"
@@ -197,7 +199,7 @@ const Index = () => {
         <div className="w-full max-w-6xl mx-auto text-center space-y-16 md:space-y-24">
 
           {/* Spotlight — New Single */}
-          {siteData.spotlight.spotifyEmbedUrl && (
+          {(siteData.spotlight.spotifyEmbedUrl || siteData.spotlight.title) && (
             <div id="spotlight-section" className="scroll-mt-24">
               <SpotlightSection
                 spotlight={siteData.spotlight}

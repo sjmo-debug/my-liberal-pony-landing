@@ -2,15 +2,13 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import BackgroundManager from '@/components/BackgroundManager';
-import { cloudinaryImage } from '@/lib/cloudinary';
+import { resolvePhotoSrc } from '@/components/admin/PhotoField';
+import { useMLP } from '@/contexts/MLPContext';
 import SEO from '@/components/SEO';
 
-const GALLERY_ITEMS: { publicId: string; alt: string }[] = [
-  { publicId: 'mlp/oumuamua-cover', alt: 'OUMUAMUA — debut single cover art from MY LIBERAL PONY' },
-  { publicId: 'mlp/live-hero', alt: 'MY LIBERAL PONY live performance — experimental music and multimedia art' },
-];
-
 const Gallery = () => {
+  const { siteData } = useMLP();
+  const items = siteData.gallery.filter((item) => item.image);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
 
   return (
@@ -41,13 +39,13 @@ const Gallery = () => {
           </h1>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {GALLERY_ITEMS.map((item, index) => (
+            {items.map((item, index) => (
               <div
-                key={item.publicId}
+                key={`${item.image}-${index}`}
                 className={`group relative overflow-hidden aspect-square transition-all duration-300 hover:scale-[1.02] ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`}
               >
                 <img
-                  src={cloudinaryImage(item.publicId, 800)}
+                  src={resolvePhotoSrc(item.image, 800)}
                   alt={item.alt}
                   loading={index < 6 ? 'eager' : 'lazy'}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
