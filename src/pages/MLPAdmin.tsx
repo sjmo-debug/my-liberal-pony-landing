@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useMLP, type MLPSiteData, type MLPNavItem } from '@/contexts/MLPContext';
+import { useMLP, type MLPSiteData, type MLPNavItem, type MLPGalleryItem, type MLPPressItem } from '@/contexts/MLPContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
 import SEO from '@/components/SEO';
+import PhotoField from '@/components/admin/PhotoField';
 
-type Tab = 'spotlight' | 'videos' | 'social' | 'branding' | 'navigation';
+type Tab = 'spotlight' | 'gallery' | 'press' | 'videos' | 'social' | 'branding' | 'navigation';
 
 const tabs: { key: Tab; label: string }[] = [
   { key: 'spotlight', label: 'Spotlight' },
+  { key: 'gallery', label: 'Gallery' },
+  { key: 'press', label: 'Press' },
   { key: 'videos', label: 'Videos' },
   { key: 'social', label: 'Social & Contact' },
   { key: 'branding', label: 'Branding' },
@@ -117,6 +120,24 @@ export default function MLPAdmin() {
     setDraft({ ...draft, navigation });
   };
 
+  const updateGallery = (index: number, patch: Partial<MLPGalleryItem>) => {
+    const gallery = [...draft.gallery];
+    gallery[index] = { ...gallery[index], ...patch };
+    setDraft({ ...draft, gallery });
+  };
+  const moveGallery = (index: number, dir: -1 | 1) => {
+    const j = index + dir;
+    if (j < 0 || j >= draft.gallery.length) return;
+    const gallery = [...draft.gallery];
+    [gallery[index], gallery[j]] = [gallery[j], gallery[index]];
+    setDraft({ ...draft, gallery });
+  };
+  const updatePress = (index: number, patch: Partial<MLPPressItem>) => {
+    const press = [...draft.press];
+    press[index] = { ...press[index], ...patch };
+    setDraft({ ...draft, press });
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground p-6 md:p-12">
       <SEO title="MLP Admin" description="Admin panel" path="/admin" noindex />
@@ -150,6 +171,50 @@ export default function MLPAdmin() {
               <Field label="Description" value={draft.spotlight.description} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, description: v } })} placeholder="e.g. Debut single out now" />
               <Field label="CTA Button Text" value={draft.spotlight.ctaText} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, ctaText: v } })} placeholder="e.g. Listen on Spotify" />
               <Field label="Press Badge Label" value={draft.spotlight.pressBadgeLabel} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, pressBadgeLabel: v } })} placeholder="e.g. As heard on" />
+              <PhotoField label="Cover Image" value={draft.spotlight.coverImage || ''} onChange={(v) => setDraft({ ...draft, spotlight: { ...draft.spotlight, coverImage: v } })} folder="mlp/spotlight" />
+            </Section>
+          )}
+
+          {activeTab === 'gallery' && (
+            <Section title="Gallery Photos">
+              {draft.gallery.map((item, i) => (
+                <div key={i} className="border-2 border-foreground/30 p-4 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="font-heading text-sm uppercase tracking-widest">Photo {i + 1}</span>
+                    <div className="flex gap-2">
+                      <button onClick={() => moveGallery(i, -1)} disabled={i === 0} className="font-heading uppercase tracking-widest text-xs px-3 py-1 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-30">Up</button>
+                      <button onClick={() => moveGallery(i, 1)} disabled={i === draft.gallery.length - 1} className="font-heading uppercase tracking-widest text-xs px-3 py-1 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-30">Down</button>
+                      <button onClick={() => setDraft({ ...draft, gallery: draft.gallery.filter((_, k) => k !== i) })} className="font-heading uppercase tracking-widest text-xs px-3 py-1 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors">Remove</button>
+                    </div>
+                  </div>
+                  <PhotoField label="Image" value={item.image} onChange={(v) => updateGallery(i, { image: v })} folder="mlp/gallery" />
+                  <Field label="Description (alt text)" value={item.alt} onChange={(v) => updateGallery(i, { alt: v })} placeholder="Describe the photo for screen readers" />
+                </div>
+              ))}
+              <button onClick={() => setDraft({ ...draft, gallery: [...draft.gallery, { image: '', alt: '' }] })} className="w-full font-heading uppercase tracking-widest text-sm px-4 py-3 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors">
+                + Add Photo
+              </button>
+            </Section>
+          )}
+
+          {activeTab === 'press' && (
+            <Section title="Press and Radio">
+              {draft.press.map((item, i) => (
+                <div key={i} className="border-2 border-foreground/30 p-4 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="font-heading text-sm uppercase tracking-widest">Item {i + 1}</span>
+                    <button onClick={() => setDraft({ ...draft, press: draft.press.filter((_, k) => k !== i) })} className="font-heading uppercase tracking-widest text-xs px-3 py-1 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors">Remove</button>
+                  </div>
+                  <Field label="Title" value={item.title} onChange={(v) => updatePress(i, { title: v })} />
+                  <Field label="Source" value={item.source} onChange={(v) => updatePress(i, { source: v })} placeholder="e.g. BBC Introducing" />
+                  <Field label="Link" value={item.url} onChange={(v) => updatePress(i, { url: v })} placeholder="https://..." />
+                  <Field label="Date (YYYY-MM-DD)" value={item.date} onChange={(v) => updatePress(i, { date: v })} placeholder="2026-07-04" />
+                  <PhotoField label="Image (optional)" value={item.image || ''} onChange={(v) => updatePress(i, { image: v })} folder="mlp/press" />
+                </div>
+              ))}
+              <button onClick={() => setDraft({ ...draft, press: [...draft.press, { title: '', source: '', url: '', date: '' }] })} className="w-full font-heading uppercase tracking-widest text-sm px-4 py-3 border-2 border-foreground hover:bg-foreground hover:text-background transition-colors">
+                + Add Press Item
+              </button>
             </Section>
           )}
 
@@ -189,7 +254,8 @@ export default function MLPAdmin() {
               <Field label="Site Title" value={draft.branding.siteTitle} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, siteTitle: v } })} />
               <Field label="Tagline (under site title)" value={draft.branding.tagline} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, tagline: v } })} placeholder="e.g. EXPERIMENTAL FREAK POP. LOUDER IN PERSON." />
               <Field label="Page Subtitle" value={draft.branding.pageSubtitle} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, pageSubtitle: v } })} />
-              <Field label="Cloudinary Logo ID" value={draft.branding.cloudinaryLogoId} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, cloudinaryLogoId: v } })} placeholder="Leave empty to use local logo" />
+              <PhotoField label="Logo (empty = built-in logo)" value={draft.branding.cloudinaryLogoId} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, cloudinaryLogoId: v } })} folder="mlp/branding" />
+              <PhotoField label="Home Hero Photo" value={draft.branding.heroImage || ''} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, heroImage: v } })} folder="mlp/hero" hint="Wide landscape photos work best" />
               <Field label="Photo Credit (footer)" value={draft.branding.photoCredit} onChange={(v) => setDraft({ ...draft, branding: { ...draft.branding, photoCredit: v } })} placeholder="e.g. Jane Doe" />
             </Section>
           )}
