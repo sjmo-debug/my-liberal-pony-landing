@@ -11,7 +11,7 @@ export default function PortfolioAbout() {
 
   return (
     <>
-      <SEOHead title="About" description={`Learn about ${photographerInfo.name}, ${photographerInfo.tagline}.`} image={photographerInfo.portraitImage} />
+      <SEOHead page={{ kind: 'about' }} />
 
       <div className="min-h-screen">
         {/* Hero */}

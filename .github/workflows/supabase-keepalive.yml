@@ -1,20 +1,25 @@
 name: Supabase keepalive and backup
 
 # Free Supabase projects pause after ~7 days without activity. This reads the
-# site config every 3 days to keep the project awake, and saves a JSON copy of
+# site config every 6 hours to keep the project awake, and saves a JSON copy of
 # the content to backup/. If the database is unreachable the job fails, and
 # GitHub emails the repo owner.
+#
+# When the saved content has changed it also starts a site deploy, so the
+# pre-built theSJMO pages (titles, link previews, text for search engines)
+# catch up with admin edits within ~6 hours. No change, no deploy.
 #
 # The commit of a changed backup also counts as repo activity, which stops
 # GitHub from disabling this schedule after 60 quiet days.
 
 on:
   schedule:
-    - cron: '17 6 */3 * *'
+    - cron: '17 */6 * * *'
   workflow_dispatch:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   keepalive:
@@ -39,7 +44,9 @@ jobs:
             python3 -m json.tool --sort-keys "backup/$table.tmp" > "backup/$table.json"
             rm "backup/$table.tmp"
           done
-      - name: Commit backup if changed
+      - name: Commit backup and redeploy if content changed
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -49,4 +56,7 @@ jobs:
           else
             git commit -m "Backup site content [skip ci]"
             git push
+            # A push made with GITHUB_TOKEN does not start other workflows,
+            # but an explicit dispatch does.
+            gh workflow run deploy.yml --ref "${GITHUB_REF_NAME}"
           fi

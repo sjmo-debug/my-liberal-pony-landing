@@ -1,32 +1,38 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { usePortfolio } from '@/contexts/PortfolioContext';
-import { cloudinaryPresets } from '@/lib/cloudinary';
+import {
+  buildPortfolioMeta,
+  composeTitle,
+  DEFAULT_SHARE_IMAGE,
+  type PortfolioPage,
+} from '@/lib/portfolioSeo';
 
 interface SEOHeadProps {
+  /** Known public page: title, description and image come from the shared builder. */
+  page?: PortfolioPage;
   title?: string;
   description?: string;
   image?: string;
   type?: 'website' | 'article';
 }
 
-const defaultShareImage = cloudinaryPresets.heroGrayscale('sjmo_portfolio/hero-live');
-
 export function SEOHead({
-  title,
-  description,
-  image = defaultShareImage,
-  type = 'website',
+  page,
+  title: titleProp,
+  description: descriptionProp,
+  image: imageProp,
+  type: typeProp,
 }: SEOHeadProps) {
 
   const location = useLocation();
-  const { photographerInfo } = usePortfolio();
+  const { photographerInfo, projects } = usePortfolio();
+  const built = page ? buildPortfolioMeta(photographerInfo, projects, page, window.location.origin) : null;
 
-  const fullTitle = title
-    ? `${title} | ${photographerInfo.name}`
-    : `${photographerInfo.name} - ${photographerInfo.tagline}`;
-
-  const fullDescription = description || photographerInfo.heroIntroduction;
+  const fullTitle = built ? built.title : composeTitle(photographerInfo, titleProp);
+  const fullDescription = built ? built.description : descriptionProp || photographerInfo.heroIntroduction;
+  const image = built ? built.image : imageProp || DEFAULT_SHARE_IMAGE;
+  const type = built ? built.type : typeProp || 'website';
   const baseUrl = window.location.origin;
   const fullUrl = `${baseUrl}${location.pathname}`;
 

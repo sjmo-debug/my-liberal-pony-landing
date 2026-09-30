@@ -9,7 +9,7 @@ export default function PortfolioContact() {
 
   return (
     <>
-      <SEOHead title="Contact" description={`Get in touch with ${photographerInfo.name} for collaborations, bookings, and creative projects.`} />
+      <SEOHead page={{ kind: 'contact' }} />
 
       <div className="min-h-screen">
         <section className="py-20 md:py-28 px-6 lg:px-8 border-b-4 border-white">

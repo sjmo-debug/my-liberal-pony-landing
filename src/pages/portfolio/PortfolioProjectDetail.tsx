@@ -30,7 +30,7 @@ export default function PortfolioProjectDetail() {
 
   return (
     <>
-      <SEOHead title={project.title} description={project.description} image={project.coverImage} type="article" />
+      <SEOHead page={{ kind: 'project', project }} />
 
       <div className="min-h-screen">
         <motion.div className="relative w-full h-[70vh] overflow-hidden bg-background" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>

@@ -27,7 +27,7 @@ export default function PortfolioHome() {
 
   return (
     <>
-      <SEOHead />
+      <SEOHead page={{ kind: 'home' }} />
 
       <div className="min-h-screen">
         {/* Hero Section — owner's own photograph, grayscale */}
