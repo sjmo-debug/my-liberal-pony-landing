@@ -6,7 +6,6 @@ import { usePortfolio } from '@/contexts/PortfolioContext';
 import type { Project, ArtistInfo, ProjectCategory, SkillGroup, MethodologyItem, DiscographyEntry, ExperienceSection } from '@/types/portfolio';
 import { SEOHead } from '@/components/portfolio/SEOHead';
 import { toast } from 'sonner';
-import PhotoField from '@/components/admin/PhotoField';
 import { Plus, Trash2, Save, X } from 'lucide-react';
 
 type Tab = 'enquiries' | 'projects' | 'bio' | 'contact' | 'skills' | 'discography' | 'experience';
@@ -50,11 +49,6 @@ export default function PortfolioAdmin() {
   const [editProjects, setEditProjects] = useState<Project[]>(JSON.parse(JSON.stringify(projects)));
   const [editInfo, setEditInfo] = useState<ArtistInfo>(JSON.parse(JSON.stringify(photographerInfo)));
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
-
-  useEffect(() => {
-    setEditProjects(JSON.parse(JSON.stringify(projects)));
-    setEditInfo(JSON.parse(JSON.stringify(photographerInfo)));
-  }, [projects, photographerInfo]);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
@@ -115,22 +109,14 @@ export default function PortfolioAdmin() {
     );
   }
 
-  const saveProjects = async () => {
-    try {
-      await updateProjects(editProjects);
-      toast.success('Projects saved to database');
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to save projects');
-    }
+  const saveProjects = () => {
+    updateProjects(editProjects);
+    toast.success('Projects updated');
   };
 
-  const saveInfo = async () => {
-    try {
-      await updatePhotographerInfo(editInfo);
-      toast.success('Info saved to database');
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to save info');
-    }
+  const saveInfo = () => {
+    updatePhotographerInfo(editInfo);
+    toast.success('Info updated');
   };
 
   const addProject = () => {
@@ -328,7 +314,7 @@ function ProjectsTab({ projects, editingId, setEditingId, updateProject, addProj
               <Field label="Role" value={project.role || ''} onChange={v => updateProject(project.id, { role: v })} />
               <Field label="Location" value={project.location || ''} onChange={v => updateProject(project.id, { location: v })} />
               <Field label="Medium" value={project.medium || ''} onChange={v => updateProject(project.id, { medium: v })} />
-              <PhotoField label="Cover Image" theme="dark" folder="sjmo/projects" value={project.coverImage} onChange={v => updateProject(project.id, { coverImage: v })} />
+              <Field label="Cover Image URL" value={project.coverImage} onChange={v => updateProject(project.id, { coverImage: v })} />
               <div className="md:col-span-2">
                 <label className="block font-heading text-xs uppercase tracking-widest mb-1">Description</label>
                 <textarea value={project.description} onChange={e => updateProject(project.id, { description: e.target.value })} className={textareaClass} />
@@ -365,7 +351,7 @@ function BioTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: Arti
         <label className="block font-heading text-xs uppercase tracking-widest mb-1">Journey</label>
         <textarea value={info.journey} onChange={e => setInfo({ ...info, journey: e.target.value })} className={textareaClass} />
       </div>
-      <PhotoField label="Portrait Image" theme="dark" folder="sjmo/about" value={info.portraitImage} onChange={v => u('portraitImage', v)} />
+      <Field label="Portrait Image URL" value={info.portraitImage} onChange={v => u('portraitImage', v)} />
       <Field label="Portrait Photo Credit" value={info.portraitCredit || ''} onChange={v => u('portraitCredit', v)} />
       <Field label="Hero Photo Credit" value={info.heroCredit || ''} onChange={v => u('heroCredit', v)} />
       <Field label="Education" value={info.education} onChange={v => u('education', v)} />

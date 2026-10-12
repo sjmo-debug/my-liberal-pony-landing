@@ -40,7 +40,6 @@ export default function SpotlightSection({ spotlight, showRainbow, onHover, late
       )}
 
       {/* Spotify Embed */}
-      {spotlight.spotifyEmbedUrl && (
       <div className={`overflow-hidden transition-all duration-300 ${showRainbow ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
         <iframe
           src={`${spotlight.spotifyEmbedUrl}?utm_source=generator&theme=0`}
@@ -52,7 +51,6 @@ export default function SpotlightSection({ spotlight, showRainbow, onHover, late
           title={`${spotlight.title} on Spotify`}
         />
       </div>
-      )}
 
       {/* CTA */}
       <a
