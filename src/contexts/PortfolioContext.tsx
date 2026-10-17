@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useRef, type ReactNode 
 import type { Project, ArtistInfo } from '@/types/portfolio';
 import { projects as defaultProjects } from '@/data/portfolio/projects';
 import { photographerInfo as defaultPhotographerInfo } from '@/data/portfolio/photographer';
+import { mergePortfolioContent, type PortfolioContent } from '@/lib/portfolioContent';
 import { supabase } from '@/integrations/supabase/client';
 
 interface PortfolioContextType {
@@ -113,6 +114,12 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
       {children}
     </PortfolioContext.Provider>
   );
+}
+
+/** Live page wording: the owner's changes where set, otherwise the standard text. */
+export function usePortfolioText(): PortfolioContent {
+  const { photographerInfo } = usePortfolio();
+  return mergePortfolioContent(photographerInfo.content);
 }
 
 export function usePortfolio() {
