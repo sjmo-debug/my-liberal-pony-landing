@@ -10,7 +10,6 @@ import SpotlightSection from '@/components/SpotlightSection';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import YouTubeFacade from '@/components/YouTubeFacade';
 import SEO from '@/components/SEO';
-import { resolvePhotoSrc } from '@/components/admin/PhotoField';
 
 const APPLE_MUSIC_URL = 'https://music.apple.com/gb/artist/my-liberal-pony/1887096161';
 const SPOTIFY_ARTIST_URL = 'https://open.spotify.com/artist/2BgfhrMJ3h63DMazpBwQwE';

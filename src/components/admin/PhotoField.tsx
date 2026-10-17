@@ -4,7 +4,6 @@ import { cloudinaryImage } from '@/lib/cloudinary';
 import { toast } from 'sonner';
 
 const BUCKET = 'site-photos';
-const TEN_YEARS_SECONDS = 60 * 60 * 24 * 365 * 10;
 const MAX_BYTES = 10 * 1024 * 1024;
 const ACCEPTED = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
@@ -84,13 +83,11 @@ export default function PhotoField({
         .upload(path, file, { cacheControl: '31536000', upsert: false });
       if (uploadError) throw uploadError;
 
-      const { data, error: signError } = await supabase.storage
-        .from(BUCKET)
-        .createSignedUrl(path, TEN_YEARS_SECONDS);
-      if (signError || !data?.signedUrl) throw signError ?? new Error('Could not create image link');
+      const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+      if (!data?.publicUrl) throw new Error('Could not create image link');
 
       setFailed(false);
-      onChange(data.signedUrl);
+      onChange(data.publicUrl);
       toast.success('Photo uploaded');
     } catch (err: any) {
       toast.error(err?.message || 'Upload failed');

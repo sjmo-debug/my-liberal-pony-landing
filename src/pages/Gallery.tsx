@@ -40,7 +40,7 @@ const Gallery = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {items.map((item, index) => (
-              <figure
+              <div
                 key={`${item.image}-${index}`}
                 className={`group relative overflow-hidden aspect-square transition-all duration-300 hover:scale-[1.02] ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`}
               >
@@ -50,12 +50,7 @@ const Gallery = () => {
                   loading={index < 6 ? 'eager' : 'lazy'}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                {item.caption && (
-                  <figcaption className="absolute bottom-0 left-0 right-0 bg-background/80 text-foreground font-body text-xs uppercase tracking-widest px-3 py-2">
-                    {item.caption}
-                  </figcaption>
-                )}
-              </figure>
+              </div>
             ))}
           </div>
         </article>
