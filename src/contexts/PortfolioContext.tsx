@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useRef, type ReactNode 
 import type { Project, ArtistInfo } from '@/types/portfolio';
 import { projects as defaultProjects } from '@/data/portfolio/projects';
 import { photographerInfo as defaultPhotographerInfo } from '@/data/portfolio/photographer';
+import { selectFeaturedProjects } from '@/lib/featuredProjects';
 import { mergePortfolioContent, type PortfolioContent } from '@/lib/portfolioContent';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -99,7 +100,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     save({ projects: nextProjects, photographerInfo: info });
 
   const getProjectBySlug = (slug: string) => projects.find(p => p.slug === slug);
-  const getFeaturedProjects = () => projects.slice(0, 4);
+  const getFeaturedProjects = () => selectFeaturedProjects(projects);
 
   return (
     <PortfolioContext.Provider value={{

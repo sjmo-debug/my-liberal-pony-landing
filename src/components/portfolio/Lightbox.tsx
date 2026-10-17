@@ -42,6 +42,8 @@ export function Lightbox({ images, currentIndex, isOpen, onClose, onNavigate }: 
     setTouchEnd(0);
   };
 
+  if (!currentImage) return null;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-screen max-h-screen w-screen h-screen p-0 bg-black/95 border-none [&>button]:hidden">
