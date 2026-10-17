@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { Project } from '@/types/portfolio';
 import { cn } from '@/lib/utils';
+import { resolvePhotoSrc } from '@/components/admin/PhotoField';
 
 interface ProjectCardProps {
   project: Project;
@@ -20,6 +21,7 @@ export function ProjectCard({
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [hasError, setHasError] = React.useState(false);
   const ratio = aspectRatio || 'landscape';
+  const coverSrc = resolvePhotoSrc(project.coverImage?.trim() ?? '', 800);
 
   const aspectRatioClasses = {
     portrait: 'aspect-[3/4]',
@@ -38,7 +40,7 @@ export function ProjectCard({
         className="group block relative overflow-hidden border-2 border-white"
       >
         <div className={cn('relative overflow-hidden bg-background', aspectRatioClasses[ratio])}>
-          {hasError ? (
+          {hasError || !coverSrc ? (
             <div className="absolute inset-0 flex flex-col justify-end gap-2 p-6 border-2 border-white/40">
               <h3 className="font-heading text-2xl md:text-3xl uppercase tracking-widest">{project.title}</h3>
               <div className="flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-widest text-muted-foreground">
@@ -52,7 +54,7 @@ export function ProjectCard({
               {!isLoaded && <div className="absolute inset-0 bg-muted" />}
 
               <motion.img
-                src={project.coverImage}
+                src={coverSrc}
                 alt={project.title}
                 className={cn(
                   'absolute inset-0 w-full h-full object-cover transition-all duration-700',

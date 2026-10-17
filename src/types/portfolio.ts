@@ -30,6 +30,8 @@ export interface Project {
   role?: string;
   location?: string;
   slug: string;
+  /** Show on the Home page's Featured block. Absent/false = not flagged. See src/lib/featuredProjects.ts */
+  featured?: boolean;
 }
 
 export interface SkillGroup {

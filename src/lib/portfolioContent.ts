@@ -9,7 +9,7 @@
  * A blank value means "use the standard wording", so clearing a box is a safe undo.
  */
 
-export type PortfolioContentGroup = 'home' | 'menu' | 'about' | 'contact';
+export type PortfolioContentGroup = 'home' | 'menu' | 'project' | 'about' | 'contact';
 export type PortfolioContentKind = 'text' | 'textarea' | 'projectType';
 
 export interface PortfolioContentField {
@@ -61,6 +61,14 @@ export const PORTFOLIO_CONTENT_FIELDS = [
   f({ key: 'navContact', label: 'Contact', default: 'Contact', group: 'menu', section: 'Menu' }),
   f({ key: 'projectsHeading', label: 'Page heading', default: 'PROJECTS', group: 'menu', section: 'Projects page' }),
   f({ key: 'projectsSubtitle', label: 'Subtitle', default: 'MUSIC — PRODUCTION — VISUAL ART', group: 'menu', section: 'Projects page' }),
+
+  // ---- Project detail page ------------------------------------------------
+  f({ key: 'projectMediumLabel', label: 'Medium label', default: 'Medium', group: 'project', section: 'Details under the description' }),
+  f({ key: 'projectClientLabel', label: 'Client label', default: 'Client', group: 'project', section: 'Details under the description' }),
+  f({ key: 'projectPrevLabel', label: 'Previous project label', default: 'Previous Project', group: 'project', section: 'Previous / next links', hint: 'These links are not shown on the site at the moment. The words are ready if they are switched on later.' }),
+  f({ key: 'projectNextLabel', label: 'Next project label', default: 'Next Project', group: 'project', section: 'Previous / next links' }),
+  f({ key: 'projectNoPrevLabel', label: 'No previous project label', default: 'No Previous Project', group: 'project', section: 'Previous / next links' }),
+  f({ key: 'projectNoNextLabel', label: 'No next project label', default: 'No Next Project', group: 'project', section: 'Previous / next links' }),
 
   // ---- About page ---------------------------------------------------------
   f({ key: 'aboutPageHeading', label: 'Page heading', default: 'ABOUT', group: 'about', section: 'Headings' }),

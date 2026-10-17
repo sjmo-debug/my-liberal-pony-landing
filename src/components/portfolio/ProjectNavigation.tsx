@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import type { Project } from '@/types/portfolio';
 import { cn } from '@/lib/utils';
+import { usePortfolioText } from '@/contexts/PortfolioContext';
 
 interface ProjectNavigationProps {
   prev: Project | null;
@@ -10,6 +11,7 @@ interface ProjectNavigationProps {
 }
 
 export function ProjectNavigation({ prev, next }: ProjectNavigationProps) {
+  const t = usePortfolioText();
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border-t border-border">
       <div className={cn('border-b md:border-b-0 md:border-r border-border', !prev && 'opacity-50')}>
@@ -18,7 +20,7 @@ export function ProjectNavigation({ prev, next }: ProjectNavigationProps) {
             <motion.div className="space-y-4" whileHover={{ x: -5 }} transition={{ duration: 0.3 }}>
               <div className="flex items-center gap-3 text-muted-foreground group-hover:text-foreground transition-colors">
                 <ArrowLeft className="size-5" />
-                <span className="text-sm font-light tracking-wide uppercase">Previous Project</span>
+                <span className="text-sm font-light tracking-wide uppercase">{t.projectPrevLabel}</span>
               </div>
               <div>
                 <h3 className="text-2xl md:text-3xl font-light tracking-wide text-foreground">{prev.title}</h3>
@@ -30,7 +32,7 @@ export function ProjectNavigation({ prev, next }: ProjectNavigationProps) {
           <div className="p-8 md:p-12">
             <div className="flex items-center gap-3 text-muted-foreground">
               <ArrowLeft className="size-5" />
-              <span className="text-sm font-light tracking-wide uppercase">No Previous Project</span>
+              <span className="text-sm font-light tracking-wide uppercase">{t.projectNoPrevLabel}</span>
             </div>
           </div>
         )}
@@ -41,7 +43,7 @@ export function ProjectNavigation({ prev, next }: ProjectNavigationProps) {
           <Link to={`/theSJMO/project/${next.slug}`} className="group block p-8 md:p-12 hover:bg-accent transition-colors duration-300">
             <motion.div className="space-y-4 text-right" whileHover={{ x: 5 }} transition={{ duration: 0.3 }}>
               <div className="flex items-center justify-end gap-3 text-muted-foreground group-hover:text-foreground transition-colors">
-                <span className="text-sm font-light tracking-wide uppercase">Next Project</span>
+                <span className="text-sm font-light tracking-wide uppercase">{t.projectNextLabel}</span>
                 <ArrowRight className="size-5" />
               </div>
               <div>
@@ -53,7 +55,7 @@ export function ProjectNavigation({ prev, next }: ProjectNavigationProps) {
         ) : (
           <div className="p-8 md:p-12 text-right">
             <div className="flex items-center justify-end gap-3 text-muted-foreground">
-              <span className="text-sm font-light tracking-wide uppercase">No Next Project</span>
+              <span className="text-sm font-light tracking-wide uppercase">{t.projectNoNextLabel}</span>
               <ArrowRight className="size-5" />
             </div>
           </div>

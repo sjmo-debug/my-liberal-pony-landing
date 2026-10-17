@@ -8,7 +8,9 @@ import { SEOHead } from '@/components/portfolio/SEOHead';
 import { toast } from 'sonner';
 import PhotoField from '@/components/admin/PhotoField';
 import { HeroTab, TextTab, ListsTab } from './PortfolioAdminContent';
-import { Plus, Trash2, X } from 'lucide-react';
+import { ProjectImagesEditor, FeaturedSwitch } from './PortfolioAdminProjects';
+import { selectFeaturedProjects, isFlaggedFeatured, MAX_FEATURED, DEFAULT_FEATURED_COUNT } from '@/lib/featuredProjects';
+import { Plus, Trash2, X, ArrowUp, ArrowDown } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,7 +22,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-type Tab = 'enquiries' | 'projects' | 'hero' | 'texthome' | 'textmenu' | 'bio' | 'textabout' | 'lists' | 'contact' | 'textcontact' | 'skills' | 'discography' | 'experience';
+type Tab = 'enquiries' | 'projects' | 'hero' | 'texthome' | 'textmenu' | 'textproject' | 'bio' | 'textabout' | 'lists' | 'contact' | 'textcontact' | 'skills' | 'discography' | 'experience';
 
 const tabs: { key: Tab; label: string }[] = [
   { key: 'enquiries', label: 'Enquiries' },
@@ -28,6 +30,7 @@ const tabs: { key: Tab; label: string }[] = [
   { key: 'hero', label: 'Hero & Photos' },
   { key: 'texthome', label: 'Home Page Text' },
   { key: 'textmenu', label: 'Menu & Projects Text' },
+  { key: 'textproject', label: 'Project Page Text' },
   { key: 'bio', label: 'Bio' },
   { key: 'textabout', label: 'About Page Text' },
   { key: 'lists', label: 'About Lists' },
@@ -263,8 +266,27 @@ export default function PortfolioAdmin() {
     if (editingProjectId === id) setEditingProjectId(null);
   };
 
-  const updateProject = (id: string, updates: Partial<Project>) => {
-    setEditProjects(editProjects.map(p => p.id === id ? { ...p, ...updates } : p));
+  // Functional updates, so a photo upload that finishes late cannot overwrite newer edits.
+  const patchProject = (id: string, fn: (p: Project) => Partial<Project>) => {
+    setEditProjects(prev => prev.map(p => {
+      if (p.id !== id) return p;
+      const next = { ...p, ...fn(p) };
+      // Keep saved data tidy: an off switch is stored as "not set".
+      if (next.featured !== true) delete next.featured;
+      return next;
+    }));
+  };
+  const updateProject = (id: string, updates: Partial<Project>) => patchProject(id, () => updates);
+
+  const moveProject = (id: string, dir: -1 | 1) => {
+    setEditProjects(prev => {
+      const i = prev.findIndex(p => p.id === id);
+      const j = i + dir;
+      if (i < 0 || j < 0 || j >= prev.length) return prev;
+      const next = [...prev];
+      [next[i], next[j]] = [next[j], next[i]];
+      return next;
+    });
   };
 
   const showSaveBar = activeTab !== 'enquiries';
@@ -338,6 +360,8 @@ export default function PortfolioAdmin() {
             editingId={editingProjectId}
             setEditingId={setEditingProjectId}
             updateProject={updateProject}
+            patchProject={patchProject}
+            moveProject={moveProject}
             addProject={addProject}
             removeProject={removeProject}
             askDelete={askDelete}
@@ -345,6 +369,7 @@ export default function PortfolioAdmin() {
           {activeTab === 'hero' && <HeroTab info={editInfo} setInfo={setEditInfo} />}
           {activeTab === 'texthome' && <TextTab group="home" info={editInfo} setInfo={setEditInfo} />}
           {activeTab === 'textmenu' && <TextTab group="menu" info={editInfo} setInfo={setEditInfo} />}
+          {activeTab === 'textproject' && <TextTab group="project" info={editInfo} setInfo={setEditInfo} />}
           {activeTab === 'textabout' && <TextTab group="about" info={editInfo} setInfo={setEditInfo} />}
           {activeTab === 'lists' && <ListsTab info={editInfo} setInfo={setEditInfo} askDelete={askDelete} />}
           {activeTab === 'textcontact' && <TextTab group="contact" info={editInfo} setInfo={setEditInfo} />}
@@ -503,23 +528,46 @@ function EnquiriesTab() {
 
 
 /* ── Projects Tab ── */
-function ProjectsTab({ projects, editingId, setEditingId, updateProject, addProject, removeProject, askDelete }: {
+function ProjectsTab({ projects, editingId, setEditingId, updateProject, patchProject, moveProject, addProject, removeProject, askDelete }: {
   projects: Project[]; editingId: string | null; setEditingId: (id: string | null) => void;
-  updateProject: (id: string, u: Partial<Project>) => void; addProject: () => void; removeProject: (id: string) => void; askDelete: AskDelete;
+  updateProject: (id: string, u: Partial<Project>) => void;
+  patchProject: (id: string, fn: (p: Project) => Partial<Project>) => void;
+  moveProject: (id: string, dir: -1 | 1) => void;
+  addProject: () => void; removeProject: (id: string) => void; askDelete: AskDelete;
 }) {
+  const flaggedCount = projects.filter(isFlaggedFeatured).length;
+  const shownOnHome = new Set(selectFeaturedProjects(projects).map(p => p.id));
   return (
     <div className="space-y-6">
+      <div className="space-y-2 font-mono text-sm leading-relaxed text-white/70 max-w-3xl">
+        <p>Use the arrows to set the order. That order is used on the Projects page and on Home.</p>
+        <p>
+          Home's Featured block: while no project has "Featured on Home" switched on, Home shows the first {DEFAULT_FEATURED_COUNT} projects in this order.
+          As soon as you switch any project on, Home shows only the switched-on projects (up to {MAX_FEATURED}), in this order.
+          Switch them all off to go back to the first {DEFAULT_FEATURED_COUNT}.
+        </p>
+        <p className={flaggedCount > MAX_FEATURED ? 'text-yellow-300' : undefined}>
+          {flaggedCount === 0
+            ? `Right now none are switched on, so Home shows the first ${DEFAULT_FEATURED_COUNT}.`
+            : flaggedCount > MAX_FEATURED
+              ? `${flaggedCount} are switched on, but Home shows at most ${MAX_FEATURED}: the first ${MAX_FEATURED} in this order.`
+              : `${flaggedCount} switched on, so Home shows just those.`}
+        </p>
+      </div>
+
       <div className="flex gap-4">
         <button onClick={addProject} className={`${btnClass} w-full sm:w-auto`}><Plus className="size-4" /> Add Project</button>
       </div>
 
-      {projects.map(project => (
+      {projects.map((project, index) => (
         <div key={project.id} className="border-2 border-white p-4 space-y-4">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
             <button onClick={() => setEditingId(editingId === project.id ? null : project.id)} className="font-heading text-lg uppercase tracking-widest hover:text-white/70 text-left min-h-[44px]">
               {project.title || 'Untitled'} <span className="text-muted-foreground text-sm ml-2">({project.year})</span>
             </button>
             <div className="flex gap-2">
+              <button onClick={() => moveProject(project.id, -1)} disabled={index === 0} aria-label={`Move project ${project.title || 'Untitled'} up`} className={`${btnSmallClass} disabled:opacity-30 disabled:pointer-events-none`}><ArrowUp className="size-4" /></button>
+              <button onClick={() => moveProject(project.id, 1)} disabled={index === projects.length - 1} aria-label={`Move project ${project.title || 'Untitled'} down`} className={`${btnSmallClass} disabled:opacity-30 disabled:pointer-events-none`}><ArrowDown className="size-4" /></button>
               <button onClick={() => setEditingId(editingId === project.id ? null : project.id)} className={`${btnSmallClass} flex-1 sm:flex-none`}>
                 {editingId === project.id ? 'Collapse' : 'Edit'}
               </button>
@@ -528,6 +576,11 @@ function ProjectsTab({ projects, editingId, setEditingId, updateProject, addProj
               </button>
             </div>
           </div>
+          <FeaturedSwitch
+            project={project}
+            shownOnHome={shownOnHome.has(project.id)}
+            onChange={(on) => patchProject(project.id, () => ({ featured: on }))}
+          />
           {editingId === project.id && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field label="Title" value={project.title} onChange={v => updateProject(project.id, { title: v })} />
@@ -545,11 +598,13 @@ function ProjectsTab({ projects, editingId, setEditingId, updateProject, addProj
               <Field label="Role" value={project.role || ''} onChange={v => updateProject(project.id, { role: v })} />
               <Field label="Location" value={project.location || ''} onChange={v => updateProject(project.id, { location: v })} />
               <Field label="Medium" value={project.medium || ''} onChange={v => updateProject(project.id, { medium: v })} />
-              <PhotoField label="Cover Image" theme="dark" folder="sjmo/projects" value={project.coverImage} onChange={v => updateProject(project.id, { coverImage: v })} />
+              <Field label="Client" value={project.client || ''} onChange={v => updateProject(project.id, { client: v })} />
+              <PhotoField label="Cover Image" theme="dark" folder="sjmo/projects" value={project.coverImage} onChange={v => updateProject(project.id, { coverImage: v })} hint="Top photo of the project page and the project card" />
               <div className="md:col-span-2">
                 <label className="block font-heading text-xs uppercase tracking-widest mb-1">Description</label>
                 <textarea value={project.description} onChange={e => updateProject(project.id, { description: e.target.value })} className={textareaClass} />
               </div>
+              <ProjectImagesEditor project={project} patch={(fn) => patchProject(project.id, fn)} askDelete={askDelete} />
             </div>
           )}
         </div>

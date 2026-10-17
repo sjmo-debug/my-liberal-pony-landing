@@ -5,13 +5,16 @@ import { Calendar, MapPin, Camera, User } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { SEOHead } from '@/components/portfolio/SEOHead';
 import { ScrollReveal } from '@/components/portfolio/ScrollReveal';
-import { usePortfolio } from '@/contexts/PortfolioContext';
+import { usePortfolio, usePortfolioText } from '@/contexts/PortfolioContext';
 import { ImageWithLightbox } from '@/components/portfolio/ImageWithLightbox';
 import { Lightbox } from '@/components/portfolio/Lightbox';
+import { resolvePhotoSrc } from '@/components/admin/PhotoField';
+import type { ProjectImage } from '@/types/portfolio';
 
 export default function PortfolioProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { getProjectBySlug } = usePortfolio();
+  const t = usePortfolioText();
   const project = slug ? getProjectBySlug(slug) : undefined;
 
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -28,13 +31,27 @@ export default function PortfolioProjectDetail() {
     setLightboxOpen(true);
   };
 
+  // Gallery as edited in the admin: photos with no image are skipped, a blank
+  // description gets a plain fallback so screen readers always have something.
+  const ratios = ['portrait', 'landscape', 'square'];
+  const gallery: ProjectImage[] = (project.images ?? [])
+    .filter((img) => img && typeof img.src === 'string' && img.src.trim() !== '')
+    .map((img, i) => ({
+      ...img,
+      id: img.id || `image-${i}`,
+      src: resolvePhotoSrc(img.src.trim(), 1600),
+      alt: img.alt?.trim() || `${project.title} – photo ${i + 1}`,
+      aspectRatio: ratios.includes(img.aspectRatio) ? img.aspectRatio : 'landscape',
+    }));
+  const coverSrc = resolvePhotoSrc(project.coverImage?.trim() ?? '', 1600);
+
   return (
     <>
       <SEOHead title={project.title} description={project.description} image={project.coverImage} type="article" />
 
       <div className="min-h-screen">
         <motion.div className="relative w-full h-[70vh] overflow-hidden bg-background" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
-          {coverFailed ? (
+          {coverFailed || !coverSrc ? (
             <div className="absolute inset-0 flex flex-col justify-end gap-3 p-8 md:p-12 border-b-4 border-white">
               <h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest">{project.title}</h2>
               <div className="flex flex-wrap items-center gap-3 font-mono text-xs md:text-sm uppercase tracking-widest text-muted-foreground">
@@ -45,7 +62,7 @@ export default function PortfolioProjectDetail() {
             </div>
           ) : (
             <>
-              <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" loading="eager" {...({ fetchpriority: "high" } as Record<string, string>)} onError={() => setCoverFailed(true)} />
+              <img src={coverSrc} alt={project.title} className="w-full h-full object-cover" loading="eager" {...({ fetchpriority: "high" } as Record<string, string>)} onError={() => setCoverFailed(true)} />
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
             </>
           )}
@@ -67,13 +84,13 @@ export default function PortfolioProjectDetail() {
             <div className="grid md:grid-cols-2 gap-6 pt-4">
               {project.medium && (
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm font-light tracking-wide uppercase text-muted-foreground"><Camera className="size-4" /><span>Medium</span></div>
+                  <div className="flex items-center gap-2 text-sm font-light tracking-wide uppercase text-muted-foreground"><Camera className="size-4" /><span>{t.projectMediumLabel}</span></div>
                   <p className="font-light text-foreground">{project.medium}</p>
                 </div>
               )}
               {project.client && (
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm font-light tracking-wide uppercase text-muted-foreground"><User className="size-4" /><span>Client</span></div>
+                  <div className="flex items-center gap-2 text-sm font-light tracking-wide uppercase text-muted-foreground"><User className="size-4" /><span>{t.projectClientLabel}</span></div>
                   <p className="font-light text-foreground">{project.client}</p>
                 </div>
               )}
@@ -83,7 +100,7 @@ export default function PortfolioProjectDetail() {
 
         <section className="py-12 md:py-16">
           <div className="space-y-8 md:space-y-12">
-            {project.images.map((image, index) => (
+            {gallery.map((image, index) => (
               <ScrollReveal key={image.id} delay={index * 0.1}>
                 <ImageWithLightbox image={image} onClick={() => openLightbox(index)} priority={index === 0} index={0} className="w-full" />
               </ScrollReveal>
@@ -91,7 +108,7 @@ export default function PortfolioProjectDetail() {
           </div>
         </section>
 
-        <Lightbox images={project.images} currentIndex={currentImageIndex} isOpen={lightboxOpen} onClose={() => setLightboxOpen(false)} onNavigate={setCurrentImageIndex} />
+        <Lightbox images={gallery} currentIndex={currentImageIndex} isOpen={lightboxOpen} onClose={() => setLightboxOpen(false)} onNavigate={setCurrentImageIndex} />
       </div>
     </>
   );

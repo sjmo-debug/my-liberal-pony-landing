@@ -1,10 +1,10 @@
 # Portfolio editability audit (/theSJMO)
 
-Status after the `portfolio-admin-content` change. "Admin" means `/theSJMO/admin` (sign in at `/theSJMO/admin?login=1`).
+Status after the `portfolio-admin-projects` change (project photos, manual order, Featured switch, project page wording). "Admin" means `/theSJMO/admin` (sign in at `/theSJMO/admin?login=1`).
 The admin page has a Section dropdown on phones and a row of tabs on larger screens.
 
 Where values are stored: inside the existing `artist_info` JSON of the single `sjmo_site_config` row.
-No database migration. New optional keys: `heroImage` (photo) and `content` (a plain key to text map).
+No database migration. New optional keys: `heroImage` (photo) and `content` (a plain key to text map) in `artist_info`, and `featured` (true or absent) on each project inside the `projects` JSON.
 Only values the owner changes are stored. A blank box means "use the standard wording", so clearing a box is a safe undo.
 The standard wording lives in `src/lib/portfolioContent.ts`; every default is exactly the text that was hardcoded before.
 
@@ -27,7 +27,7 @@ The standard wording lives in `src/lib/portfolioContent.ts`; every default is ex
 | Availability line under the cards | Editable (already) | Contact |
 | Scrolling words (MUSIC, VISUALS, PRODUCTION, EVENTS, COLLABORATION, SOUND) | Hardcoded in `Marquee.tsx` | n/a |
 | FEATURED heading | Editable (new) | Home Page Text |
-| Which projects are featured (first four) | Hardcoded rule, planned for the next change | n/a |
+| Which projects are featured | Editable (new). Rule: while no project has "Featured on Home" switched on, Home shows the first 4 projects in the saved order (today's behaviour). Once any project is switched on, Home shows only the switched-on ones, in the saved order, up to 6 (the first 6 if more are on). Switching all off returns to the first 4. | Projects |
 | VIEW ALL PROJECTS button | Text editable (new); link fixed to /theSJMO/projects | Home Page Text |
 
 ## Menu (every portfolio page)
@@ -43,16 +43,26 @@ The standard wording lives in `src/lib/portfolioContent.ts`; every default is ex
 | Item | Status | Admin section |
 | --- | --- | --- |
 | Heading PROJECTS and subtitle | Editable (new) | Menu & Projects Text |
-| Project cards: title, category, year, cover photo, order | Editable (already, via the Projects section; order and photo editing are being improved in the next change) | Projects |
+| Project cards: title, category, year, cover photo | Editable (already) | Projects |
+| Order of the projects (also used by Home) | Editable (new): up and down arrows on each project | Projects |
+| Featured on Home switch | Editable (new), on each project | Projects |
+| A card whose cover is empty or fails to load | Shows title, role and year instead of a photo (nothing deleted) | n/a |
 | Google description for the page | Hardcoded sentence, but now uses the Name from Bio | Bio |
 
 ## Project detail (`/theSJMO/projects/<slug>`)
 
 | Item | Status | Admin section |
 | --- | --- | --- |
-| Title, year, category, description, role, location, medium, client | Editable (already) | Projects |
-| Gallery images, captions, credits | Not editable in the admin yet (planned for the next change) | n/a |
-| Labels "Medium", "Client", "Previous Project", "Next Project", "No Previous Project", "No Next Project" | Hardcoded | n/a |
+| Title, year, category, description, role, location, medium | Editable (already) | Projects |
+| Client | Editable (the box was missing from the admin until now) | Projects |
+| Cover photo (big photo at the top, also the project card) | Editable (already). It is a separate field from the gallery. "Use as cover" on any gallery photo copies it there without removing anything | Projects |
+| Gallery photos: add, replace, remove, reorder, shape, alt text, caption, credit | Editable (new). Photos with no image are skipped on the site; blank alt text becomes "Project title – photo N" | Projects |
+| Caption | Shown when a photo is opened full screen (as before) | Projects |
+| Credit | Shown small in the corner of the photo (as before) | Projects |
+| Gallery photo that fails to load | Shows its description text in a box (as before) | n/a |
+| Labels "Medium" and "Client" | Editable (new) | Project Page Text |
+| Labels "Previous Project", "Next Project", "No Previous Project", "No Next Project" | Editable (new), but the previous/next links are NOT shown on the site at the moment (the component exists but is not used on the page). Nothing visible changes | Project Page Text |
+| Project page tab title and link preview image | Unchanged (SEO is handled separately) | n/a |
 
 ## About (`/theSJMO/about`)
 
