@@ -8,8 +8,10 @@ interface PortfolioContextType {
   projects: Project[];
   photographerInfo: ArtistInfo;
   isLoading: boolean;
-  updateProjects: (projects: Project[]) => Promise<void>;
-  updatePhotographerInfo: (info: ArtistInfo) => Promise<void>;
+  /** True once the saved content has been read from the database (saving is allowed). */
+  canSave: boolean;
+  /** Writes projects and artist info together in one database update. */
+  saveAll: (projects: Project[], info: ArtistInfo) => Promise<void>;
   getProjectBySlug: (slug: string) => Project | undefined;
   getFeaturedProjects: () => Project[];
 }
@@ -20,6 +22,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const [projects, setProjects] = useState<Project[]>(defaultProjects);
   const [photographerInfo, setPhotographerInfo] = useState<ArtistInfo>(defaultPhotographerInfo);
   const [isLoading, setIsLoading] = useState(true);
+  const [canSave, setCanSave] = useState(false);
   const configId = useRef<string | null>(null);
   // Only allow writes once we have seen the database, so a failed fetch can
   // never overwrite saved content with the built-in defaults.
@@ -47,6 +50,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
           return;
         }
         loaded.current = true;
+        if (!cancelled) setCanSave(true);
         if (data && !cancelled) applyRow(data);
       } catch (err) {
         console.error('Failed to fetch portfolio config:', err);
@@ -90,8 +94,8 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     setPhotographerInfo(next.photographerInfo);
   };
 
-  const updateProjects = (next: Project[]) => save({ projects: next, photographerInfo });
-  const updatePhotographerInfo = (info: ArtistInfo) => save({ projects, photographerInfo: info });
+  const saveAll = (nextProjects: Project[], info: ArtistInfo) =>
+    save({ projects: nextProjects, photographerInfo: info });
 
   const getProjectBySlug = (slug: string) => projects.find(p => p.slug === slug);
   const getFeaturedProjects = () => projects.slice(0, 4);
@@ -101,8 +105,8 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
       projects,
       photographerInfo,
       isLoading,
-      updateProjects,
-      updatePhotographerInfo,
+      canSave,
+      saveAll,
       getProjectBySlug,
       getFeaturedProjects,
     }}>
