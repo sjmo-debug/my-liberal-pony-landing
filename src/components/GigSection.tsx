@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Papa from 'papaparse';
 import GigCard from './GigCard';
+import { useMLP } from '@/contexts/MLPContext';
 
 interface Gig {
   date: string;
@@ -58,6 +59,8 @@ const formatDate = (date: Date): string => {
 };
 
 const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true, onGigsLoaded }: GigSectionProps) => {
+  const { siteData } = useMLP();
+  const c = siteData.content;
   const { data: gigs, isLoading, error } = useQuery({
     queryKey: ['gigs'],
     queryFn: async () => {
@@ -150,7 +153,7 @@ const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true, onGigsLo
     <section className="w-full max-w-3xl mx-auto">
       {showTitle && hasUpcomingGigs && (
         <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider text-center mb-12">
-          UPCOMING GIGS
+          {c.gigsUpcomingTitle}
         </h2>
       )}
       {hasUpcomingGigs && (
@@ -170,7 +173,7 @@ const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true, onGigsLo
             ))}
           </div>
           <p className="font-heading text-xl md:text-2xl lg:text-3xl uppercase tracking-widest text-center mt-12">
-            Merch — At Shows Only.
+            {c.gigsMerchLine}
           </p>
         </>
       )}
@@ -178,7 +181,7 @@ const GigSection = ({ onButtonHover, isButtonHovered, showTitle = true, onGigsLo
       {hasPastGigs && (
         <div className={hasUpcomingGigs ? 'mt-16' : ''}>
           <h3 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-widest text-center mb-8">
-            Previously
+            {c.gigsPreviouslyTitle}
           </h3>
           <div className="grid grid-cols-1 gap-3">
             {pastGigs.map((gig, index) => (

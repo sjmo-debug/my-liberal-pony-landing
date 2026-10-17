@@ -7,6 +7,7 @@ import SEO from '@/components/SEO';
 
 const Listen = () => {
   const { siteData } = useMLP();
+  const c = siteData.content;
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const showRainbow = isButtonHovered;
 
@@ -15,8 +16,8 @@ const Listen = () => {
   return (
     <div className="min-h-screen transition-all duration-500 relative">
       <SEO
-        title="OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS - Listen"
-        description="Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events."
+        title={`${c.seoTitle} - Listen`}
+        description={c.seoDescription}
         path="/listen"
       />
       <BackgroundManager isVisible={showRainbow} />
@@ -30,7 +31,7 @@ const Listen = () => {
           </nav>
 
           <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold uppercase tracking-wider">
-            Listen
+            {c.listenTitle}
           </h1>
 
           <section className="w-full space-y-6">
@@ -46,7 +47,7 @@ const Listen = () => {
 
           <section className="w-full space-y-6">
             <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-wider">
-              On SoundCloud
+              {c.listenSoundcloudTitle}
             </h2>
             <div className={`overflow-hidden ${border}`}>
               <iframe width="100%" height="166" scrolling="no" frameBorder="no" loading="lazy" allow="autoplay" src={siteData.soundcloudEmbedUrl} title={`${siteData.branding.siteTitle} on SoundCloud`} />
@@ -56,7 +57,7 @@ const Listen = () => {
           {siteData.socialLinks.bandcamp && (
             <section className="w-full space-y-6">
               <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-wider">
-                On Bandcamp
+                {c.listenBandcampTitle}
               </h2>
               <a
                 href={siteData.socialLinks.bandcamp}
@@ -66,7 +67,7 @@ const Listen = () => {
                 onMouseLeave={() => setIsButtonHovered(false)}
                 className={`inline-block font-heading text-lg md:text-2xl font-bold uppercase px-8 py-5 tracking-wider transition-all duration-300 ${showRainbow ? 'border-2 border-black hover:bg-black hover:text-white' : 'border-2 border-foreground hover:bg-foreground hover:text-background'}`}
               >
-                Open Bandcamp
+                {c.listenBandcampButton}
               </a>
             </section>
           )}

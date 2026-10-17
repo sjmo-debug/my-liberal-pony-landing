@@ -8,14 +8,15 @@ import SEO from '@/components/SEO';
 
 const Gallery = () => {
   const { siteData } = useMLP();
+  const c = siteData.content;
   const items = siteData.gallery.filter((item) => item.image);
   const [isButtonHovered, setIsButtonHovered] = useState(false);
 
   return (
     <div className="min-h-screen transition-all duration-500">
       <SEO
-        title="OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS - Gallery"
-        description="Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events."
+        title={`${c.seoTitle} - Gallery`}
+        description={c.seoDescription}
         path="/gallery"
       />
       <BackgroundManager isVisible={isButtonHovered} />
@@ -35,7 +36,7 @@ const Gallery = () => {
           </nav>
 
           <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold uppercase tracking-wider text-center">
-            Gallery
+            {c.galleryTitle}
           </h1>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
