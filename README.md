@@ -26,6 +26,7 @@ npm run lint    # eslint (informational; not a deploy gate)
 Push to `main` (or merge a PR) and `.github/workflows/deploy.yml` builds and publishes to GitHub Pages automatically. No other publishing step exists.
 
 Content stored in the database (spotlight release, videos, social links, branding) is edited live at `/login` → `/admin` with an admin account — no deploy needed for those changes.
+Page wording (headlines, buttons, section titles, key links, About text, Oumuamua page, browser-tab title) is editable there too and is stored inside the `branding` JSON column. Standard wording lives in `src/lib/siteContent.ts`; see `docs/admin-editability-audit.md` for what is editable and what is not. Gigs and the About text (unless overridden) come from a Google Sheet.
 
 ## Backend (Supabase)
 

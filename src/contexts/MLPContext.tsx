@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { DEFAULT_CONTENT, mergeContent, contentOverrides, type MLPContent } from '@/lib/siteContent';
 
 export interface MLPVideo {
   youtubeId: string;
@@ -55,6 +56,12 @@ export interface MLPGalleryItem {
   caption?: string;
 }
 
+/** One paragraph of the About page text (admin override of the Google Sheet). */
+export interface MLPAboutParagraph {
+  text: string;
+  italic: boolean;
+}
+
 export interface MLPSiteData {
   videos: [MLPVideo, MLPVideo];
   soundcloudEmbedUrl: string;
@@ -65,11 +72,17 @@ export interface MLPSiteData {
   press: MLPPressItem[];
   navigation: MLPNavItem[];
   gallery: MLPGalleryItem[];
+  /** Page text and links (headings, buttons, key links). Always fully populated. */
+  content: MLPContent;
+  /** About page paragraphs. Empty = keep using the Google Sheet, as before. */
+  aboutParagraphs: MLPAboutParagraph[];
 }
 
 interface MLPContextValue {
   siteData: MLPSiteData;
   isLoading: boolean;
+  /** True once the database was read successfully; saving is blocked until then. */
+  canSave: boolean;
   updateSiteData: (data: Partial<MLPSiteData>) => Promise<void>;
 }
 
@@ -131,21 +144,30 @@ const defaultSiteData: MLPSiteData = {
     { image: 'mlp/oumuamua-cover', alt: 'OUMUAMUA — debut single cover art from MY LIBERAL PONY' },
     { image: 'mlp/live-hero', alt: 'MY LIBERAL PONY live performance — experimental music and multimedia art' },
   ],
+  content: DEFAULT_CONTENT,
+  aboutParagraphs: [],
 };
 
 const MLPContext = createContext<MLPContextValue | undefined>(undefined);
 
 function rowToSiteData(row: any): MLPSiteData {
+  // New editable text lives inside the existing `branding` JSON column, so no
+  // database change is needed. Pull it out so it is not mixed into branding.
+  const { content: savedContent, aboutParagraphs: savedAbout, ...savedBranding } = (row.branding || {}) as Record<string, unknown>;
   return {
     videos: row.videos as [MLPVideo, MLPVideo],
     soundcloudEmbedUrl: row.soundcloud_embed_url,
     contactEmail: row.contact_email,
     socialLinks: { ...defaultSiteData.socialLinks, ...(row.social_links || {}) } as MLPSocialLinks,
-    branding: { ...defaultSiteData.branding, ...(row.branding || {}) } as MLPBranding,
+    branding: { ...defaultSiteData.branding, ...savedBranding } as MLPBranding,
     spotlight: { ...defaultSiteData.spotlight, ...(row.spotlight || {}) } as MLPSpotlight,
     press: (row.press || defaultSiteData.press) as MLPPressItem[],
     navigation: (row.navigation || defaultSiteData.navigation) as MLPNavItem[],
     gallery: (row.gallery?.length ? row.gallery : defaultSiteData.gallery) as MLPGalleryItem[],
+    content: mergeContent(savedContent),
+    aboutParagraphs: ((Array.isArray(savedAbout) ? savedAbout : []) as Partial<MLPAboutParagraph>[])
+      .filter((p) => p && typeof p.text === 'string' && p.text.trim() !== '')
+      .map((p) => ({ text: p.text as string, italic: !!p.italic })),
   };
 }
 
@@ -156,6 +178,7 @@ export function MLPProvider({ children }: { children: ReactNode }) {
   // Writes are only allowed once the database has been read successfully, so a
   // failed fetch can never overwrite saved content with the built-in defaults.
   const loaded = useRef(false);
+  const [canSave, setCanSave] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -171,6 +194,7 @@ export function MLPProvider({ children }: { children: ReactNode }) {
           console.error('Failed to fetch MLP config:', error);
         } else {
           loaded.current = true;
+          if (!cancelled) setCanSave(true);
           if (data && !cancelled) {
             setSiteData(rowToSiteData(data));
             setConfigId(data.id);
@@ -205,14 +229,25 @@ export function MLPProvider({ children }: { children: ReactNode }) {
     if (!loaded.current) {
       throw new Error('Could not reach the database, so nothing was saved. Reload and try again.');
     }
-    const merged = { ...siteData, ...data };
+    const draft = { ...siteData, ...data };
+    // Blank text fields mean "use the standard text"; empty About paragraphs are dropped.
+    const merged: MLPSiteData = {
+      ...draft,
+      content: mergeContent(contentOverrides(draft.content)),
+      aboutParagraphs: draft.aboutParagraphs.filter((p) => p.text.trim() !== ''),
+    };
 
     const row: any = {
       videos: merged.videos,
       soundcloud_embed_url: merged.soundcloudEmbedUrl,
       contact_email: merged.contactEmail,
       social_links: merged.socialLinks,
-      branding: merged.branding,
+      // Page text overrides and About paragraphs ride along inside branding.
+      branding: {
+        ...merged.branding,
+        content: contentOverrides(merged.content),
+        aboutParagraphs: merged.aboutParagraphs,
+      },
       spotlight: merged.spotlight,
       press: merged.press,
       navigation: merged.navigation,
@@ -240,7 +275,7 @@ export function MLPProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <MLPContext.Provider value={{ siteData, isLoading, updateSiteData }}>
+    <MLPContext.Provider value={{ siteData, isLoading, canSave, updateSiteData }}>
       {children}
     </MLPContext.Provider>
   );

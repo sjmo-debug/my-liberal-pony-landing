@@ -11,13 +11,11 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 import YouTubeFacade from '@/components/YouTubeFacade';
 import SEO from '@/components/SEO';
 
-const APPLE_MUSIC_URL = 'https://music.apple.com/gb/artist/my-liberal-pony/1887096161';
-const SPOTIFY_ARTIST_URL = 'https://open.spotify.com/artist/2BgfhrMJ3h63DMazpBwQwE';
-
 const isHashLink = (url: string) => url.startsWith('#');
 
 const Index = () => {
   const { siteData } = useMLP();
+  const c = siteData.content;
   const heroImage = siteData.branding.heroImage || 'mlp/live-hero';
   const heroIsUrl = /^(https?:)?\/\/|^\//.test(heroImage);
   const mlpLogo = siteData.branding.cloudinaryLogoId
@@ -32,7 +30,10 @@ const Index = () => {
   const [hasGigs, setHasGigs] = useState(false);
 
   useEffect(() => {
-    document.title = 'OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS';
+    document.title = c.seoTitle;
+  }, [c.seoTitle]);
+
+  useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 300);
     return () => clearTimeout(timer);
   }, []);
@@ -68,8 +69,8 @@ const Index = () => {
     if (isTouch) setTouchLatched((v) => !v);
   };
 
-  const pageTitle = 'OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS';
-  const pageDescription = 'Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events.';
+  const pageTitle = c.seoTitle;
+  const pageDescription = c.seoDescription;
 
   const jsonLd: Record<string, unknown>[] = [
     {
@@ -174,7 +175,7 @@ const Index = () => {
             className={`w-56 h-56 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain mx-auto mb-6 transition-all duration-500 relative z-10 ${showRainbow ? '' : 'filter invert'}`}
           />
           <h1 className="font-heading text-4xl md:text-7xl lg:text-7xl xl:text-8xl font-bold tracking-wider uppercase">
-            MY LIBERAL PONY
+            {c.homeHeadline}
           </h1>
           {siteData.branding.tagline && (
             <p className="font-body text-xs md:text-sm uppercase tracking-[0.3em] mt-4 opacity-90">
@@ -216,7 +217,7 @@ const Index = () => {
           {/* Watch — Featured Video */}
           <section id="watch-section" className="w-full space-y-8 scroll-mt-24">
             <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
-              Watch
+              {c.watchTitle}
             </h2>
             <YouTubeFacade youtubeId={siteData.videos[0].youtubeId} title={siteData.videos[0].title} showRainbow={showRainbow} />
           </section>
@@ -230,12 +231,12 @@ const Index = () => {
           <section id="contact-section" className={`pt-16 border-t-4 py-16 transition-colors duration-500 ${showRainbow ? 'border-black bg-black/5' : 'border-foreground bg-foreground/5'}`}>
             <div className="text-center space-y-8">
               <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
-                Get in Touch
+                {c.contactTitle}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                 {[
-                  { label: 'Bookings', subject: 'Booking%20enquiry' },
-                  { label: 'Everything Else', subject: 'Hello' },
+                  { label: c.contactBookingsLabel, subject: 'Booking%20enquiry' },
+                  { label: c.contactOtherLabel, subject: 'Hello' },
                 ].map(({ label, subject }) => (
                   <div key={label} className="space-y-3">
                     <p className="font-heading text-xl md:text-2xl uppercase tracking-widest">
@@ -257,7 +258,7 @@ const Index = () => {
                 {siteData.socialLinks.buyMeACoffee && (
                   <div className="pt-8">
                     <p className="font-body text-base md:text-lg uppercase tracking-widest mb-3">
-                      Support the music
+                      {c.supportText}
                     </p>
                     <a
                       href={siteData.socialLinks.buyMeACoffee}
@@ -268,7 +269,7 @@ const Index = () => {
                       aria-label="Buy me a coffee"
                       className={`inline-block font-body text-lg md:text-xl lg:text-2xl font-bold uppercase px-6 py-4 md:px-8 md:py-5 min-h-[44px] transition-all duration-300 tracking-wider ${showRainbow ? 'border-2 border-black hover:bg-black hover:text-white' : 'border-2 border-foreground hover:bg-foreground hover:text-background'}`}
                     >
-                      ☕ Buy Me a Coffee
+                      {c.coffeeButton}
                     </a>
                   </div>
                 )}
@@ -285,8 +286,8 @@ const Index = () => {
             <a href={siteData.socialLinks.soundcloud} target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">Soundcloud</a>
             <a href={siteData.socialLinks.bandcamp} target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">Bandcamp</a>
             <a href={siteData.socialLinks.youtube} target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">Youtube</a>
-            <a href={SPOTIFY_ARTIST_URL} target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">Spotify</a>
-            <a href={APPLE_MUSIC_URL} target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">Apple Music</a>
+            <a href={c.spotifyArtistUrl} target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">Spotify</a>
+            <a href={c.appleMusicUrl} target="_blank" rel="noopener noreferrer" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className="font-body text-sm md:text-base uppercase tracking-widest hover:opacity-70 transition-opacity">Apple Music</a>
           </footer>
 
           {siteData.branding.photoCredit && (

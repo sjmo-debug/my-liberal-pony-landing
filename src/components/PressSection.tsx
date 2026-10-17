@@ -1,5 +1,6 @@
 import type { MLPPressItem } from '@/contexts/MLPContext';
 import { resolvePhotoSrc } from '@/components/admin/PhotoField';
+import { useMLP } from '@/contexts/MLPContext';
 
 interface Props {
   press: MLPPressItem[];
@@ -8,10 +9,11 @@ interface Props {
 }
 
 export default function PressSection({ press, showRainbow, onHover }: Props) {
+  const { siteData } = useMLP();
   return (
     <section className="w-full space-y-8">
       <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider">
-        Press
+        {siteData.content.pressTitle}
       </h2>
       <div className="space-y-4">
         {press.map((item, i) => {

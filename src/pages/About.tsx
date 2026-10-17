@@ -11,11 +11,16 @@ const About = () => {
   const [isButtonHovered, setIsButtonHovered] = useState(false);
   const { data: entries, isLoading } = useAboutContent();
   const { siteData } = useMLP();
+  const c = siteData.content;
+  // Text saved in the admin wins; otherwise the Google Sheet is used exactly as before.
+  const adminParagraphs = siteData.aboutParagraphs;
+  const paragraphs = adminParagraphs.length > 0 ? adminParagraphs : entries;
+  const showSkeleton = adminParagraphs.length === 0 && isLoading;
 
   return <div className="min-h-screen transition-all duration-500">
       <SEO
-        title="OUMUAMUA - DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS - About"
-        description="Listen to OUMUAMUA - the debut single from MY LIBERAL PONY as heard on BBC Introducing & The Hello Goodbye Show. Visit for more information on live events."
+        title={`${c.seoTitle} - About`}
+        description={c.seoDescription}
         path="/about"
       />
       <BackgroundManager isVisible={isButtonHovered} />
@@ -25,23 +30,23 @@ const About = () => {
           <nav className="flex justify-start mb-8">
             <Link to="/" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className={`inline-flex items-center gap-2 font-body text-lg md:text-xl lg:text-2xl uppercase px-6 py-3 md:px-8 md:py-4 min-h-[44px] transition-all duration-300 ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`} aria-label="Return to home page">
               <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
-              BACK TO HOME
+              {c.aboutBackButton}
             </Link>
           </nav>
 
           <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold uppercase tracking-wider">
-            About the Artist
+            {c.aboutTitle}
           </h1>
           
           <div className="space-y-6 md:space-y-8">
-            {isLoading ? (
+            {showSkeleton ? (
               <div className="space-y-6 md:space-y-8 animate-pulse">
                 {[...Array(5)].map((_, i) => (
                   <div key={i} className="h-6 bg-muted rounded w-full" />
                 ))}
               </div>
             ) : (
-              entries?.map((entry, i) => (
+              paragraphs?.map((entry, i) => (
                 <p key={i} className={`font-body text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed uppercase ${entry.italic ? 'italic' : ''}`}>
                   {entry.text}
                 </p>
@@ -51,7 +56,7 @@ const About = () => {
 
           <div className="flex justify-center mt-8">
             <Link to="/theSJMO" onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)} className={`inline-flex items-center gap-2 font-body text-lg md:text-xl lg:text-2xl uppercase px-6 py-3 md:px-8 md:py-4 min-h-[44px] transition-all duration-300 ${isButtonHovered ? 'border-2 border-black' : 'border-2 border-foreground'}`}>
-              CREATIVE PORTFOLIO
+              {c.aboutPortfolioButton}
               <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
             </Link>
           </div>

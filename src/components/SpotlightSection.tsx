@@ -2,6 +2,7 @@ import type { MLPSpotlight, MLPPressItem } from '@/contexts/MLPContext';
 import { Link } from 'react-router-dom';
 import { track } from '@/lib/analytics';
 import { resolvePhotoSrc } from '@/components/admin/PhotoField';
+import { useMLP } from '@/contexts/MLPContext';
 
 interface Props {
   spotlight: MLPSpotlight;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function SpotlightSection({ spotlight, showRainbow, onHover, latestPress }: Props) {
+  const { siteData } = useMLP();
   const badgePrefix = (spotlight.pressBadgeLabel || 'As heard on').toUpperCase();
   const pressLine = latestPress
     ? `${badgePrefix} "${latestPress.title}" — ${latestPress.source}`
@@ -74,7 +76,7 @@ export default function SpotlightSection({ spotlight, showRainbow, onHover, late
           onMouseLeave={() => onHover(false)}
           className={`inline-block font-heading text-base md:text-lg uppercase tracking-widest underline underline-offset-4 ${showRainbow ? 'text-black' : 'text-foreground'}`}
         >
-          OUMUAMUA →
+          {siteData.content.spotlightLinkText}
         </Link>
       </div>
 

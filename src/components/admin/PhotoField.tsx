@@ -60,15 +60,20 @@ export default function PhotoField({
   const muted = theme === 'dark' ? 'text-white/50' : 'text-muted-foreground';
   const field =
     theme === 'dark'
-      ? 'w-full bg-black text-white border-2 border-white px-3 py-2 font-mono text-sm focus:outline-none focus:bg-white/5 placeholder:text-white/30'
-      : 'w-full bg-background text-foreground border-2 border-foreground px-3 py-2 font-body text-sm focus:outline-none focus:bg-foreground/5 placeholder:text-muted-foreground';
-  const btn = `font-heading uppercase tracking-widest text-xs px-3 py-2 border-2 ${border} ${text} transition-colors ${
+      ? 'w-full min-h-[44px] bg-black text-white border-2 border-white px-3 py-2 font-mono text-base focus:outline-none focus:bg-white/5 placeholder:text-white/30'
+      : 'w-full min-h-[44px] bg-background text-foreground border-2 border-foreground px-3 py-2 font-body text-base focus:outline-none focus:bg-foreground/5 placeholder:text-muted-foreground';
+  const btn = `font-heading uppercase tracking-widest text-xs px-4 py-2 min-h-[44px] border-2 ${border} ${text} transition-colors ${
     theme === 'dark' ? 'hover:bg-white hover:text-black' : 'hover:bg-foreground hover:text-background'
   }`;
 
   const upload = async (file: File) => {
     if (!ACCEPTED.includes(file.type)) {
-      toast.error('Please choose a JPG, PNG, WebP or GIF image');
+      const heic = /hei[cf]/i.test(file.type) || /\.hei[cf]$/i.test(file.name);
+      toast.error(
+        heic
+          ? 'That photo is in HEIC format. On iPhone, set Settings > Camera > Formats > Most Compatible, or choose a screenshot or JPG.'
+          : 'Please choose a JPG, PNG, WebP or GIF image',
+      );
       return;
     }
     if (file.size > MAX_BYTES) {
@@ -103,7 +108,7 @@ export default function PhotoField({
     <div className="space-y-2">
       <label className={`block font-heading text-xs uppercase tracking-widest ${muted}`}>{label}</label>
 
-      <div className="flex gap-3 items-start">
+      <div className="flex flex-col min-[420px]:flex-row gap-3 items-start">
         <div
           className={`shrink-0 w-24 h-24 border-2 ${border} overflow-hidden flex items-center justify-center ${
             dragOver ? 'opacity-60' : ''
@@ -134,7 +139,7 @@ export default function PhotoField({
           )}
         </div>
 
-        <div className="flex-1 space-y-2">
+        <div className="flex-1 w-full min-w-0 space-y-2">
           <input
             type="text"
             value={value}
@@ -169,7 +174,7 @@ export default function PhotoField({
       <input
         ref={inputRef}
         type="file"
-        accept={ACCEPTED.join(',')}
+        accept="image/*"
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];

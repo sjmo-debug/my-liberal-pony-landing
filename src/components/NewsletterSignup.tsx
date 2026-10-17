@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { track } from '@/lib/analytics';
+import { useMLP } from '@/contexts/MLPContext';
 
 interface NewsletterSignupProps {
   showRainbow: boolean;
@@ -11,6 +12,8 @@ interface NewsletterSignupProps {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const NewsletterSignup = ({ showRainbow, onHover, id }: NewsletterSignupProps) => {
+  const { siteData } = useMLP();
+  const c = siteData.content;
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
@@ -47,15 +50,15 @@ const NewsletterSignup = ({ showRainbow, onHover, id }: NewsletterSignupProps) =
   return (
     <section id={id} className="w-full space-y-6 scroll-mt-24">
       <h2 className={`font-heading text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase tracking-wider ${textColor}`}>
-        Get the next one first
+        {c.newsletterTitle}
       </h2>
       <p className={`font-body text-base md:text-lg uppercase tracking-wider ${textColor} opacity-80`}>
-        New releases and gigs, before anywhere else. No spam.
+        {c.newsletterBlurb}
       </p>
 
       {status === 'success' ? (
         <p className={`font-heading text-2xl md:text-3xl uppercase tracking-wider ${textColor}`} role="status" aria-live="polite">
-          You're in.
+          {c.newsletterSuccess}
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4" noValidate>
@@ -68,7 +71,7 @@ const NewsletterSignup = ({ showRainbow, onHover, id }: NewsletterSignupProps) =
             name="EMAIL"
             value={email}
             onChange={(e) => { setEmail(e.target.value); if (status === 'error') setStatus('idle'); }}
-            placeholder="YOUR EMAIL ADDRESS"
+            placeholder={c.newsletterPlaceholder}
             required
             aria-invalid={status === 'error'}
             aria-describedby={status === 'error' ? `newsletter-err-${id || 'main'}` : undefined}
@@ -81,7 +84,7 @@ const NewsletterSignup = ({ showRainbow, onHover, id }: NewsletterSignupProps) =
             disabled={status === 'loading'}
             className={`border-2 ${borderColor} ${textColor} font-body text-base md:text-lg uppercase tracking-wider px-8 py-4 hover:opacity-70 transition-all duration-500 disabled:opacity-50 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 ${ringColor}`}
           >
-            {status === 'loading' ? 'Signing up…' : 'Sign Up'}
+            {status === 'loading' ? 'Signing up…' : c.newsletterButton}
           </button>
         </form>
       )}
@@ -91,7 +94,7 @@ const NewsletterSignup = ({ showRainbow, onHover, id }: NewsletterSignupProps) =
           role="alert"
           className={`font-body text-base uppercase tracking-wider ${textColor}`}
         >
-          That email didn't work — try again.
+          {c.newsletterError}
         </p>
       )}
     </section>
