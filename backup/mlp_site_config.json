@@ -1,0 +1,55 @@
+[
+    {
+        "branding": {
+            "cloudinaryLogoId": "",
+            "heroImage": "mlp/live-hero",
+            "pageSubtitle": "Watch & Listen - Upcoming Gigs",
+            "photoCredit": "",
+            "siteTitle": "MY LIBERAL PONY",
+            "tagline": "PERMANENT WORK IN PROGRESS"
+        },
+        "contact_email": "myliberalpony@gmail.com",
+        "gallery": [
+            {
+                "alt": "PHOTOGRAPHY BY IAN HANAM",
+                "image": "https://ptzmollkkrrqkwzdqzra.supabase.co/storage/v1/object/public/site-photos/mlp/gallery/hero-ian-hanham260828-gappy-tooth-indust-1790763013454.jpg"
+            },
+            {
+                "alt": "MY LIBERAL PONY live performance \u2014 experimental music and multimedia art",
+                "image": "mlp/live-hero"
+            }
+        ],
+        "id": "56a5864e-c00f-4969-94e0-e2f675e73169",
+        "navigation": [],
+        "press": [],
+        "social_links": {
+            "bandcamp": "https://myliberalpony.bandcamp.com/",
+            "buyMeACoffee": "https://buymeacoffee.com/myliberalpony",
+            "instagram": "https://instagram.com/myliberalpony",
+            "soundcloud": "https://soundcloud.com/myliberalpony",
+            "youtube": "https://www.youtube.com/@MYLIBERALPONY"
+        },
+        "soundcloud_embed_url": "https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/myliberalpony&color=%23000000&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false",
+        "spotlight": {
+            "coverImage": "",
+            "ctaText": "Listen on Spotify",
+            "description": "Debut single out now",
+            "header": "DEBUT SINGLE OUT NOW ON ALL STREAMING PLATFORMS",
+            "pressBadgeLabel": "As heard on",
+            "spotifyEmbedUrl": "https://open.spotify.com/embed/track/2MJXjtYkBRQYYLlyBTnXI0",
+            "spotifyUrl": "https://open.spotify.com/track/2MJXjtYkBRQYYLlyBTnXI0",
+            "title": "Oumuamua"
+        },
+        "updated_at": "2026-09-30T10:10:53.454218+00:00",
+        "videos": [
+            {
+                "title": "MY LIBERAL PONY - Oumuamua (Music Video)",
+                "youtubeId": "1GKVFi5ow4Y"
+            },
+            {
+                "title": "MY LIBERAL PONY - British Summer Values (Live) ",
+                "youtubeId": "jTpvijP76g8"
+            }
+        ]
+    }
+]

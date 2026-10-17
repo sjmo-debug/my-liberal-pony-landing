@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface MLPVideo {
@@ -20,6 +20,8 @@ export interface MLPBranding {
   cloudinaryLogoId: string;
   tagline: string;
   photoCredit: string;
+  /** Home hero photo: Cloudinary ID or full image URL */
+  heroImage?: string;
 }
 
 export interface MLPSpotlight {
@@ -92,6 +94,7 @@ const defaultSiteData: MLPSiteData = {
     cloudinaryLogoId: '',
     tagline: 'EXPERIMENTAL FREAK POP. LOUDER IN PERSON.',
     photoCredit: '[PHOTOGRAPHER NAME]',
+    heroImage: 'mlp/live-hero',
   },
   spotlight: {
     header: 'New Single',
@@ -150,8 +153,12 @@ export function MLPProvider({ children }: { children: ReactNode }) {
   const [siteData, setSiteData] = useState<MLPSiteData>(defaultSiteData);
   const [isLoading, setIsLoading] = useState(true);
   const [configId, setConfigId] = useState<string | null>(null);
+  // Writes are only allowed once the database has been read successfully, so a
+  // failed fetch can never overwrite saved content with the built-in defaults.
+  const loaded = useRef(false);
 
   useEffect(() => {
+    let cancelled = false;
     async function fetchConfig() {
       try {
         const { data, error } = await supabase
@@ -162,22 +169,43 @@ export function MLPProvider({ children }: { children: ReactNode }) {
 
         if (error) {
           console.error('Failed to fetch MLP config:', error);
-        } else if (data) {
-          setSiteData(rowToSiteData(data));
-          setConfigId(data.id);
+        } else {
+          loaded.current = true;
+          if (data && !cancelled) {
+            setSiteData(rowToSiteData(data));
+            setConfigId(data.id);
+          }
         }
       } catch (err) {
         console.error('Failed to fetch MLP config:', err);
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     }
     fetchConfig();
+
+    // Open tabs pick up saved changes without a reload.
+    const channel = supabase
+      .channel('mlp_site_config_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'mlp_site_config' }, (payload) => {
+        if (payload.new && 'id' in payload.new) {
+          setSiteData(rowToSiteData(payload.new));
+          setConfigId((payload.new as any).id);
+        }
+      })
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const updateSiteData = async (data: Partial<MLPSiteData>) => {
+    if (!loaded.current) {
+      throw new Error('Could not reach the database, so nothing was saved. Reload and try again.');
+    }
     const merged = { ...siteData, ...data };
-    setSiteData(merged);
 
     const row: any = {
       videos: merged.videos,
@@ -192,11 +220,13 @@ export function MLPProvider({ children }: { children: ReactNode }) {
     };
 
     if (configId) {
-      const { error } = await supabase
+      const { data: updated, error } = await supabase
         .from('mlp_site_config')
         .update(row)
-        .eq('id', configId);
+        .eq('id', configId)
+        .select('id');
       if (error) throw error;
+      if (!updated?.length) throw new Error('Save was blocked. Check that this account is an admin.');
     } else {
       const { data: inserted, error } = await supabase
         .from('mlp_site_config')
@@ -206,6 +236,7 @@ export function MLPProvider({ children }: { children: ReactNode }) {
       if (error) throw error;
       if (inserted) setConfigId(inserted.id);
     }
+    setSiteData(merged);
   };
 
   return (
