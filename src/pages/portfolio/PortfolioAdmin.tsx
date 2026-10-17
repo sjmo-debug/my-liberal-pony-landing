@@ -7,6 +7,7 @@ import type { Project, ArtistInfo, ProjectCategory, SkillGroup, MethodologyItem,
 import { SEOHead } from '@/components/portfolio/SEOHead';
 import { toast } from 'sonner';
 import PhotoField from '@/components/admin/PhotoField';
+import { HeroTab, TextTab, ListsTab } from './PortfolioAdminContent';
 import { Plus, Trash2, X } from 'lucide-react';
 import {
   AlertDialog,
@@ -19,13 +20,19 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-type Tab = 'enquiries' | 'projects' | 'bio' | 'contact' | 'skills' | 'discography' | 'experience';
+type Tab = 'enquiries' | 'projects' | 'hero' | 'texthome' | 'textmenu' | 'bio' | 'textabout' | 'lists' | 'contact' | 'textcontact' | 'skills' | 'discography' | 'experience';
 
 const tabs: { key: Tab; label: string }[] = [
   { key: 'enquiries', label: 'Enquiries' },
   { key: 'projects', label: 'Projects' },
+  { key: 'hero', label: 'Hero & Photos' },
+  { key: 'texthome', label: 'Home Page Text' },
+  { key: 'textmenu', label: 'Menu & Projects Text' },
   { key: 'bio', label: 'Bio' },
+  { key: 'textabout', label: 'About Page Text' },
+  { key: 'lists', label: 'About Lists' },
   { key: 'contact', label: 'Contact' },
+  { key: 'textcontact', label: 'Contact & Form Text' },
   { key: 'skills', label: 'Skills & Method' },
   { key: 'discography', label: 'Discography' },
   { key: 'experience', label: 'Experience' },
@@ -322,7 +329,7 @@ export default function PortfolioAdmin() {
             <p className="mb-6 border-2 border-yellow-300 p-3 font-mono text-sm">The saved projects were changed elsewhere. Open the Projects section to review.</p>
           )}
           {activeTab === 'projects' && changedElsewhere.info && (
-            <p className="mb-6 border-2 border-yellow-300 p-3 font-mono text-sm">The saved page text was changed elsewhere. Open Bio, Contact, Skills, Discography or Experience to review.</p>
+            <p className="mb-6 border-2 border-yellow-300 p-3 font-mono text-sm">The saved page text was changed elsewhere. Open any section other than Projects to review.</p>
           )}
 
           {activeTab === 'enquiries' && <EnquiriesTab />}
@@ -335,6 +342,12 @@ export default function PortfolioAdmin() {
             removeProject={removeProject}
             askDelete={askDelete}
           />}
+          {activeTab === 'hero' && <HeroTab info={editInfo} setInfo={setEditInfo} />}
+          {activeTab === 'texthome' && <TextTab group="home" info={editInfo} setInfo={setEditInfo} />}
+          {activeTab === 'textmenu' && <TextTab group="menu" info={editInfo} setInfo={setEditInfo} />}
+          {activeTab === 'textabout' && <TextTab group="about" info={editInfo} setInfo={setEditInfo} />}
+          {activeTab === 'lists' && <ListsTab info={editInfo} setInfo={setEditInfo} askDelete={askDelete} />}
+          {activeTab === 'textcontact' && <TextTab group="contact" info={editInfo} setInfo={setEditInfo} />}
           {activeTab === 'bio' && <BioTab info={editInfo} setInfo={setEditInfo} />}
           {activeTab === 'contact' && <ContactTab info={editInfo} setInfo={setEditInfo} />}
           {activeTab === 'skills' && <SkillsTab info={editInfo} setInfo={setEditInfo} askDelete={askDelete} />}
@@ -570,7 +583,6 @@ function BioTab({ info, setInfo }: { info: ArtistInfo; setInfo: (i: ArtistInfo) 
       </div>
       <PhotoField label="Portrait Image" theme="dark" folder="sjmo/about" value={info.portraitImage} onChange={v => u('portraitImage', v)} />
       <Field label="Portrait Photo Credit" value={info.portraitCredit || ''} onChange={v => u('portraitCredit', v)} />
-      <Field label="Hero Photo Credit" value={info.heroCredit || ''} onChange={v => u('heroCredit', v)} />
       <Field label="Education" value={info.education} onChange={v => u('education', v)} />
 
     </div>

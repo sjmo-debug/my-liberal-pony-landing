@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import { Loader2, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { usePortfolioText } from '@/contexts/PortfolioContext';
 import { portfolioProjectTypes, type PortfolioProjectType } from '@/types/portfolio';
 import {
   Form,
@@ -41,6 +42,7 @@ type ContactFormValues = z.infer<typeof contactFormSchema>;
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const t = usePortfolioText();
   const [searchParams] = useSearchParams();
   const typeParam = searchParams.get('type');
   const presetType = portfolioProjectTypes.find(t => t.value === typeParam)?.value;
@@ -70,7 +72,7 @@ export function ContactForm() {
       form.reset();
       setTimeout(() => setIsSuccess(false), 5000);
     } catch {
-      form.setError('root', { message: 'Failed to send message. Please try again.' });
+      form.setError('root', { message: t.formError });
     } finally {
       setIsSubmitting(false);
     }
@@ -82,8 +84,8 @@ export function ContactForm() {
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}>
           <CheckCircle2 className="size-16 mx-auto text-green-600 dark:text-green-400" />
         </motion.div>
-        <h3 className="text-2xl font-light tracking-wide">Message Sent!</h3>
-        <p className="text-muted-foreground font-light leading-relaxed">Thank you for reaching out. I'll get back to you as soon as possible.</p>
+        <h3 className="text-2xl font-light tracking-wide">{t.formSuccessTitle}</h3>
+        <p className="text-muted-foreground font-light leading-relaxed">{t.formSuccessText}</p>
       </motion.div>
     );
   }
@@ -93,30 +95,30 @@ export function ContactForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField control={form.control} name="name" render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-sm font-light tracking-wide">Name</FormLabel>
-            <FormControl><Input placeholder="Your full name" className="font-light" {...field} /></FormControl>
+            <FormLabel className="text-sm font-light tracking-wide">{t.formNameLabel}</FormLabel>
+            <FormControl><Input placeholder={t.formNamePlaceholder} className="font-light" {...field} /></FormControl>
             <FormMessage className="text-xs font-light" />
           </FormItem>
         )} />
 
         <FormField control={form.control} name="email" render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-sm font-light tracking-wide">Email</FormLabel>
-            <FormControl><Input type="email" placeholder="your.email@example.com" className="font-light" {...field} /></FormControl>
+            <FormLabel className="text-sm font-light tracking-wide">{t.formEmailLabel}</FormLabel>
+            <FormControl><Input type="email" placeholder={t.formEmailPlaceholder} className="font-light" {...field} /></FormControl>
             <FormMessage className="text-xs font-light" />
           </FormItem>
         )} />
 
         <FormField control={form.control} name="projectType" render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-sm font-light tracking-wide">Project Type</FormLabel>
+            <FormLabel className="text-sm font-light tracking-wide">{t.formTypeLabel}</FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger className="font-light"><SelectValue placeholder="Select project type" /></SelectTrigger>
+                <SelectTrigger className="font-light"><SelectValue placeholder={t.formTypePlaceholder} /></SelectTrigger>
               </FormControl>
               <SelectContent className="bg-popover z-50">
-                {portfolioProjectTypes.map(t => (
-                  <SelectItem key={t.value} value={t.value} className="font-light">{t.label}</SelectItem>
+                {portfolioProjectTypes.map(tp => (
+                  <SelectItem key={tp.value} value={tp.value} className="font-light">{t[`typeLabel_${tp.value}`]}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -126,8 +128,8 @@ export function ContactForm() {
 
         <FormField control={form.control} name="message" render={({ field }) => (
           <FormItem>
-            <FormLabel className="text-sm font-light tracking-wide">Message</FormLabel>
-            <FormControl><Textarea placeholder="Tell me about your project..." className="min-h-32 font-light resize-none" {...field} /></FormControl>
+            <FormLabel className="text-sm font-light tracking-wide">{t.formMessageLabel}</FormLabel>
+            <FormControl><Textarea placeholder={t.formMessagePlaceholder} className="min-h-32 font-light resize-none" {...field} /></FormControl>
             <FormMessage className="text-xs font-light" />
           </FormItem>
         )} />
@@ -147,7 +149,7 @@ export function ContactForm() {
         )}
 
         <Button type="submit" className="w-full py-6 text-base font-light tracking-wide" disabled={isSubmitting}>
-          {isSubmitting ? (<><Loader2 className="mr-2 size-5 animate-spin" />Sending...</>) : 'Send Message'}
+          {isSubmitting ? (<><Loader2 className="mr-2 size-5 animate-spin" />{t.formSending}</>) : t.formButton}
         </Button>
       </form>
     </Form>

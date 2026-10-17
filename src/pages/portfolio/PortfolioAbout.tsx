@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Instagram, Linkedin } from 'lucide-react';
-import { usePortfolio } from '@/contexts/PortfolioContext';
+import { usePortfolio, usePortfolioText } from '@/contexts/PortfolioContext';
 import { SEOHead } from '@/components/portfolio/SEOHead';
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
@@ -8,6 +8,7 @@ import {
 
 export default function PortfolioAbout() {
   const { photographerInfo } = usePortfolio();
+  const t = usePortfolioText();
 
   return (
     <>
@@ -18,7 +19,7 @@ export default function PortfolioAbout() {
         <section className="py-20 md:py-28 px-6 lg:px-8 border-b-4 border-white">
           <div className="max-w-4xl mx-auto space-y-4">
             <motion.div initial={{ opacity: 0.8, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-              <h1 className="font-heading text-6xl md:text-7xl lg:text-8xl uppercase tracking-widest">ABOUT</h1>
+              <h1 className="font-heading text-6xl md:text-7xl lg:text-8xl uppercase tracking-widest">{t.aboutPageHeading}</h1>
               <p className="text-lg md:text-xl text-muted-foreground font-mono uppercase tracking-wide mt-4">{photographerInfo.tagline}</p>
             </motion.div>
           </div>
@@ -84,17 +85,17 @@ export default function PortfolioAbout() {
         <section className="py-16 md:py-24 px-6 lg:px-8 border-t-4 border-white">
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 lg:gap-16">
             <motion.div className="space-y-6" initial={{ opacity: 0.8, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <h2 className="font-heading text-3xl md:text-4xl uppercase tracking-widest">SELECTED CLIENTS</h2>
+              <h2 className="font-heading text-3xl md:text-4xl uppercase tracking-widest">{t.aboutClientsHeading}</h2>
               <div className="flex flex-wrap gap-2">
-                {photographerInfo.clients.map((client) => (
+                {photographerInfo.clients.filter((c) => c.trim()).map((client) => (
                   <span key={client} className="px-3 py-1.5 text-sm font-mono uppercase tracking-wide border-2 border-white">{client}</span>
                 ))}
               </div>
             </motion.div>
             <motion.div className="space-y-6" initial={{ opacity: 0.8, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
-              <h2 className="font-heading text-3xl md:text-4xl uppercase tracking-widest">SHARED STAGES WITH</h2>
+              <h2 className="font-heading text-3xl md:text-4xl uppercase tracking-widest">{t.aboutStagesHeading}</h2>
               <div className="flex flex-wrap gap-2">
-                {(photographerInfo.sharedStages ?? []).map((act) => (
+                {(photographerInfo.sharedStages ?? []).filter((a) => a.trim()).map((act) => (
                   <span key={act} className="px-3 py-1.5 text-sm font-mono uppercase tracking-wide border-2 border-white">{act}</span>
                 ))}
               </div>
@@ -105,9 +106,9 @@ export default function PortfolioAbout() {
         {/* Highlights */}
         <section className="py-16 md:py-24 px-6 lg:px-8 border-t-4 border-white">
           <div className="max-w-6xl mx-auto space-y-8">
-            <motion.h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>HIGHLIGHTS</motion.h2>
+            <motion.h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>{t.aboutHighlightsHeading}</motion.h2>
             <ul className="grid md:grid-cols-2 gap-4">
-              {photographerInfo.awards.map((award) => (
+              {photographerInfo.awards.filter((a) => a.trim()).map((award) => (
                 <li key={award} className="text-sm md:text-base font-mono leading-relaxed text-muted-foreground pl-4 border-l-4 border-white">{award}</li>
               ))}
             </ul>
@@ -118,7 +119,7 @@ export default function PortfolioAbout() {
         {/* Experience */}
         <section className="py-16 md:py-24 px-6 lg:px-8 border-t-4 border-white">
           <div className="max-w-6xl mx-auto space-y-12">
-            <motion.h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>EXPERIENCE</motion.h2>
+            <motion.h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>{t.aboutExperienceHeading}</motion.h2>
             <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
               {photographerInfo.experience.map((section, i) => (
                 <motion.div key={section.title} className="space-y-4" initial={{ opacity: 0.8, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.1 }}>
@@ -137,7 +138,7 @@ export default function PortfolioAbout() {
         {/* Skills */}
         <section className="py-16 md:py-24 px-6 lg:px-8 border-t-4 border-white">
           <div className="max-w-6xl mx-auto space-y-12">
-            <motion.h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>SKILLS</motion.h2>
+            <motion.h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>{t.aboutSkillsHeading}</motion.h2>
             <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
               {photographerInfo.skills.map((group, i) => (
                 <motion.div key={group.label} className="space-y-4" initial={{ opacity: 0.8, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.1 }}>
@@ -157,8 +158,8 @@ export default function PortfolioAbout() {
         <section className="py-16 md:py-24 px-6 lg:px-8 border-t-4 border-white">
           <div className="max-w-4xl mx-auto space-y-12">
             <motion.div className="space-y-2" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-              <h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest">METHODOLOGY</h2>
-              <p className="text-muted-foreground font-mono uppercase tracking-wide">The Psychology Edge</p>
+              <h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest">{t.aboutMethodologyHeading}</h2>
+              <p className="text-muted-foreground font-mono uppercase tracking-wide">{t.aboutMethodologySubtitle}</p>
             </motion.div>
             <div className="grid md:grid-cols-3 gap-0">
               {photographerInfo.methodology.map((item, i) => (
@@ -174,7 +175,7 @@ export default function PortfolioAbout() {
         {/* Discography */}
         <section className="py-16 md:py-24 px-6 lg:px-8 border-t-4 border-white">
           <div className="max-w-4xl mx-auto space-y-12">
-            <motion.h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>DISCOGRAPHY</motion.h2>
+            <motion.h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>{t.aboutDiscographyHeading}</motion.h2>
             <motion.div initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
               <Table className="border-2 border-white">
                 <TableHeader>
@@ -203,7 +204,7 @@ export default function PortfolioAbout() {
         {/* Journey */}
         <section className="py-16 md:py-24 px-6 lg:px-8 border-t-4 border-white">
           <div className="max-w-4xl mx-auto space-y-8">
-            <motion.h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>THE JOURNEY</motion.h2>
+            <motion.h2 className="font-heading text-4xl md:text-6xl uppercase tracking-widest" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>{t.aboutJourneyHeading}</motion.h2>
             <motion.p className="text-base md:text-lg font-mono leading-relaxed text-muted-foreground" initial={{ opacity: 0.8 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>{photographerInfo.journey}</motion.p>
           </div>
         </section>

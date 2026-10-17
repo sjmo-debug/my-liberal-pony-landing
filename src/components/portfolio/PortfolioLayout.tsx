@@ -1,15 +1,16 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-
-const navLinks = [
-  { to: '/theSJMO', label: 'Home' },
-  { to: '/theSJMO/projects', label: 'Projects' },
-  { to: '/theSJMO/about', label: 'About' },
-  { to: '/theSJMO/contact', label: 'Contact' },
-];
+import { usePortfolioText } from '@/contexts/PortfolioContext';
 
 export default function PortfolioLayout() {
   const location = useLocation();
+  const t = usePortfolioText();
+  const navLinks = [
+    { to: '/theSJMO', label: t.navHome },
+    { to: '/theSJMO/projects', label: t.navProjects },
+    { to: '/theSJMO/about', label: t.navAbout },
+    { to: '/theSJMO/contact', label: t.navContact },
+  ];
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -20,7 +21,7 @@ export default function PortfolioLayout() {
           aria-label="Return to main site"
         >
           <ArrowLeft className="w-4 h-4" />
-          Main Site
+          {t.navMainSite}
         </Link>
 
         <div className="flex flex-wrap items-center gap-0">

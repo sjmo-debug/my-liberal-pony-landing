@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { photographerInfo } from '@/data/portfolio/photographer';
-import { cloudinaryPresets } from '@/lib/cloudinary';
+import { usePortfolio } from '@/contexts/PortfolioContext';
+import { resolvePhotoSrc } from '@/components/admin/PhotoField';
 
 interface SEOHeadProps {
   title?: string;
@@ -10,16 +10,22 @@ interface SEOHeadProps {
   type?: 'website' | 'article';
 }
 
-const defaultShareImage = cloudinaryPresets.heroGrayscale('sjmo_portfolio/hero-live');
-
 export function SEOHead({
   title,
   description,
-  image = defaultShareImage,
+  image: imageProp,
   type = 'website',
 }: SEOHeadProps) {
 
   const location = useLocation();
+  const { photographerInfo } = usePortfolio();
+
+  // Share image: the page's own image, else the hero photo, else the portrait, else none.
+  const image =
+    imageProp ||
+    resolvePhotoSrc(photographerInfo.heroImage?.trim() || '', 1600) ||
+    photographerInfo.portraitImage ||
+    '';
 
   const fullTitle = title
     ? `${title} | ${photographerInfo.name}`
@@ -43,19 +49,28 @@ export function SEOHead({
       element.setAttribute('content', content);
     };
 
+    // With no image the tag is removed rather than left pointing at an old picture.
+    const setOptionalMetaTag = (name: string, content: string, isProperty = false) => {
+      if (content) {
+        updateMetaTag(name, content, isProperty);
+        return;
+      }
+      document.querySelector(`meta[${isProperty ? 'property' : 'name'}="${name}"]`)?.remove();
+    };
+
     updateMetaTag('description', fullDescription);
     updateMetaTag('og:title', fullTitle, true);
     updateMetaTag('og:description', fullDescription, true);
     updateMetaTag('og:type', type, true);
     updateMetaTag('og:url', fullUrl, true);
-    updateMetaTag('og:image', image, true);
+    setOptionalMetaTag('og:image', image, true);
     updateMetaTag('og:site_name', photographerInfo.name, true);
     updateMetaTag('twitter:card', 'summary_large_image');
     updateMetaTag('twitter:title', fullTitle);
     updateMetaTag('twitter:description', fullDescription);
-    updateMetaTag('twitter:image', image);
+    setOptionalMetaTag('twitter:image', image);
     updateMetaTag('author', photographerInfo.name);
-  }, [fullTitle, fullDescription, fullUrl, image, type]);
+  }, [fullTitle, fullDescription, fullUrl, image, type, photographerInfo.name]);
 
   return null;
 }

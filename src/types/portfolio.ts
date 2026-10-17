@@ -79,6 +79,10 @@ export interface ArtistInfo {
   portraitCredit?: string;
   /** Photo credit rendered over the home hero image */
   heroCredit?: string;
+  /** Home hero background photo: a full URL (upload) or a Cloudinary id. Empty means no photo. */
+  heroImage?: string;
+  /** Owner's changed page wording (key -> text). Only changed values are stored. See src/lib/portfolioContent.ts */
+  content?: Record<string, string>;
 
   skills: SkillGroup[];
   methodology: MethodologyItem[];
