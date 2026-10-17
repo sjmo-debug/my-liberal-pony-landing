@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef, useId } from 'react';
 import { Navigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import type { Session } from '@supabase/supabase-js';
@@ -7,7 +7,17 @@ import type { Project, ArtistInfo, ProjectCategory, SkillGroup, MethodologyItem,
 import { SEOHead } from '@/components/portfolio/SEOHead';
 import { toast } from 'sonner';
 import PhotoField from '@/components/admin/PhotoField';
-import { Plus, Trash2, Save, X } from 'lucide-react';
+import { Plus, Trash2, X } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 type Tab = 'enquiries' | 'projects' | 'bio' | 'contact' | 'skills' | 'discography' | 'experience';
 
@@ -32,13 +42,19 @@ interface Enquiry {
 }
 
 
-const inputClass = "w-full bg-black text-white border-2 border-white px-3 py-2 font-mono text-sm focus:outline-none focus:bg-white/5 placeholder:text-white/30";
-const textareaClass = "w-full bg-black text-white border-2 border-white px-3 py-2 font-mono text-sm focus:outline-none focus:bg-white/5 placeholder:text-white/30 min-h-[100px] resize-y";
-const btnClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-white hover:bg-white hover:text-black transition-colors inline-flex items-center gap-2";
-const btnDangerClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-colors inline-flex items-center gap-2";
+const inputClass = "w-full min-h-[44px] bg-black text-white border-2 border-white px-3 py-2 font-mono text-base focus:outline-none focus:bg-white/5 placeholder:text-white/30";
+const textareaClass = "w-full bg-black text-white border-2 border-white px-3 py-2 font-mono text-base focus:outline-none focus:bg-white/5 placeholder:text-white/30 min-h-[100px] resize-y";
+const btnClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 min-h-[44px] border-2 border-white hover:bg-white hover:text-black transition-colors inline-flex items-center justify-center gap-2";
+const btnDangerClass = "font-heading uppercase tracking-widest text-sm px-4 py-2 min-h-[44px] min-w-[44px] border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-colors inline-flex items-center justify-center gap-2";
+const btnSmallClass = "text-sm font-mono uppercase border-2 border-white px-3 py-2 min-h-[44px] min-w-[44px] hover:bg-white hover:text-black transition-colors inline-flex items-center justify-center";
+
+const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v));
+
+/** Ask for confirmation, then run the delete. Passed down to every tab. */
+type AskDelete = (what: string, onConfirm: () => void) => void;
 
 export default function PortfolioAdmin() {
-  const { projects, photographerInfo, updateProjects, updatePhotographerInfo } = usePortfolio();
+  const { projects, photographerInfo, canSave, saveAll } = usePortfolio();
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [searchParams] = useSearchParams();
@@ -47,14 +63,69 @@ export default function PortfolioAdmin() {
   const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState('');
   const [activeTab, setActiveTab] = useState<Tab>('enquiries');
-  const [editProjects, setEditProjects] = useState<Project[]>(JSON.parse(JSON.stringify(projects)));
-  const [editInfo, setEditInfo] = useState<ArtistInfo>(JSON.parse(JSON.stringify(photographerInfo)));
+  const [editProjects, setEditProjects] = useState<Project[]>(() => clone(projects));
+  const [editInfo, setEditInfo] = useState<ArtistInfo>(() => clone(photographerInfo));
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState<{ kind: 'idle' | 'saved' | 'error'; message: string }>({ kind: 'idle', message: '' });
+  const [pendingDelete, setPendingDelete] = useState<{ what: string; onConfirm: () => void } | null>(null);
+
+  // What the database last gave us (as text) for each half of the content.
+  // A section is "dirty" when the edit copy differs from this.
+  const [syncedProjects, setSyncedProjects] = useState(() => JSON.stringify(projects));
+  const [syncedInfo, setSyncedInfo] = useState(() => JSON.stringify(photographerInfo));
+  const syncedProjectsRef = useRef(syncedProjects);
+  const syncedInfoRef = useRef(syncedInfo);
+  // While our own save is in flight, the text we expect to come back from the database.
+  const pendingSave = useRef<{ projects: string; info: string } | null>(null);
+  // Set when the saved version changed elsewhere while the owner has unsaved edits in that section.
+  const [changedElsewhere, setChangedElsewhere] = useState({ projects: false, info: false });
+
+  const projectsJson = useMemo(() => JSON.stringify(editProjects), [editProjects]);
+  const infoJson = useMemo(() => JSON.stringify(editInfo), [editInfo]);
+  const projectsDirty = projectsJson !== syncedProjects;
+  const infoDirty = infoJson !== syncedInfo;
+  const dirty = projectsDirty || infoDirty;
+
+  // Always-current copies of the edits, so the effects below can compare without stale values.
+  const editProjectsRef = useRef(editProjects);
+  const editInfoRef = useRef(editInfo);
+  editProjectsRef.current = editProjects;
+  editInfoRef.current = editInfo;
+
+  // Bring in newly saved content (first load, our own save, or a change from another
+  // device) but never overwrite a section that has unsaved edits.
+  useEffect(() => {
+    const incoming = JSON.stringify(projects);
+    const previous = syncedProjectsRef.current;
+    syncedProjectsRef.current = incoming;
+    setSyncedProjects(incoming);
+    if (incoming === previous) return;
+    if (pendingSave.current && incoming === pendingSave.current.projects) return; // our own save
+    const current = JSON.stringify(editProjectsRef.current);
+    if (current === previous || current === incoming) {
+      if (current !== incoming) setEditProjects(JSON.parse(incoming));
+      setChangedElsewhere((c) => (c.projects ? { ...c, projects: false } : c));
+    } else {
+      setChangedElsewhere((c) => (c.projects ? c : { ...c, projects: true }));
+    }
+  }, [projects]);
 
   useEffect(() => {
-    setEditProjects(JSON.parse(JSON.stringify(projects)));
-    setEditInfo(JSON.parse(JSON.stringify(photographerInfo)));
-  }, [projects, photographerInfo]);
+    const incoming = JSON.stringify(photographerInfo);
+    const previous = syncedInfoRef.current;
+    syncedInfoRef.current = incoming;
+    setSyncedInfo(incoming);
+    if (incoming === previous) return;
+    if (pendingSave.current && incoming === pendingSave.current.info) return; // our own save
+    const current = JSON.stringify(editInfoRef.current);
+    if (current === previous || current === incoming) {
+      if (current !== incoming) setEditInfo(JSON.parse(incoming));
+      setChangedElsewhere((c) => (c.info ? { ...c, info: false } : c));
+    } else {
+      setChangedElsewhere((c) => (c.info ? c : { ...c, info: true }));
+    }
+  }, [photographerInfo]);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
@@ -67,6 +138,17 @@ export default function PortfolioAdmin() {
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  // Warn before closing the tab or reloading with unsaved changes.
+  useEffect(() => {
+    if (!dirty) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [dirty]);
 
   const handleLogin = async () => {
     setAuthError('');
@@ -83,9 +165,9 @@ export default function PortfolioAdmin() {
       return <Navigate to="/" replace />;
     }
     return (
-      <div className="min-h-[80vh] flex items-center justify-center p-8">
+      <div className="min-h-[80vh] flex items-center justify-center p-4 sm:p-8">
         <SEOHead title="Admin" description="Admin access" />
-        <div className="w-full max-w-md border-4 border-white p-8">
+        <div className="w-full max-w-md border-4 border-white p-6 sm:p-8">
           <h1 className="font-heading text-3xl uppercase tracking-widest mb-8 text-center">Admin Access</h1>
           <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }} className="space-y-4">
             <input
@@ -115,23 +197,44 @@ export default function PortfolioAdmin() {
     );
   }
 
-  const saveProjects = async () => {
+  // One save writes projects and artist info together in a single database update.
+  const handleSave = async () => {
+    setSaving(true);
+    setStatus({ kind: 'idle', message: '' });
+    const sentProjects = editProjects;
+    const sentInfo = editInfo;
+    pendingSave.current = { projects: JSON.stringify(sentProjects), info: JSON.stringify(sentInfo) };
     try {
-      await updateProjects(editProjects);
-      toast.success('Projects saved to database');
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to save projects');
+      await saveAll(sentProjects, sentInfo);
+      // Edits made while saving stay dirty because they differ from what was just saved.
+      syncedProjectsRef.current = pendingSave.current.projects;
+      syncedInfoRef.current = pendingSave.current.info;
+      setSyncedProjects(pendingSave.current.projects);
+      setSyncedInfo(pendingSave.current.info);
+      setChangedElsewhere({ projects: false, info: false });
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      setStatus({ kind: 'saved', message: `Saved at ${time}` });
+      toast.success('Saved. The live site is updated.');
+    } catch (err: unknown) {
+      const message = (err as { message?: string })?.message || 'Save failed. Nothing was changed. Try again.';
+      setStatus({ kind: 'error', message });
+      toast.error(message);
+    } finally {
+      pendingSave.current = null;
+      setSaving(false);
     }
   };
 
-  const saveInfo = async () => {
-    try {
-      await updatePhotographerInfo(editInfo);
-      toast.success('Info saved to database');
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to save info');
-    }
+  const discardProjects = () => {
+    setEditProjects(clone(projects));
+    setChangedElsewhere((c) => ({ ...c, projects: false }));
   };
+  const discardInfo = () => {
+    setEditInfo(clone(photographerInfo));
+    setChangedElsewhere((c) => ({ ...c, info: false }));
+  };
+
+  const askDelete: AskDelete = (what, onConfirm) => setPendingDelete({ what, onConfirm });
 
   const addProject = () => {
     const newProject: Project = {
@@ -157,23 +260,47 @@ export default function PortfolioAdmin() {
     setEditProjects(editProjects.map(p => p.id === id ? { ...p, ...updates } : p));
   };
 
+  const showSaveBar = activeTab !== 'enquiries';
+
   return (
     <>
       <SEOHead title="Admin" />
-      <div className="min-h-screen">
+      <div className={`min-h-screen overflow-x-hidden ${showSaveBar ? 'pb-40' : ''}`}>
         {/* Header */}
-        <section className="py-12 md:py-16 px-6 lg:px-8 border-b-4 border-white">
-          <h1 className="font-heading text-5xl md:text-7xl uppercase tracking-widest">ADMIN</h1>
-          <p className="text-muted-foreground font-mono uppercase tracking-wide mt-2">LOCAL EDITING — CHANGES RESET ON REFRESH</p>
+        <section className="py-8 md:py-16 px-4 sm:px-6 lg:px-8 border-b-4 border-white">
+          <h1 className="font-heading text-4xl sm:text-5xl md:text-7xl uppercase tracking-widest">ADMIN</h1>
+          <p className="text-muted-foreground font-mono uppercase tracking-wide mt-2 text-sm sm:text-base">
+            CHANGES GO LIVE WHEN YOU PRESS SAVE
+          </p>
         </section>
 
-        {/* Tabs */}
-        <div className="flex flex-wrap border-b-4 border-white">
+        {!canSave && activeTab !== 'enquiries' && (
+          <div role="alert" className="mx-4 sm:mx-6 lg:mx-8 mt-6 border-2 border-white p-4 font-mono text-sm">
+            Could not load the saved content, so saving is switched off to protect what is already there.
+            Check your connection, then reload this page.
+          </div>
+        )}
+
+        {/* Phone: one dropdown. Larger screens: row of tabs. */}
+        <div className="sm:hidden px-4 py-4 border-b-4 border-white">
+          <label htmlFor="portfolio-admin-section" className="block font-heading text-xs uppercase tracking-widest text-muted-foreground mb-1">Section</label>
+          <select
+            id="portfolio-admin-section"
+            value={activeTab}
+            onChange={(e) => setActiveTab(e.target.value as Tab)}
+            className={`${inputClass} font-heading uppercase tracking-widest`}
+          >
+            {tabs.map(tab => (
+              <option key={tab.key} value={tab.key}>{tab.label}</option>
+            ))}
+          </select>
+        </div>
+        <div className="hidden sm:flex flex-wrap border-b-4 border-white">
           {tabs.map(tab => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`font-heading text-sm uppercase tracking-widest px-4 py-3 border-r-2 border-white transition-colors ${
+              className={`font-heading text-sm uppercase tracking-widest px-4 py-3 min-h-[44px] border-r-2 border-white transition-colors ${
                 activeTab === tab.key ? 'bg-white text-black' : 'hover:bg-white/10'
               }`}
             >
@@ -183,26 +310,104 @@ export default function PortfolioAdmin() {
         </div>
 
         {/* Content */}
-        <div className="px-6 lg:px-8 py-8 max-w-5xl">
+        <div className="px-4 sm:px-6 lg:px-8 py-6 md:py-8 max-w-5xl">
+          {activeTab === 'projects' && changedElsewhere.projects && (
+            <ChangedNotice what="projects" onDiscard={discardProjects} onKeep={() => setChangedElsewhere(c => ({ ...c, projects: false }))} />
+          )}
+          {activeTab !== 'projects' && activeTab !== 'enquiries' && changedElsewhere.info && (
+            <ChangedNotice what="page text" onDiscard={discardInfo} onKeep={() => setChangedElsewhere(c => ({ ...c, info: false }))} />
+          )}
+          {/* Pointer to the other section so a conflict is never missed */}
+          {activeTab !== 'projects' && activeTab !== 'enquiries' && changedElsewhere.projects && (
+            <p className="mb-6 border-2 border-yellow-300 p-3 font-mono text-sm">The saved projects were changed elsewhere. Open the Projects section to review.</p>
+          )}
+          {activeTab === 'projects' && changedElsewhere.info && (
+            <p className="mb-6 border-2 border-yellow-300 p-3 font-mono text-sm">The saved page text was changed elsewhere. Open Bio, Contact, Skills, Discography or Experience to review.</p>
+          )}
+
           {activeTab === 'enquiries' && <EnquiriesTab />}
           {activeTab === 'projects' && <ProjectsTab
-
             projects={editProjects}
             editingId={editingProjectId}
             setEditingId={setEditingProjectId}
             updateProject={updateProject}
             addProject={addProject}
             removeProject={removeProject}
-            onSave={saveProjects}
+            askDelete={askDelete}
           />}
-          {activeTab === 'bio' && <BioTab info={editInfo} setInfo={setEditInfo} onSave={saveInfo} />}
-          {activeTab === 'contact' && <ContactTab info={editInfo} setInfo={setEditInfo} onSave={saveInfo} />}
-          {activeTab === 'skills' && <SkillsTab info={editInfo} setInfo={setEditInfo} onSave={saveInfo} />}
-          {activeTab === 'discography' && <DiscographyTab info={editInfo} setInfo={setEditInfo} onSave={saveInfo} />}
-          {activeTab === 'experience' && <ExperienceTab info={editInfo} setInfo={setEditInfo} onSave={saveInfo} />}
+          {activeTab === 'bio' && <BioTab info={editInfo} setInfo={setEditInfo} />}
+          {activeTab === 'contact' && <ContactTab info={editInfo} setInfo={setEditInfo} />}
+          {activeTab === 'skills' && <SkillsTab info={editInfo} setInfo={setEditInfo} askDelete={askDelete} />}
+          {activeTab === 'discography' && <DiscographyTab info={editInfo} setInfo={setEditInfo} askDelete={askDelete} />}
+          {activeTab === 'experience' && <ExperienceTab info={editInfo} setInfo={setEditInfo} askDelete={askDelete} />}
         </div>
       </div>
+
+      {/* Always-visible save bar (not shown on Enquiries) */}
+      {showSaveBar && (
+        <div className="fixed bottom-0 inset-x-0 z-40 bg-black border-t-4 border-white px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center gap-3">
+            <p
+              role="status"
+              aria-live="polite"
+              className={`flex-1 font-mono text-sm leading-snug break-words ${
+                status.kind === 'error' ? 'text-red-400' : dirty ? 'text-yellow-300' : status.kind === 'saved' ? 'text-green-400' : 'text-muted-foreground'
+              }`}
+            >
+              {status.kind === 'error'
+                ? `Not saved: ${status.message}`
+                : dirty
+                  ? 'Unsaved changes'
+                  : status.kind === 'saved'
+                    ? status.message
+                    : 'No changes yet'}
+            </p>
+            <button
+              onClick={handleSave}
+              disabled={saving || !dirty || !canSave}
+              className="font-heading uppercase tracking-widest text-base px-6 py-3 min-h-[48px] w-full sm:w-auto sm:min-w-[160px] bg-white text-black border-2 border-white hover:bg-black hover:text-white transition-colors disabled:opacity-40 disabled:hover:bg-white disabled:hover:text-black"
+            >
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      <AlertDialog open={!!pendingDelete} onOpenChange={(open) => { if (!open) setPendingDelete(null); }}>
+        <AlertDialogContent className="bg-black text-white border-2 border-white rounded-none">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-heading uppercase tracking-widest">Delete {pendingDelete?.what}?</AlertDialogTitle>
+            <AlertDialogDescription className="font-mono text-sm text-white/70">
+              It is removed from your edits straight away. The live site only changes when you press Save.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2 sm:gap-0">
+            <AlertDialogCancel className={`${btnClass} bg-black text-white rounded-none mt-0`}>Keep it</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => { pendingDelete?.onConfirm(); setPendingDelete(null); }}
+              className="font-heading uppercase tracking-widest text-sm px-4 py-2 min-h-[44px] rounded-none border-2 border-red-500 bg-red-500 text-black hover:bg-black hover:text-red-500"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
+  );
+}
+
+function ChangedNotice({ what, onDiscard, onKeep }: { what: string; onDiscard: () => void; onKeep: () => void }) {
+  return (
+    <div role="alert" className="mb-6 border-2 border-yellow-300 p-4 space-y-3">
+      <p className="font-mono text-sm leading-relaxed">
+        The saved {what} changed somewhere else (another device or tab) while you were editing. Your unsaved edits have been kept.
+        If you press Save, your version replaces the other one.
+      </p>
+      <div className="grid grid-cols-1 sm:flex gap-3">
+        <button onClick={onDiscard} className={btnClass}>Load saved version (lose my edits)</button>
+        <button onClick={onKeep} className={btnClass}>Keep my edits</button>
+      </div>
+    </div>
   );
 }
 
@@ -249,7 +454,7 @@ function EnquiriesTab() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap gap-4 items-center">
-        <button onClick={() => setShowHandled(!showHandled)} className={btnClass}>
+        <button onClick={() => setShowHandled(!showHandled)} className={`${btnClass} w-full sm:w-auto`}>
           {showHandled ? 'Hide Handled' : 'Show Handled'}
         </button>
         <span className="font-mono text-sm uppercase tracking-wide text-muted-foreground">
@@ -263,18 +468,18 @@ function EnquiriesTab() {
 
       {visible.map(enquiry => (
         <div key={enquiry.id} className={`border-2 border-white p-4 space-y-3 ${enquiry.handled ? 'opacity-60' : ''}`}>
-          <div className="flex flex-wrap justify-between gap-3 items-start">
+          <div className="flex flex-col sm:flex-row sm:justify-between gap-3 sm:items-start">
             <div>
               <p className="font-heading text-lg uppercase tracking-widest">{enquiry.name}</p>
               <a href={`mailto:${enquiry.email}`} className="font-mono text-sm text-muted-foreground hover:text-white break-all">{enquiry.email}</a>
             </div>
-            <div className="text-right space-y-1">
+            <div className="sm:text-right space-y-1">
               <p className="font-mono text-xs uppercase tracking-widest">{enquiry.project_type}</p>
               <p className="font-mono text-xs text-muted-foreground">{new Date(enquiry.created_at).toLocaleString('en-GB')}</p>
             </div>
           </div>
           <p className="font-mono text-sm leading-relaxed whitespace-pre-wrap">{enquiry.message}</p>
-          <button onClick={() => toggleHandled(enquiry)} className={btnClass}>
+          <button onClick={() => toggleHandled(enquiry)} className={`${btnClass} w-full sm:w-auto min-h-[48px]`}>
             {enquiry.handled ? 'Mark As Open' : 'Mark As Handled'}
           </button>
         </div>
@@ -285,29 +490,28 @@ function EnquiriesTab() {
 
 
 /* ── Projects Tab ── */
-function ProjectsTab({ projects, editingId, setEditingId, updateProject, addProject, removeProject, onSave }: {
+function ProjectsTab({ projects, editingId, setEditingId, updateProject, addProject, removeProject, askDelete }: {
   projects: Project[]; editingId: string | null; setEditingId: (id: string | null) => void;
-  updateProject: (id: string, u: Partial<Project>) => void; addProject: () => void; removeProject: (id: string) => void; onSave: () => void;
+  updateProject: (id: string, u: Partial<Project>) => void; addProject: () => void; removeProject: (id: string) => void; askDelete: AskDelete;
 }) {
   return (
     <div className="space-y-6">
       <div className="flex gap-4">
-        <button onClick={addProject} className={btnClass}><Plus className="size-4" /> Add Project</button>
-        <button onClick={onSave} className={btnClass}><Save className="size-4" /> Save All</button>
+        <button onClick={addProject} className={`${btnClass} w-full sm:w-auto`}><Plus className="size-4" /> Add Project</button>
       </div>
 
       {projects.map(project => (
         <div key={project.id} className="border-2 border-white p-4 space-y-4">
-          <div className="flex justify-between items-center">
-            <button onClick={() => setEditingId(editingId === project.id ? null : project.id)} className="font-heading text-lg uppercase tracking-widest hover:text-white/70">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+            <button onClick={() => setEditingId(editingId === project.id ? null : project.id)} className="font-heading text-lg uppercase tracking-widest hover:text-white/70 text-left min-h-[44px]">
               {project.title || 'Untitled'} <span className="text-muted-foreground text-sm ml-2">({project.year})</span>
             </button>
             <div className="flex gap-2">
-              <button onClick={() => setEditingId(editingId === project.id ? null : project.id)} className="text-sm font-mono uppercase border border-white px-2 py-1 hover:bg-white hover:text-black transition-colors">
+              <button onClick={() => setEditingId(editingId === project.id ? null : project.id)} className={`${btnSmallClass} flex-1 sm:flex-none`}>
                 {editingId === project.id ? 'Collapse' : 'Edit'}
               </button>
-              <button onClick={() => removeProject(project.id)} className="text-sm font-mono uppercase border border-red-500 text-red-500 px-2 py-1 hover:bg-red-500 hover:text-black transition-colors">
-                <Trash2 className="size-3" />
+              <button onClick={() => askDelete(`project "${project.title || 'Untitled'}"`, () => removeProject(project.id))} aria-label={`Delete project ${project.title || 'Untitled'}`} className={`${btnSmallClass} border-red-500 text-red-500 hover:bg-red-500 hover:text-black`}>
+                <Trash2 className="size-4" />
               </button>
             </div>
           </div>
@@ -316,8 +520,8 @@ function ProjectsTab({ projects, editingId, setEditingId, updateProject, addProj
               <Field label="Title" value={project.title} onChange={v => updateProject(project.id, { title: v })} />
               <Field label="Slug" value={project.slug} onChange={v => updateProject(project.id, { slug: v })} />
               <div>
-                <label className="block font-heading text-xs uppercase tracking-widest mb-1">Category</label>
-                <select value={project.category} onChange={e => updateProject(project.id, { category: e.target.value as ProjectCategory })} className={inputClass}>
+                <label htmlFor={`cat-${project.id}`} className="block font-heading text-xs uppercase tracking-widest mb-1">Category</label>
+                <select id={`cat-${project.id}`} value={project.category} onChange={e => updateProject(project.id, { category: e.target.value as ProjectCategory })} className={inputClass}>
                   <option value="music">Music</option>
                   <option value="production">Production</option>
                   <option value="visual-art">Visual Art</option>
@@ -342,11 +546,10 @@ function ProjectsTab({ projects, editingId, setEditingId, updateProject, addProj
 }
 
 /* ── Bio Tab ── */
-function BioTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: ArtistInfo) => void; onSave: () => void }) {
+function BioTab({ info, setInfo }: { info: ArtistInfo; setInfo: (i: ArtistInfo) => void }) {
   const u = (k: keyof ArtistInfo, v: string) => setInfo({ ...info, [k]: v });
   return (
     <div className="space-y-6 max-w-3xl">
-      <button onClick={onSave} className={btnClass}><Save className="size-4" /> Save</button>
       <Field label="Name" value={info.name} onChange={v => u('name', v)} />
       <Field label="Tagline" value={info.tagline} onChange={v => u('tagline', v)} />
       <div>
@@ -375,11 +578,10 @@ function BioTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: Arti
 }
 
 /* ── Contact Tab ── */
-function ContactTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: ArtistInfo) => void; onSave: () => void }) {
+function ContactTab({ info, setInfo }: { info: ArtistInfo; setInfo: (i: ArtistInfo) => void }) {
   const u = (k: keyof ArtistInfo, v: string) => setInfo({ ...info, [k]: v });
   return (
     <div className="space-y-6 max-w-3xl">
-      <button onClick={onSave} className={btnClass}><Save className="size-4" /> Save</button>
       <Field label="Email" value={info.email} onChange={v => u('email', v)} />
       
       <Field label="Location" value={info.location} onChange={v => u('location', v)} />
@@ -396,7 +598,7 @@ function ContactTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: 
 }
 
 /* ── Skills & Methodology Tab ── */
-function SkillsTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: ArtistInfo) => void; onSave: () => void }) {
+function SkillsTab({ info, setInfo, askDelete }: { info: ArtistInfo; setInfo: (i: ArtistInfo) => void; askDelete: AskDelete }) {
   const updateSkillGroup = (idx: number, updates: Partial<SkillGroup>) => {
     const skills = [...info.skills];
     skills[idx] = { ...skills[idx], ...updates };
@@ -415,18 +617,17 @@ function SkillsTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: A
 
   return (
     <div className="space-y-8 max-w-3xl">
-      <button onClick={onSave} className={btnClass}><Save className="size-4" /> Save</button>
 
       <div className="space-y-6">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <h3 className="font-heading text-2xl uppercase tracking-widest">SKILLS</h3>
           <button onClick={addSkillGroup} className={btnClass}><Plus className="size-3" /> Group</button>
         </div>
         {info.skills.map((group, i) => (
           <div key={i} className="border-2 border-white p-4 space-y-3">
-            <div className="flex justify-between items-center">
-              <input value={group.label} onChange={e => updateSkillGroup(i, { label: e.target.value })} className={inputClass + ' max-w-xs'} />
-              <button onClick={() => removeSkillGroup(i)} className={btnDangerClass}><Trash2 className="size-3" /></button>
+            <div className="flex justify-between items-center gap-3">
+              <input value={group.label} onChange={e => updateSkillGroup(i, { label: e.target.value })} className={inputClass + ' max-w-xs'} aria-label="Group name" />
+              <button onClick={() => askDelete(`skill group "${group.label || 'Untitled'}"`, () => removeSkillGroup(i))} aria-label="Delete skill group" className={btnDangerClass}><Trash2 className="size-4" /></button>
             </div>
             <div>
               <label className="block font-heading text-xs uppercase tracking-widest mb-1">Items (comma-separated)</label>
@@ -437,15 +638,15 @@ function SkillsTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: A
       </div>
 
       <div className="border-t-4 border-white pt-8 space-y-6">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <h3 className="font-heading text-2xl uppercase tracking-widest">METHODOLOGY</h3>
           <button onClick={addMethodology} className={btnClass}><Plus className="size-3" /> Card</button>
         </div>
         {info.methodology.map((item, i) => (
           <div key={i} className="border-2 border-white p-4 space-y-3">
-            <div className="flex justify-between items-center">
-              <input value={item.title} onChange={e => updateMethodology(i, { title: e.target.value })} className={inputClass + ' max-w-xs'} placeholder="Title" />
-              <button onClick={() => removeMethodology(i)} className={btnDangerClass}><Trash2 className="size-3" /></button>
+            <div className="flex justify-between items-center gap-3">
+              <input value={item.title} onChange={e => updateMethodology(i, { title: e.target.value })} className={inputClass + ' max-w-xs'} placeholder="Title" aria-label="Card title" />
+              <button onClick={() => askDelete(`methodology card "${item.title || 'Untitled'}"`, () => removeMethodology(i))} aria-label="Delete methodology card" className={btnDangerClass}><Trash2 className="size-4" /></button>
             </div>
             <textarea value={item.description} onChange={e => updateMethodology(i, { description: e.target.value })} className={textareaClass} placeholder="Description" />
           </div>
@@ -456,7 +657,7 @@ function SkillsTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: A
 }
 
 /* ── Discography Tab ── */
-function DiscographyTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: ArtistInfo) => void; onSave: () => void }) {
+function DiscographyTab({ info, setInfo, askDelete }: { info: ArtistInfo; setInfo: (i: ArtistInfo) => void; askDelete: AskDelete }) {
   const update = (idx: number, updates: Partial<DiscographyEntry>) => {
     const discography = [...info.discography];
     discography[idx] = { ...discography[idx], ...updates };
@@ -468,16 +669,15 @@ function DiscographyTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: 
   return (
     <div className="space-y-6 max-w-4xl">
       <div className="flex gap-4">
-        <button onClick={add} className={btnClass}><Plus className="size-4" /> Add Entry</button>
-        <button onClick={onSave} className={btnClass}><Save className="size-4" /> Save</button>
+        <button onClick={add} className={`${btnClass} w-full sm:w-auto`}><Plus className="size-4" /> Add Entry</button>
       </div>
       {info.discography.map((entry, i) => (
-        <div key={i} className="border-2 border-white p-4 grid grid-cols-2 md:grid-cols-5 gap-3 items-end">
+        <div key={i} className="border-2 border-white p-4 grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
           <Field label="Project" value={entry.project} onChange={v => update(i, { project: v })} />
           <Field label="Release" value={entry.release} onChange={v => update(i, { release: v })} />
           <Field label="Role" value={entry.role} onChange={v => update(i, { role: v })} />
           <Field label="Studio / Label" value={entry.studioLabel} onChange={v => update(i, { studioLabel: v })} />
-          <button onClick={() => remove(i)} className={btnDangerClass + ' self-end'}><Trash2 className="size-3" /></button>
+          <button onClick={() => askDelete(`discography entry "${entry.project || entry.release || 'Untitled'}"`, () => remove(i))} aria-label="Delete discography entry" className={btnDangerClass + ' self-end w-full md:w-auto'}><Trash2 className="size-4" /></button>
         </div>
       ))}
     </div>
@@ -485,7 +685,7 @@ function DiscographyTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: 
 }
 
 /* ── Experience Tab ── */
-function ExperienceTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (i: ArtistInfo) => void; onSave: () => void }) {
+function ExperienceTab({ info, setInfo, askDelete }: { info: ArtistInfo; setInfo: (i: ArtistInfo) => void; askDelete: AskDelete }) {
   const updateSection = (idx: number, updates: Partial<ExperienceSection>) => {
     const experience = [...info.experience];
     experience[idx] = { ...experience[idx], ...updates };
@@ -515,23 +715,22 @@ function ExperienceTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (
   return (
     <div className="space-y-6 max-w-3xl">
       <div className="flex gap-4">
-        <button onClick={addSection} className={btnClass}><Plus className="size-4" /> Add Section</button>
-        <button onClick={onSave} className={btnClass}><Save className="size-4" /> Save</button>
+        <button onClick={addSection} className={`${btnClass} w-full sm:w-auto`}><Plus className="size-4" /> Add Section</button>
       </div>
       {info.experience.map((section, si) => (
         <div key={si} className="border-2 border-white p-4 space-y-4">
-          <div className="flex justify-between items-center">
-            <input value={section.title} onChange={e => updateSection(si, { title: e.target.value })} className={inputClass + ' max-w-md'} />
-            <button onClick={() => removeSection(si)} className={btnDangerClass}><Trash2 className="size-3" /></button>
+          <div className="flex justify-between items-center gap-3">
+            <input value={section.title} onChange={e => updateSection(si, { title: e.target.value })} className={inputClass + ' max-w-md'} aria-label="Section title" />
+            <button onClick={() => askDelete(`experience section "${section.title || 'Untitled'}"`, () => removeSection(si))} aria-label="Delete experience section" className={btnDangerClass}><Trash2 className="size-4" /></button>
           </div>
           <div className="space-y-2">
             {section.items.map((item, ii) => (
               <div key={ii} className="flex gap-2">
-                <input value={item} onChange={e => updateItem(si, ii, e.target.value)} className={inputClass} />
-                <button onClick={() => removeItem(si, ii)} className="text-red-500 border border-red-500 px-2 hover:bg-red-500 hover:text-black transition-colors"><X className="size-3" /></button>
+                <input value={item} onChange={e => updateItem(si, ii, e.target.value)} className={inputClass} aria-label="Item" />
+                <button onClick={() => askDelete(`item "${item || 'Empty'}"`, () => removeItem(si, ii))} aria-label="Delete item" className="text-red-500 border-2 border-red-500 min-h-[44px] min-w-[44px] inline-flex items-center justify-center shrink-0 hover:bg-red-500 hover:text-black transition-colors"><X className="size-4" /></button>
               </div>
             ))}
-            <button onClick={() => addItem(si)} className="text-sm font-mono uppercase border border-white px-2 py-1 hover:bg-white hover:text-black transition-colors">+ Item</button>
+            <button onClick={() => addItem(si)} className={btnSmallClass}>+ Item</button>
           </div>
         </div>
       ))}
@@ -541,10 +740,11 @@ function ExperienceTab({ info, setInfo, onSave }: { info: ArtistInfo; setInfo: (
 
 /* ── Reusable Field ── */
 function Field({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  const id = useId();
   return (
     <div>
-      <label className="block font-heading text-xs uppercase tracking-widest mb-1">{label}</label>
-      <input value={value} onChange={e => onChange(e.target.value)} className={inputClass} />
+      <label htmlFor={id} className="block font-heading text-xs uppercase tracking-widest mb-1">{label}</label>
+      <input id={id} value={value} onChange={e => onChange(e.target.value)} className={inputClass} />
     </div>
   );
 }
