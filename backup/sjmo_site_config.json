@@ -4,21 +4,18 @@
             "approach": "My work is driven by a belief that sound and image are inseparable. Every track I produce has a visual dimension, and every visual piece I create has a rhythm and texture drawn from music.\n\nI approach each project as a collaboration \u2014 listening deeply, experimenting freely, and refining until the work feels inevitable.",
             "availability": "Booking live visuals, sound and production for 2026/27. Enquire for rates; consultation work also available.",
             "awards": [
-                "Iridiphore: bespoke live visuals for 100+ performances",
-                "200+ live shows across the UK",
-                "50+ independently organised events",
-                "Are You Listening? Festival performer, 2022\u20132026 (four projects)",
                 "Music for MS 2026: \u00a31,265 raised for Berkshire MS Therapy Centre",
+                "Iridiphore: bespoke live visuals for 100+ performances",
+                "200+ live shows across the UK across multiple instruments (bass, guitar, drums, vocals) ",
+                "100+ independently organised events",
+                "Are You Listening? Festival performer, 2022\u20132026 across four projects (As Loud as a Mouse, Empires, Empires, pej, MY LIBERAL PONY) ",
                 "Produced Sundaughter \u2014 \"Austrian\" (17,000+ streams)"
             ],
             "biography": "Simon-Joseph Michael Oliver is a musician, producer and live visual artist based in Reading.\n\nHe came up through free tuition in Jersey \u2014 Trinity Grade 7 double bass \u2014 then taught himself bass guitar, electric guitar, drums, production and engineering from sixteen. A 2022 MSci in Applied Psychology from the University of Reading sits behind everything he does: he ran the Band Society, played in the UoR Big Band, and joined the UoR music team as an event organiser and live sound engineer, founding the Dairy jam nights and seeing them formalised into the University's music calendar.\n\nSince then he has performed in, organised or engineered several hundred events across Reading and London \u2014 four consecutive years at Are You Listening? Festival with four different projects (Empires, Empires; As Loud As A Mouse; pej; MY LIBERAL PONY), including a sixty-gig year with Empires, Empires. He founded the live visual collective Iridiphore, which has delivered unique visuals for over 100 live performances, books and engineers the Vixen International Women's Day Festival at the Fox & Hounds in Caversham, and in 2026 organised Chameleon's Music for MS, a day festival that raised \u00a31,265 for the Berkshire Multiple Sclerosis Therapy Centre.",
             "clients": [
-                "UoR Music",
-                "Vixen International Women's Day Festival",
-                "Berkshire MS Therapy Centre",
-                "Sundaughter",
-                "South Street Arts Centre",
-                "Oakford Social Club"
+                "University of Reading Music (WK LIVE) ",
+                "Fox & Hounds (Vixen International Women's Day Festival)",
+                "Berkshire MS Therapy Centre (Music for MS) "
             ],
             "discography": [
                 {
@@ -78,7 +75,8 @@
                     "title": "Technical Projects: Iridiphore (2024\u2013Present)"
                 }
             ],
-            "heroCredit": "PHOTO: [PHOTOGRAPHER NAME]",
+            "heroCredit": "PHOTO: IAN HANHAM PHOTOGRAPHY",
+            "heroImage": "https://res.cloudinary.com/dpy87lbpt/image/upload/v1788862977/ABOUT_FISHEYE_IAN_HANHAM260828_Gappy_Tooth_Industries-My_Liberal_Pony-IZ7_4092_t6qrjm.jpg",
             "heroIntroduction": "I build bespoke visual identities for live bands, engineer their shows, and produce their records. Eight years in the Reading and London scenes; over 100 live performances with custom visuals through Iridiphore.",
             "journey": "Foundational sight-reading and orchestral discipline came from tuition in Jersey, then evolved into the Reading DIY scene. Living with MS has made both a practical and a personal case for music environments that are innovative and genuinely accessible.",
             "location": "Reading, UK",
@@ -97,14 +95,15 @@
                 }
             ],
             "name": "Simon Oliver",
-            "portraitCredit": "PHOTO: [PHOTOGRAPHER NAME]",
-            "portraitImage": "https://res.cloudinary.com/dpy87lbpt/image/upload/f_auto,q_auto,w_800,h_1067,c_fill,g_auto,e_grayscale/sjmo_portfolio/simon-portrait",
+            "portraitCredit": "PHOTO: JONNY MOTO PHOTOGRAPHY",
+            "portraitImage": "https://res.cloudinary.com/dpy87lbpt/image/upload/v1788862971/MLP_HOMEPAGE_HERO_JOHDSC_1927_byiby8.jpg",
             "sharedStages": [
-                "Bob Vylan",
+                "Pan Amsterdam ",
                 "El Khat",
                 "Man/Woman/Chainsaw",
                 "Dan Le Sac",
-                "Pan Amsterdam"
+                "Pan Amsterdam",
+                "Bob Vylan"
             ],
             "skills": [
                 {
@@ -138,7 +137,7 @@
                 "instagram": "https://instagram.com/theSJMO",
                 "linkedin": "https://www.linkedin.com/in/thesjmo/"
             },
-            "tagline": "LIVE VISUALS \u00b7 SOUND \u00b7 PRODUCTION \u2014 READING, UK"
+            "tagline": "SOUND \u00b7 PRODUCTION \u00b7 LIVE VISUALS \u00b7 READING, UK"
         },
         "id": "cdcc5c0a-61cb-4ed7-bc4d-a2e372dc1790",
         "projects": [
@@ -170,8 +169,9 @@
             },
             {
                 "category": "visual-art",
-                "coverImage": "https://res.cloudinary.com/dpy87lbpt/image/upload/f_auto,q_auto,w_900,c_limit/portfolio/iridiphore-cover",
+                "coverImage": "",
                 "description": "Bespoke audio-reactive visual identities for live bands \u2014 bridging performance and multimedia art to create immersive, sensory-rich audience experiences.",
+                "featured": true,
                 "id": "2",
                 "images": [
                     {
@@ -192,7 +192,7 @@
                 "role": "Founder / Visual Artist",
                 "slug": "iridiphore",
                 "title": "Iridiphore \u2013 Audio-Reactive Visuals",
-                "year": "2024"
+                "year": "2023 - present"
             },
             {
                 "category": "music",
@@ -241,6 +241,6 @@
                 "year": "2023"
             }
         ],
-        "updated_at": "2026-09-29T18:04:33.841796+00:00"
+        "updated_at": "2026-10-17T12:16:34.039272+00:00"
     }
 ]

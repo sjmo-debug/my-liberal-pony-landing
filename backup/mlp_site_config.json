@@ -1,12 +1,14 @@
 [
     {
         "branding": {
+            "aboutParagraphs": [],
             "cloudinaryLogoId": "",
-            "heroImage": "mlp/live-hero",
+            "content": {},
+            "heroImage": "",
             "pageSubtitle": "Watch & Listen - Upcoming Gigs",
             "photoCredit": "",
             "siteTitle": "MY LIBERAL PONY",
-            "tagline": "PERMANENT WORK IN PROGRESS"
+            "tagline": "PERMANENT WORK IN PROGRESSsss"
         },
         "contact_email": "myliberalpony@gmail.com",
         "gallery": [
@@ -16,7 +18,7 @@
             },
             {
                 "alt": "MY LIBERAL PONY live performance \u2014 experimental music and multimedia art",
-                "image": "mlp/live-hero"
+                "image": "https://res.cloudinary.com/dpy87lbpt/image/upload/v1783463849/PHOTO-2026-05-12-11-22-00_1_dwjuxs.jpg"
             }
         ],
         "id": "56a5864e-c00f-4969-94e0-e2f675e73169",
@@ -38,9 +40,9 @@
             "pressBadgeLabel": "As heard on",
             "spotifyEmbedUrl": "https://open.spotify.com/embed/track/2MJXjtYkBRQYYLlyBTnXI0",
             "spotifyUrl": "https://open.spotify.com/track/2MJXjtYkBRQYYLlyBTnXI0",
-            "title": "Oumuamua"
+            "title": "OUMUAMUA"
         },
-        "updated_at": "2026-09-30T10:10:53.454218+00:00",
+        "updated_at": "2026-10-17T11:42:58.016513+00:00",
         "videos": [
             {
                 "title": "MY LIBERAL PONY - Oumuamua (Music Video)",
