@@ -239,8 +239,19 @@
                 "slug": "south-street-showcase",
                 "title": "South Street Showcase",
                 "year": "2023"
+            },
+            {
+                "category": "music",
+                "coverImage": "",
+                "description": "stestestestsdtestw",
+                "featured": true,
+                "id": "1792934890224",
+                "images": [],
+                "slug": "new-project-1792934890224",
+                "title": "New Project",
+                "year": "2026"
             }
         ],
-        "updated_at": "2026-10-17T12:16:34.039272+00:00"
+        "updated_at": "2026-10-25T13:28:42.731772+00:00"
     }
 ]
